@@ -1532,26 +1532,9 @@ export default function App() {
           )}
         </main>
       ) : (
-      <>
-      {/* HERO: animația categoriei — clară, cu marginile topite în pagină */}
-      <div style={{ position: "relative", width: "100%", height: "min(56vh, 520px)", overflow: "hidden", zIndex: 0 }}>
-        <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block",
-            maskImage: "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, #000 15%, #000 52%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, #000 15%, #000 52%, transparent 100%)" }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-          background: "linear-gradient(90deg, #080809 0%, transparent 13%, transparent 87%, #080809 100%)" }} />
-        <div style={{ position: "absolute", left: "5vw", bottom: "17%", zIndex: 2 }}>
-          <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: ORANGE }}>OVRTHINK</div>
-          <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(34px, 6vw, 72px)", letterSpacing: "0.04em", textTransform: "uppercase", margin: "4px 0 0", lineHeight: 1, textShadow: "0 2px 30px rgba(0,0,0,0.55)" }}>
-            {cat === "tee" ? (lang === "ro" ? "Tricouri" : "T-shirts") : (lang === "ro" ? "Hoodie" : "Hoodies")}
-          </h1>
-        </div>
-      </div>
-
       <main className="cfg" style={{
-        display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: "4vw",
-        padding: "8px 5vw 90px", maxWidth: 1240, margin: "0 auto", alignItems: "start", position: "relative", zIndex: 1,
+        display: "grid", gridTemplateColumns: "1.05fr 0.95fr 0.7fr", gap: "3vw",
+        padding: "34px 5vw 90px", maxWidth: 1440, margin: "0 auto", alignItems: "start",
       }}>
         {/* stânga: mockup mare + selectorul colecției */}
         <div className="stick ovr-rise" style={{ position: "sticky", top: 20 }}>
@@ -1679,8 +1662,18 @@ export default function App() {
             {L.footerMat}
           </p>
         </div>
+
+        {/* coloana din dreapta: actorul din animația categoriei, cropat vertical */}
+        <div className="stick anim-side" style={{ position: "sticky", top: 20 }}>
+          <div style={{ position: "relative", width: "100%", height: "min(76vh, 660px)", overflow: "hidden", borderRadius: 16 }}>
+            <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 40%", display: "block",
+                maskImage: "linear-gradient(90deg, transparent 0%, #000 14%, #000 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 82%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(90deg, transparent 0%, #000 14%, #000 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 82%, transparent 100%)",
+                maskComposite: "intersect", WebkitMaskComposite: "source-in" }} />
+          </div>
+        </div>
       </main>
-      </>
       )}
 
       {showAddedModal && (
