@@ -1197,6 +1197,8 @@ export default function App() {
         .ovr-stage, .ovr-stage * { touch-action: none !important; -ms-touch-action: none !important; }
         @keyframes ovrGlowA { 0%,100%{ transform: translate(-8%,-4%) scale(1);} 50%{ transform: translate(10%,6%) scale(1.15);} }
         @keyframes ovrGlowB { 0%,100%{ transform: translate(6%,4%) scale(1.1);} 50%{ transform: translate(-8%,-6%) scale(1);} }
+        @keyframes ovrScan { 0%{ top: 2%; opacity: 0; } 12%{ opacity: .55; } 88%{ opacity: .55; } 100%{ top: 98%; opacity: 0; } }
+        @keyframes ovrBlink { 0%,100%{ opacity: 1; } 50%{ opacity: .25; } }
 
         /* ── animații subtile ── */
         @keyframes ovrRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
@@ -1251,8 +1253,8 @@ export default function App() {
               <button key={lg} onClick={() => setLang(lg)} style={{
                 fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase",
                 padding: "7px 12px", cursor: "pointer", border: "none", borderRadius: 0,
-                background: lang === lg ? (darkUI ? "#FAFAF8" : "#141414") : "transparent",
-                color: lang === lg ? (darkUI ? "#141414" : "#FAFAF8") : uiMuted,
+                background: lang === lg ? "rgba(255,74,28,0.9)" : "transparent",
+                color: lang === lg ? "#fff" : uiMuted,
               }}>{lg}</button>
             ))}
           </div>
@@ -1261,8 +1263,8 @@ export default function App() {
               <button key={cc} onClick={() => setCur(cc)} style={{
                 fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 1, textTransform: "uppercase",
                 padding: "7px 9px", cursor: "pointer", border: "none", borderRadius: 0,
-                background: cur === cc ? (darkUI ? "#FAFAF8" : "#141414") : "transparent",
-                color: cur === cc ? (darkUI ? "#141414" : "#FAFAF8") : uiMuted,
+                background: cur === cc ? "rgba(255,74,28,0.9)" : "transparent",
+                color: cur === cc ? "#fff" : uiMuted,
               }}>{cc}</button>
             ))}
           </div>
@@ -1282,6 +1284,20 @@ export default function App() {
           </button>
         </div>
       </header>
+
+      {/* bară de status HUD */}
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        padding: "7px 5vw", borderBottom: `1px solid ${GLINE}`,
+        fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: MUTED, textTransform: "uppercase",
+      }}>
+        <span>OVRTHINK//OS · v1.0</span>
+        <span style={{ opacity: 0.5 }}>{lang === "ro" ? "colecție: toate" : "collection: all"}</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: ORANGE, animation: "ovrBlink 1.6s ease-in-out infinite" }} />
+          {lang === "ro" ? "sistem online" : "system online"}
+        </span>
+      </div>
 
       {view === "checkout" ? (
         <main style={{ maxWidth: 680, margin: "0 auto", padding: "44px 5vw 90px" }}>
@@ -1496,17 +1512,40 @@ export default function App() {
             borderRadius: 18, border: "1px solid rgba(255,255,255,0.14)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2), 0 30px 70px rgba(0,0,0,0.5)",
           }}>
+            {/* stagiul HUD: spotlight + grilă + scanline */}
+            <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(60% 55% at 50% 42%, rgba(255,120,60,0.16), transparent 70%)" }} />
+            <div aria-hidden style={{ position: "absolute", inset: 0, opacity: 0.55,
+              backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
+              backgroundSize: "34px 34px",
+              maskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)", WebkitMaskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)" }} />
+            <div aria-hidden style={{ position: "absolute", left: 0, right: 0, height: 2,
+              background: `linear-gradient(90deg, transparent, ${ORANGE}, transparent)`, boxShadow: `0 0 12px ${ORANGE}`,
+              animation: "ovrScan 4.5s linear infinite" }} />
+
             {itemImg ? (
-              <img src={itemImg} alt={item.name[lang]} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src={itemImg} alt={item.name[lang]} style={{ position: "relative", width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             ) : (
-              <div style={{ textAlign: "center", padding: 24 }}>
+              <div style={{ position: "relative", textAlign: "center", padding: 24 }}>
                 <img src={curColor.dark ? "/brand/logo-white.png" : "/brand/logo-black.png"} alt="OVRTHINK"
-                  style={{ width: "48%", maxWidth: 190, opacity: 0.9, display: "block", margin: "0 auto" }} />
-                <div style={{ marginTop: 16, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: curColor.ink, opacity: 0.5 }}>
+                  style={{ width: "46%", maxWidth: 180, opacity: 0.92, display: "block", margin: "0 auto",
+                    filter: curColor.dark ? "drop-shadow(0 0 22px rgba(255,74,28,0.3))" : "none" }} />
+                <div style={{ marginTop: 16, fontFamily: "ui-monospace, monospace", fontSize: 10.5, letterSpacing: 3, textTransform: "uppercase", color: curColor.ink, opacity: 0.5 }}>
                   {lang === "ro" ? "Mockup în curând" : "Mockup coming soon"}
                 </div>
               </div>
             )}
+
+            {/* colțuri de reticul */}
+            {["tl", "tr", "bl", "br"].map(pos => {
+              const m = { tl: { top: 12, left: 12 }, tr: { top: 12, right: 12, transform: "scaleX(-1)" }, bl: { bottom: 12, left: 12, transform: "scaleY(-1)" }, br: { bottom: 12, right: 12, transform: "scale(-1)" } }[pos];
+              return <div key={pos} aria-hidden style={{ position: "absolute", width: 16, height: 16, borderTop: `1.5px solid ${ORANGE}`, borderLeft: `1.5px solid ${ORANGE}`, opacity: 0.85, ...m }} />;
+            })}
+            {/* etichete tech */}
+            <div aria-hidden style={{ position: "absolute", top: 13, left: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.55 }}>OVR·{item.id.slice(-2).toUpperCase()}</div>
+            <div aria-hidden style={{ position: "absolute", top: 13, right: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.55 }}>1440×1920</div>
+            <div aria-hidden style={{ position: "absolute", bottom: 13, left: 36, display: "flex", alignItems: "center", gap: 6, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.6 }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: ORANGE, animation: "ovrBlink 1.6s ease-in-out infinite" }} />READY
+            </div>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(62px, 1fr))", gap: 8, marginTop: 12 }}>
