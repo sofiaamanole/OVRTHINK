@@ -1242,18 +1242,15 @@ export default function App() {
         }
       `}</style>
 
-      {/* fundal VIU: animația categoriei rulează în spatele conținutului */}
+      {/* fundal futurist static */}
       <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-        {/* scrim ca produsul + textul să rămână lizibile */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(8,8,9,0.55) 0%, rgba(8,8,9,0.66) 55%, rgba(8,8,9,0.82) 100%)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(78% 68% at 50% 32%, transparent, rgba(8,8,9,0.5))" }} />
-        {/* glow portocaliu subtil + grilă tech deasupra */}
-        <div style={{ position: "absolute", top: "-15%", left: "6%", width: "50vw", height: "50vw",
-          background: "radial-gradient(circle, rgba(255,74,28,0.2), transparent 62%)", filter: "blur(60px)",
+        <div style={{ position: "absolute", top: "-15%", left: "6%", width: "52vw", height: "52vw",
+          background: "radial-gradient(circle, rgba(255,74,28,0.32), transparent 62%)", filter: "blur(60px)",
           animation: "ovrGlowA 20s ease-in-out infinite" }} />
-        <div style={{ position: "absolute", inset: 0, opacity: 0.4,
+        <div style={{ position: "absolute", bottom: "-20%", right: "3%", width: "48vw", height: "48vw",
+          background: "radial-gradient(circle, rgba(255,138,61,0.22), transparent 62%)", filter: "blur(65px)",
+          animation: "ovrGlowB 26s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", inset: 0, opacity: 0.45,
           backgroundImage: "linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px)",
           backgroundSize: "64px 64px" }} />
       </div>
@@ -1535,9 +1532,26 @@ export default function App() {
           )}
         </main>
       ) : (
+      <>
+      {/* HERO: animația categoriei — clară, cu marginile topite în pagină */}
+      <div style={{ position: "relative", width: "100%", height: "min(56vh, 520px)", overflow: "hidden", zIndex: 0 }}>
+        <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block",
+            maskImage: "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, #000 15%, #000 52%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, #000 15%, #000 52%, transparent 100%)" }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+          background: "linear-gradient(90deg, #080809 0%, transparent 13%, transparent 87%, #080809 100%)" }} />
+        <div style={{ position: "absolute", left: "5vw", bottom: "17%", zIndex: 2 }}>
+          <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: ORANGE }}>OVRTHINK</div>
+          <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(34px, 6vw, 72px)", letterSpacing: "0.04em", textTransform: "uppercase", margin: "4px 0 0", lineHeight: 1, textShadow: "0 2px 30px rgba(0,0,0,0.55)" }}>
+            {cat === "tee" ? (lang === "ro" ? "Tricouri" : "T-shirts") : (lang === "ro" ? "Hoodie" : "Hoodies")}
+          </h1>
+        </div>
+      </div>
+
       <main className="cfg" style={{
         display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: "4vw",
-        padding: "34px 5vw 90px", maxWidth: 1240, margin: "0 auto", alignItems: "start",
+        padding: "8px 5vw 90px", maxWidth: 1240, margin: "0 auto", alignItems: "start", position: "relative", zIndex: 1,
       }}>
         {/* stânga: mockup mare + selectorul colecției */}
         <div className="stick ovr-rise" style={{ position: "sticky", top: 20 }}>
@@ -1607,11 +1621,8 @@ export default function App() {
           </div>
         </div>
 
-        {/* dreapta: detalii produs + opțiuni (panou de sticlă peste fundalul viu) */}
-        <div className="ovr-rise-2" style={{
-          background: "rgba(14,14,16,0.34)", backdropFilter: "blur(26px) saturate(1.2)", WebkitBackdropFilter: "blur(26px) saturate(1.2)",
-          border: "1px solid rgba(255,255,255,0.14)", borderRadius: 16, padding: "26px 28px 30px",
-        }}>
+        {/* dreapta: detalii produs + opțiuni */}
+        <div className="ovr-rise-2">
           <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3.5, textTransform: "uppercase", color: "#a8a59c" }}>
             {PRODUCTS.find(p => p.id === item.product).name[lang]}
           </div>
@@ -1669,6 +1680,7 @@ export default function App() {
           </p>
         </div>
       </main>
+      </>
       )}
 
       {showAddedModal && (
