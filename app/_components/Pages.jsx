@@ -20,6 +20,8 @@ function Btn({ children, onClick, primary }) {
 
 const T = {
   ro: {
+    heroEyebrow: "OVRTHINK · Sezon 2026",
+    heroTitle: "Noua Eră",
     heroSub: "Streetwear pentru cei care gândesc prea mult.",
     shop: "Cumpără", collections: "Colecții",
     catTitle: "Alege-ți categoria", tee: "Tricouri", hoodie: "Hoodie",
@@ -37,6 +39,8 @@ const T = {
     soon: "În curând", soonText: "Colecțiile sezoniere — Primăvară-Vară, Toamnă-Iarnă, Sport — vin în curând.",
   },
   en: {
+    heroEyebrow: "OVRTHINK · Season 2026",
+    heroTitle: "The New Era",
     heroSub: "Streetwear for those who think too much.",
     shop: "Shop", collections: "Collections",
     catTitle: "Choose your category", tee: "T-shirts", hoodie: "Hoodies",
@@ -61,14 +65,18 @@ export function HomePage({ lang, onShop, onCollections }) {
   return (
     <main>
       {/* HERO */}
-      <section style={{ position: "relative", width: "100%", height: "min(90vh, 840px)", overflow: "hidden" }}>
-        <img src="/home/hero-female.jpg" alt="OVRTHINK" style={{
-          width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block",
-          maskImage: "linear-gradient(180deg, #000 58%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(180deg, #000 58%, transparent 100%)",
+      <section style={{ position: "relative", width: "100%", height: "min(92vh, 860px)", overflow: "hidden" }}>
+        <img src="/home/hero-newera.jpg" alt="OVRTHINK — Noua Eră" style={{
+          width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 44%", display: "block",
+          maskImage: "linear-gradient(180deg, #000 62%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(180deg, #000 62%, transparent 100%)",
         }} />
-        <div className="ovr-rise" style={{ position: "absolute", left: "6vw", bottom: "13%", maxWidth: 520 }}>
-          <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(16px, 2.2vw, 24px)", letterSpacing: 1, color: INK, margin: "0 0 22px", lineHeight: 1.3 }}>
+        <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+          background: "radial-gradient(115% 95% at 0% 100%, rgba(244,242,238,0.9) 0%, rgba(244,242,238,0.5) 28%, transparent 52%)" }} />
+        <div className="ovr-rise" style={{ position: "absolute", left: "6vw", bottom: "11%", maxWidth: 620 }}>
+          <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: O }}>{L.heroEyebrow}</div>
+          <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(40px, 7vw, 92px)", letterSpacing: "0.04em", textTransform: "uppercase", margin: "6px 0 12px", lineHeight: 0.95, color: INK }}>{L.heroTitle}</h1>
+          <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(15px, 2vw, 21px)", letterSpacing: 1, color: MUTED, margin: "0 0 22px", lineHeight: 1.3 }}>
             {L.heroSub}
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
