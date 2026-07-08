@@ -320,8 +320,14 @@ export function AboutPage({ lang, onShop }) {
         <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(18px, 2.4vw, 26px)", color: O, marginTop: 14 }}>{L.aboutLead}</p>
       </div>
 
-      <div style={{ overflow: "hidden", borderRadius: 4, marginBottom: 40 }}>
-        <img src="/home/hero-male.jpg" alt="" style={{ width: "100%", display: "block", objectFit: "cover", maxHeight: 460, objectPosition: "center 30%" }} />
+      <div style={{ marginBottom: 40 }}>
+        {/* margini topite în fundal pe toate laturile — trecere insesizabilă */}
+        <img src="/home/hero-male.jpg" alt="" style={{
+          width: "100%", display: "block", objectFit: "cover", maxHeight: 460, objectPosition: "center 30%",
+          maskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%)",
+          maskComposite: "intersect", WebkitMaskComposite: "source-in",
+        }} />
       </div>
 
       <div style={{ maxWidth: 680, margin: "0 auto", fontFamily: "'Inter', sans-serif", fontSize: 15.5, color: MUTED, lineHeight: 1.9 }}>
