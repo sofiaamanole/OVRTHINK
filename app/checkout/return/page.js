@@ -21,16 +21,11 @@ export default async function ReturnPage({ searchParams }) {
       }}
     >
       <div style={{ textAlign: "center", maxWidth: 460 }}>
-        <div
-          style={{
-            fontFamily: "'Jost', sans-serif",
-            fontSize: 22,
-            letterSpacing: 4,
-            textTransform: "uppercase",
-          }}
-        >
-          [<span style={{ color: "#FF4A1C" }}>O</span>VRTHINK]
-        </div>
+        <img
+          src="/brand/logo-black.png"
+          alt="OVRTHINK"
+          style={{ height: 26, width: "auto", display: "inline-block" }}
+        />
 
         <div
           style={{

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import * as THREE from "three";
+import { CATALOG } from "@/lib/catalog";
 
 /* ─────────────────────────────────────────────
    [OVRTHINK] STUDIO — full custom
@@ -15,10 +16,8 @@ const STAGE_W = 400, STAGE_H = 430;
 const CANVAS_S = 2.5; // rezoluția texturii 3D
 
 const GARMENT_COLORS = [
-  { id: "black",  name: { ro: "Negru", en: "Black" },               hex: "#1d1d1c", ink: "#e9e7e2", dark: true },
-  { id: "washed", name: { ro: "Antracit", en: "Anthracite" }, hex: "#42413e", ink: "#d9d6cf", dark: true },
-  { id: "sand",   name: { ro: "Bej", en: "Sand" },                 hex: "#cdbca4", ink: "#23211e", dark: false },
-  { id: "white",  name: { ro: "Alb", en: "White" },                 hex: "#f2f1ed", ink: "#23211e", dark: false },
+  { id: "black",  name: { ro: "Negru", en: "Black" }, hex: "#1d1d1c", ink: "#e9e7e2", dark: true },
+  { id: "white",  name: { ro: "Alb", en: "White" },   hex: "#f2f1ed", ink: "#23211e", dark: false },
 ];
 
 const PRODUCTS = [
@@ -359,8 +358,8 @@ const T = {
     defaultText: "Textul tău aici",
     footerMat: "100% bumbac · heavyweight · print DTG",
     cart: "Coș", checkoutTitle: "Finalizare comandă",
-    emptyCart: "Coșul e gol — creează ceva în Studio.",
-    backStudio: "← Înapoi în Studio", newOrder: "Comandă nouă",
+    emptyCart: "Coșul e gol — vezi colecția.",
+    backStudio: "← Continuă cumpărăturile", newOrder: "Comandă nouă",
     payMethod: "Metodă de plată", cardLabel: "Card de debit / credit",
     cardNo: "Număr card", cardExp: "LL/AA", cardCvc: "CVC", cardName: "Numele de pe card",
     payNow: t => `Plătește ${t} lei`, processing: "Se procesează…",
@@ -426,8 +425,8 @@ const T = {
     defaultText: "Your text here",
     footerMat: "100% cotton · heavyweight · DTG print",
     cart: "Cart", checkoutTitle: "Checkout",
-    emptyCart: "Your cart is empty — create something in the Studio.",
-    backStudio: "← Back to Studio", newOrder: "New order",
+    emptyCart: "Your cart is empty — browse the collection.",
+    backStudio: "← Keep shopping", newOrder: "New order",
     payMethod: "Payment method", cardLabel: "Debit / credit card",
     cardNo: "Card number", cardExp: "MM/YY", cardCvc: "CVC", cardName: "Name on card",
     payNow: t => `Pay ${t} lei`, processing: "Processing…",
@@ -850,7 +849,7 @@ function Opt({ active, onClick, children, style }) {
       padding: "9px 14px", cursor: "pointer", background: "transparent",
       border: "1px solid", borderColor: active ? "#141414" : "#dddbd5",
       color: active ? "#141414" : "#8a877f",
-      transition: "all .15s ease", borderRadius: 0, ...style,
+      borderRadius: 0, ...style,
     }}>{children}</button>
   );
 }
@@ -931,8 +930,9 @@ export default function App() {
   const [added, setAdded] = useState(false);
   const [showAddedModal, setShowAddedModal] = useState(false);
   const [prodLine, setProdLine] = useState("unisex");
-  const [view, setView] = useState("studio"); // studio | checkout
+  const [view, setView] = useState("studio"); // studio (catalog) | checkout
   const [cart, setCart] = useState([]);
+  const [selId, setSelId] = useState(CATALOG[0].id); // produsul din catalog vizionat
   const [payMethod, setPayMethod] = useState("card");
   const [payState, setPayState] = useState("idle"); // idle | processing | done
   const [payErr, setPayErr] = useState("");
@@ -973,6 +973,24 @@ export default function App() {
   const cartCount = cart.reduce((a, it) => a + it.qty, 0);
   const shipCost = shipMethod === "dhl" ? 89 : 19;
   const calc = computeCart(cart, { account: account && accMode === "create", promo, shipCost });
+
+  /* ── catalog: produsul selectat + opțiuni valide ── */
+  const item = CATALOG.find(c => c.id === selId) || CATALOG[0];
+  const availColors = GARMENT_COLORS.filter(c => item.colors.includes(c.id));
+  const curColorId = item.colors.includes(colorId) ? colorId : item.colors[0];
+  const curColor = GARMENT_COLORS.find(c => c.id === curColorId) || GARMENT_COLORS[0];
+  const availSizes = SIZES_BY_PRODUCT[item.product];
+  const curSize = availSizes.includes(size) ? size : availSizes[0];
+  const itemImg = item.img ? item.img[curColorId] : null;
+
+  const addCatalog = () => {
+    setCart(c => [...c, {
+      id: UID++, product: item.product, catId: item.id,
+      colorId: curColorId, size: curSize, qty,
+      unitPrice: item.price, customCost: 0, total: item.price * qty,
+    }]);
+    setShowAddedModal(true);
+  };
 
   const applyPromo = () => {
     const code = promoInput.trim().toUpperCase();
@@ -1151,14 +1169,7 @@ export default function App() {
         padding: "16px 5vw", borderBottom: "1px solid #e7e5df", gap: 12, flexWrap: "wrap",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <svg width="32" height="32" viewBox="0 0 40 40">
-            <rect x="1.5" y="1.5" width="37" height="37" fill="none" stroke="#141414" strokeWidth="1.6" />
-            <circle cx="14" cy="20" r="5.5" fill="none" stroke={ORANGE} strokeWidth="2" />
-            <path d="M24 12 V28 M32 12 L24.5 20 L32 28" stroke="#141414" strokeWidth="1.8" fill="none" />
-          </svg>
-          <span style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 16, letterSpacing: 5 }}>
-            [<span style={{ color: ORANGE }}>O</span>VRTHINK]
-          </span>
+          <img src="/brand/logo-black.png" alt="OVRTHINK" style={{ height: 22, width: "auto", display: "block" }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <div style={{ display: "flex", gap: 0, border: "1px solid #dddbd5" }}>
@@ -1233,6 +1244,8 @@ export default function App() {
                 {cart.map(it => {
                   const c = GARMENT_COLORS.find(x => x.id === it.colorId);
                   const pr = PRODUCTS.find(x => x.id === it.product);
+                  const ci = CATALOG.find(x => x.id === it.catId);
+                  const itemName = ci ? ci.name[lang] : pr.name[lang];
                   return (
                     <div key={it.id} style={{
                       display: "flex", alignItems: "center", gap: 14,
@@ -1240,7 +1253,7 @@ export default function App() {
                     }}>
                       <span style={{ width: 22, height: 22, borderRadius: "50%", background: c.hex, border: "1px solid #d4d1c9", flexShrink: 0 }} />
                       <div style={{ flex: 1, fontFamily: "'Inter', sans-serif", fontSize: 13.5 }}>
-                        <div>{pr.name[lang]} {it.fit.charAt(0).toUpperCase() + it.fit.slice(1)} · {c.name[lang]} · {it.size} × {it.qty} {L.pcs}</div>
+                        <div>{itemName} · {pr.name[lang]} · {c.name[lang]} · {it.size} × {it.qty} {L.pcs}</div>
                         <div style={{ fontSize: 11.5, color: "#a8a59c", marginTop: 2 }}>{fmt(it.unitPrice)} × {it.qty}{it.customCost > 0 ? ` + ${fmt(it.customCost)}` : ""}</div>
                       </div>
                       <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 15 }}>{fmt(it.total)}</span>
@@ -1397,337 +1410,108 @@ export default function App() {
         </main>
       ) : (
       <main className="cfg" style={{
-        display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "4vw",
+        display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: "4vw",
         padding: "34px 5vw 90px", maxWidth: 1240, margin: "0 auto", alignItems: "start",
       }}>
-        {/* coloana stângă: scenă */}
+        {/* stânga: mockup mare + selectorul colecției */}
         <div className="stick" style={{ position: "sticky", top: 20 }}>
-          {/* taburi */}
-          <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
-            {[["front", L.tabFront], ["back", L.tabBack], ["3d", L.tab3d]].map(([v, lbl]) => (
-              <Opt key={v} active={tab === v} onClick={() => setTab(v)}
-                style={v === "3d" && tab !== "3d" ? { color: ORANGE, borderColor: ORANGE } : {}}>
-                {lbl}
-              </Opt>
-            ))}
-          </div>
-
-          <div style={{ background: "#f1efe9", padding: "26px 16px 20px" }}>
-            {tab === "3d" ? (
-              <Viewer3D product={product} fit={fit} color={color} elements={elements} imgCache={imgCache} slimQuote={slimText} hint={L.viewerHint} />
+          <div style={{
+            position: "relative", width: "100%", aspectRatio: "4 / 5",
+            background: curColor.hex, display: "flex", alignItems: "center",
+            justifyContent: "center", overflow: "hidden",
+          }}>
+            {itemImg ? (
+              <img src={itemImg} alt={item.name[lang]} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             ) : (
-              <div
-                ref={stageRef}
-                className="ovr-stage"
-                onPointerDown={e => { if (e.target === e.currentTarget || e.target.tagName === "svg" || e.target.tagName === "path") setActiveId(null); }}
-                style={{ position: "relative", width: "100%", maxWidth: 460, margin: "0 auto", touchAction: "none", userSelect: "none" }}
-              >
-                <svg viewBox={`0 0 ${STAGE_W} ${STAGE_H}`} style={{ width: "100%", display: "block" }}>
-                  {product === "tee"
-                    ? <TeeShapeSVG p={p} fill={color.hex} line={line} />
-                    : <HoodieShapeSVG p={p} fill={color.hex} line={line} back={tab === "back"} />}
-                  {/* branding fix */}
-                  {tab === "back" ? (
-                    <text x="200" y={bp.wordY} textAnchor="middle"
-                      fontFamily="'Jost', sans-serif" fontSize="9" letterSpacing="3.5" fill={color.ink} opacity="0.85">
-                      [<tspan fill={ORANGE}>O</tspan>VRTHINK]
-                    </text>
-                  ) : (
-                    <OkTagSVG x={bp.tagX} y={bp.tagY} ink={color.ink} />
-                  )}
-                </svg>
-
-                {/* slim: doar citatul prestabilit, fix pe piept */}
-                {isSlim && tab === "front" && (() => {
-                  const r = orangeSegments(slimText, false);
-                  const slimFs = fitSlimFs(slimText, p.bw * 2 - 36, 11);
-                  return (
-                    <div style={{
-                      position: "absolute", left: "50%", top: "37%", transform: "translate(-50%, -50%)",
-                      fontFamily: "'Jost', sans-serif", fontWeight: 300, whiteSpace: "pre",
-                      fontSize: slimFs * scale, color: color.ink, pointerEvents: "none",
-                    }}>
-                      {r.segs.map(([t, kind], j) =>
-                        <span key={j} style={{ color: kind === "orange" ? ORANGE : color.ink }}>{t}</span>)}
-                    </div>
-                  );
-                })()}
-
-                {/* elemente custom — poziții fixe, doar selectabile */}
-                {!isSlim && sideElements.map(el => {
-                  const isActive = el.id === activeId;
-                  const lp = layout[el.id] || { cx: 0.5, cy: 0.45 };
-                  const common = {
-                    position: "absolute", left: `${lp.cx * 100}%`, top: `${lp.cy * 100}%`,
-                    transform: "translate(-50%, -50%)", cursor: "pointer",
-                    border: isActive ? `1.5px dashed ${ORANGE}` : "1.5px dashed transparent",
-                    padding: 6, maxWidth: "92%",
-                  };
-                  const delBtn = isActive ? (
-                    <button
-                      onPointerDown={e => { e.stopPropagation(); }}
-                      onClick={e => { e.stopPropagation(); setElements(els => els.filter(x => x.id !== el.id)); setActiveId(null); }}
-                      aria-label={L.del}
-                      style={{
-                        position: "absolute", top: -12, right: -12, width: 24, height: 24, borderRadius: "50%",
-                        border: "none", background: "#c0341d", color: "#fff", cursor: "pointer",
-                        fontFamily: "'Inter', sans-serif", fontSize: 14, lineHeight: "24px", padding: 0, zIndex: 5,
-                      }}>×</button>
-                  ) : null;
-                  if (el.type === "text") {
-                    const lines = (el.text || "").split("\n");
-                    let found = false;
-                    return (
-                      <div key={el.id} style={common} onClick={e => selectEl(e, el.id)}>
-                        {delBtn}
-                        {lines.map((ln, i) => {
-                          const r = orangeSegments(ln, found);
-                          found = found || r.found;
-                          return (
-                            <div key={i} style={{
-                              fontFamily: "'Jost', sans-serif", fontWeight: 300, whiteSpace: "pre",
-                              fontSize: el.fs * scale, lineHeight: 1.4, textAlign: "center",
-                              color: color.ink, letterSpacing: 1,
-                            }}>
-                              {r.segs.map(([t, kind], j) =>
-                                <span key={j} style={{ color: kind === "orange" ? ORANGE : color.ink }}>{t}</span>)}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    );
-                  }
-                  if (el.type === "anim") {
-                    return (
-                      <div key={el.id} style={common} onClick={e => selectEl(e, el.id)}>
-                        {delBtn}
-                        <img src={animSvgUrl(el.animId, color.ink, true)} alt="" draggable={false}
-                          style={{ width: el.wFrac * stageW, display: "block", pointerEvents: "none" }} />
-                      </div>
-                    );
-                  }
-                  const img = imgCache[el.id];
-                  return (
-                    <div key={el.id} style={common} onClick={e => selectEl(e, el.id)}>
-                      {delBtn}
-                      {img && (
-                        <img src={img.src} alt="" draggable={false}
-                          style={{ width: el.wFrac * stageW, display: "block", pointerEvents: "none" }} />
-                      )}
-                    </div>
-                  );
-                })}
+              <div style={{ textAlign: "center", padding: 24 }}>
+                <img src={curColor.dark ? "/brand/logo-white.png" : "/brand/logo-black.png"} alt="OVRTHINK"
+                  style={{ width: "48%", maxWidth: 190, opacity: 0.9, display: "block", margin: "0 auto" }} />
+                <div style={{ marginTop: 16, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: curColor.ink, opacity: 0.5 }}>
+                  {lang === "ro" ? "Mockup în curând" : "Mockup coming soon"}
+                </div>
               </div>
             )}
           </div>
 
-          {tab !== "3d" && (
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#a8a59c", marginTop: 10 }}>
-              {isSlim ? L.hintSlim : L.hintFixed}
-            </p>
-          )}
-        </div>
-
-        {/* coloana dreaptă: controale */}
-        <div>
-          <Label n="01">{L.sec1}</Label>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
-            <Opt active={prodLine === "unisex"} onClick={() => setProdLine("unisex")}>{L.lineUnisex}</Opt>
-            <Opt onClick={() => {}} style={{ color: "#c4c1b9", borderColor: "#e7e5df", cursor: "default" }}>
-              {L.lineWomen} · {L.soon}
-            </Opt>
-          </div>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {PRODUCTS.map(pr => (
-              <Opt key={pr.id} active={product === pr.id}
-                onClick={() => {
-                  setProduct(pr.id);
-                  if (!SIZES_BY_PRODUCT[pr.id].includes(size)) setSize(SIZES_BY_PRODUCT[pr.id][0]);
-                  if (!PRICES[pr.id][fit]) setFit("oversized");
-                }}>
-                {pr.name[lang]} · {L.from} {fmt(Math.min(...Object.values(PRICES[pr.id])))}
-              </Opt>
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: 12, marginTop: 14, alignItems: "center" }}>
-            {GARMENT_COLORS.map(c => (
-              <button key={c.id} onClick={() => setColorId(c.id)} aria-label={c.name[lang]} title={c.name[lang]} style={{
-                width: 34, height: 34, borderRadius: "50%", background: c.hex, cursor: "pointer",
-                border: colorId === c.id ? `2px solid ${ORANGE}` : "1px solid #d4d1c9",
-              }} />
-            ))}
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#8a877f" }}>{color.name[lang]}</span>
-          </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
-            {fits.map(f => (
-              <Opt key={f.id} active={fit === f.id}
-                onClick={() => { setFit(f.id); if (f.id === "slim") { setTab("front"); setActiveId(null); } }}>
-                {f.name} · {fmt(PRICES[product][f.id])}
-              </Opt>
-            ))}
-          </div>
-
-          {isSlim ? (
-            <>
-              <Label n="02">{L.slimLabel}</Label>
-              <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-                <Opt active={slimMode === "preset"} onClick={() => setSlimMode("preset")}>{L.fromCollection}</Opt>
-                <Opt active={slimMode === "custom"} onClick={() => setSlimMode("custom")}>{L.yourQuote}</Opt>
-              </div>
-              {slimMode === "preset" ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {SLIM_QUOTES.map(q => (
-                    <Opt key={q} active={slimQuote === q} onClick={() => { setSlimQuote(q); setTab("front"); }}
-                      style={{ textAlign: "left" }}>{q}</Opt>
-                  ))}
-                </div>
-              ) : (
-                <>
-                  <input
-                    value={slimCustom}
-                    maxLength={SLIM_MAX}
-                    onChange={e => { setSlimCustom(e.target.value.replace(/\n/g, "")); setTab("front"); }}
-                    placeholder={L.slimPlaceholder}
-                    style={{
-                      width: "100%", padding: "11px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14,
-                      border: "1px solid #dddbd5", background: "transparent", borderRadius: 0,
-                    }} />
-                  <div style={{
-                    fontFamily: "'Inter', sans-serif", fontSize: 11.5, marginTop: 6,
-                    color: slimCustom.length >= SLIM_MAX ? "#c0341d" : "#a8a59c", textAlign: "right",
-                  }}>
-                    {L.slimCounter(slimCustom.length)}
-                  </div>
-                </>
-              )}
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#a8a59c", marginTop: 10, lineHeight: 1.6 }}>
-                {L.slimNote}
-              </p>
-            </>
-          ) : (
-            <>
-          <Label n="02">{L.sec2(tab === "front" ? L.sideFront : tab === "back" ? L.sideBack : L.sideProduct)}</Label>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <Opt onClick={() => addText()} style={{ borderColor: "#141414" }}>{L.btnText}</Opt>
-            <Opt onClick={() => fileRef.current && fileRef.current.click()} style={{ borderColor: "#141414" }}>{L.btnGfx}</Opt>
-            <input ref={fileRef} type="file" accept="image/*" onChange={onUpload} style={{ display: "none" }} />
-          </div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
-            {QUICK_QUOTES.map(q => {
-              const onShirt = elements.some(e => e.type === "text" && e.side === tab && e.text === q);
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(62px, 1fr))", gap: 8, marginTop: 12 }}>
+            {CATALOG.map(ci => {
+              const c0 = GARMENT_COLORS.find(g => g.id === ci.colors[0]) || GARMENT_COLORS[0];
+              const active = ci.id === item.id;
+              const thumb = ci.img ? ci.img[ci.colors[0]] : null;
               return (
-                <Opt key={q} active={onShirt} onClick={() => addText(q)} style={{ fontSize: 12, padding: "7px 12px" }}>{q}</Opt>
+                <button key={ci.id} onClick={() => setSelId(ci.id)} aria-label={ci.name[lang]} style={{
+                  aspectRatio: "1 / 1", background: c0.hex, cursor: "pointer", padding: 0, overflow: "hidden",
+                  border: active ? `2px solid ${ORANGE}` : "1px solid #dddbd5", borderRadius: 0,
+                }}>
+                  {thumb ? (
+                    <img src={thumb} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  ) : (
+                    <img src={c0.dark ? "/brand/monogram-white.png" : "/brand/monogram-black.png"} alt=""
+                      style={{ width: "56%", margin: "22% auto", display: "block", opacity: 0.8 }} />
+                  )}
+                </button>
               );
             })}
           </div>
-          <div style={{
-            fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 2.5,
-            textTransform: "uppercase", color: "#8a877f", margin: "16px 0 8px",
-          }}>{L.animLabel}</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {ANIM_PRESETS.map(a => (
-              <Opt key={a.id} onClick={() => addAnim(a.id)} aria-label={a.name} style={{ padding: "12px 14px" }}>
-                <img src={animSvgUrl(a.id, "#23211e", false)} alt={a.name} style={{ width: "100%", maxWidth: 140, display: "block", margin: "0 auto" }} />
-              </Opt>
+        </div>
+
+        {/* dreapta: detalii produs + opțiuni */}
+        <div>
+          <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3.5, textTransform: "uppercase", color: "#a8a59c" }}>
+            {PRODUCTS.find(p => p.id === item.product).name[lang]}
+          </div>
+          <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 34, letterSpacing: "0.04em", margin: "6px 0 6px" }}>
+            {item.name[lang]}
+          </h1>
+          <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 24 }}>{fmt(item.price)}</div>
+
+          <div style={{ marginTop: 30, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f", marginBottom: 10 }}>
+            {lang === "ro" ? "Culoare" : "Color"} · {curColor.name[lang]}
+          </div>
+          <div style={{ display: "flex", gap: 10 }}>
+            {availColors.map(c => (
+              <button key={c.id} onClick={() => setColorId(c.id)} aria-label={c.name[lang]} style={{
+                width: 34, height: 34, borderRadius: "50%", background: c.hex, cursor: "pointer",
+                border: c.id === curColorId ? `2px solid ${ORANGE}` : "1px solid #d4d1c9",
+              }} />
             ))}
           </div>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#a8a59c", marginTop: 12, lineHeight: 1.6 }}>
-            {L.pricingNote}
-          </p>
 
-          {/* editor element activ */}
-          {active && (
-            <>
-              <Label n="03">{L.selElement}</Label>
-              <div style={{ border: `1px solid ${ORANGE}`, padding: 16 }}>
-                {active.type === "text" ? (
-                  <>
-                    <textarea
-                      value={active.text}
-                      onChange={e => patch(active.id, () => ({ text: e.target.value, preset: false }))}
-                      rows={Math.min(6, Math.max(2, (active.text || "").split("\n").length + 1))}
-                      placeholder={L.textPlaceholder}
-                      style={{
-                        width: "100%", padding: "10px 12px", fontFamily: "'Inter', sans-serif", fontSize: 14,
-                        border: "1px solid #dddbd5", background: "transparent", borderRadius: 0, resize: "vertical",
-                      }} />
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11.5, color: "#a8a59c", marginTop: 6 }}>
-                      {active.preset ? L.presetIncluded : L.ownText(textTier(active.text))}
-                    </div>
-                    <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "center", flexWrap: "wrap" }}>
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#8a877f" }}>{L.sizeText}</span>
-                      <Opt onClick={() => patch(active.id, e => ({ fs: Math.max(7, e.fs - 1.5) }))}>A−</Opt>
-                      <Opt onClick={() => patch(active.id, e => ({ fs: Math.min(34, e.fs + 1.5) }))}>A+</Opt>
-                    </div>
-                  </>
-                ) : active.type === "anim" ? (
-                  <>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#8a877f", marginBottom: 12 }}>
-                      {L.animInfo}
-                    </div>
-                    <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#8a877f" }}>{L.animSize}</span>
-                      <Opt onClick={() => patch(active.id, e => ({ wFrac: Math.max(0.25, e.wFrac - 0.05) }))}>−</Opt>
-                      <Opt onClick={() => patch(active.id, e => ({ wFrac: Math.min(0.8, e.wFrac + 0.05) }))}>+</Opt>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {(() => { const q = qualityInfo(active.natW, active.natH, L); return (
-                      <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: q.color, marginBottom: 12 }}>
-                        {q.label} · {active.wFrac > 0.45 ? L.gfxBig : L.gfxSmall}
-                      </div>
-                    ); })()}
-                    <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#8a877f" }}>{L.gfxSize}</span>
-                      <Opt onClick={() => patch(active.id, e => ({ wFrac: Math.max(0.1, e.wFrac - 0.05) }))}>−</Opt>
-                      <Opt onClick={() => patch(active.id, e => ({ wFrac: Math.min(0.85, e.wFrac + 0.05) }))}>+</Opt>
-                    </div>
-                  </>
-                )}
-                <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-                  <Opt onClick={() => { const ns = active.side === "front" ? "back" : "front"; patch(active.id, () => ({ side: ns })); setTab(ns); }}>
-                    {L.moveTo(active.side === "front" ? L.sideBack : L.sideFront)}
-                  </Opt>
-                  <Opt onClick={removeActive} style={{ color: "#c0341d", borderColor: "#c0341d" }}>{L.del}</Opt>
-                </div>
-              </div>
-            </>
-          )}
-            </>
-          )}
-
-          <Label n={isSlim ? "03" : "04"}>{L.sizesQty}</Label>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-            {sizes.map(s => (
-              <Opt key={s} active={size === s} onClick={() => setSize(s)} style={{ minWidth: 46, textAlign: "center" }}>{s}</Opt>
+          <div style={{ marginTop: 26, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f", marginBottom: 10 }}>
+            {lang === "ro" ? "Mărime" : "Size"}
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {availSizes.map(s => (
+              <button key={s} onClick={() => setSize(s)} style={{
+                minWidth: 46, padding: "11px 0", cursor: "pointer", borderRadius: 0,
+                fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 1,
+                border: s === curSize ? "1px solid #141414" : "1px solid #dddbd5",
+                background: s === curSize ? "#141414" : "transparent",
+                color: s === curSize ? "#FAFAF8" : "#141414",
+              }}>{s}</button>
             ))}
-            <div style={{ display: "flex", alignItems: "center", border: "1px solid #dddbd5", marginLeft: "auto" }}>
-              <Opt onClick={() => setQty(Math.max(1, qty - 1))} style={{ border: "none" }}>−</Opt>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, minWidth: 28, textAlign: "center" }}>{qty}</span>
-              <Opt onClick={() => setQty(Math.min(20, qty + 1))} style={{ border: "none" }}>+</Opt>
-            </div>
           </div>
 
-          <div style={{
-            marginTop: 32, paddingTop: 22, borderTop: "1px solid #e7e5df",
-            display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap",
+          <div style={{ marginTop: 26, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f", marginBottom: 10 }}>
+            {lang === "ro" ? "Cantitate" : "Quantity"}
+          </div>
+          <div style={{ display: "inline-flex", alignItems: "center", border: "1px solid #dddbd5" }}>
+            <button onClick={() => setQty(q => Math.max(1, q - 1))} style={{ padding: "10px 16px", cursor: "pointer", border: "none", background: "transparent", fontSize: 16 }}>−</button>
+            <span style={{ minWidth: 34, textAlign: "center", fontFamily: "'Jost', sans-serif", fontSize: 15 }}>{qty}</span>
+            <button onClick={() => setQty(q => q + 1)} style={{ padding: "10px 16px", cursor: "pointer", border: "none", background: "transparent", fontSize: 16 }}>+</button>
+          </div>
+
+          <button onClick={addCatalog} style={{
+            width: "100%", marginTop: 30,
+            fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 3.5, textTransform: "uppercase",
+            padding: "18px 0", cursor: "pointer", border: "none", borderRadius: 0, background: "#141414", color: "#FAFAF8",
           }}>
-            <div>
-              <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, color: "#8a877f", textTransform: "uppercase" }}>{L.total}</div>
-              <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 30 }}>{fmt(total)}</div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11.5, color: "#a8a59c", marginTop: 2 }}>
-                {fmt(unitPrice)} {lang === "ro" ? "bază" : "base"}{customCost > 0 ? ` + ${fmt(customCost)} ${lang === "ro" ? "personalizare" : "customization"}` : ""}{qty > 1 ? ` × ${qty}` : ""}
-              </div>
-            </div>
-            <button onClick={addToCart} style={{
-              fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 3.5, textTransform: "uppercase",
-              padding: "17px 34px", cursor: "pointer", border: "none", borderRadius: 0,
-              background: "#141414", color: "#FAFAF8",
-            }}>
-              {L.addCart}
-            </button>
-          </div>
+            {L.addCart} · {fmt(item.price * qty)}
+          </button>
+
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#a8a59c", marginTop: 16, lineHeight: 1.7 }}>
+            {L.footerMat}
+          </p>
         </div>
       </main>
       )}
@@ -1764,7 +1548,9 @@ export default function App() {
         display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10,
         fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, color: "#a8a59c", textTransform: "uppercase",
       }}>
-        <span>[<span style={{ color: ORANGE }}>O</span>VRTHINK] Studio</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 9 }}>
+          <img src="/brand/logo-black.png" alt="OVRTHINK" style={{ height: 13, width: "auto", display: "block", opacity: 0.85 }} />
+        </span>
         <span>{L.footerMat}</span>
       </footer>
     </div>
