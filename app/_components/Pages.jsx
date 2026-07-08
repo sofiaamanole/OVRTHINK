@@ -123,7 +123,7 @@ export function CollectionsPage({ lang, onShop }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "3vw", alignItems: "center" }} className="ovr-cat">
         <div style={{ overflow: "hidden", borderRadius: 4 }}>
-          <img src="/home/campaign.jpg" alt="Essentials 01" style={{ width: "100%", display: "block" }} />
+          <img src="/home/collectii.jpg" alt="Essentials 01" style={{ width: "100%", display: "block" }} />
         </div>
         <div>
           <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: MUTED }}>{L.colCurrent}</div>

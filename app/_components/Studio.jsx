@@ -970,6 +970,15 @@ export default function App() {
   const [promoErr, setPromoErr] = useState(false);
   const fmt = (lei) => money(lei, cur);
   const [stageW, setStageW] = useState(STAGE_W);
+  const [zoom, setZoom] = useState(null); // {ox, oy} în % — lupă la hover pe produs
+  const zoomRef = useRef(null);
+  const onZoomMove = useCallback((e) => {
+    const el = zoomRef.current; if (!el) return;
+    const r = el.getBoundingClientRect();
+    const ox = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+    const oy = Math.max(0, Math.min(100, ((e.clientY - r.top) / r.height) * 100));
+    setZoom({ ox, oy });
+  }, []);
 
   const stageRef = useRef(null);
   const fileRef  = useRef(null);
@@ -1567,28 +1576,25 @@ export default function App() {
       }}>
         {/* stânga: mockup mare + selectorul colecției */}
         <div className="stick ovr-rise" style={{ position: "sticky", top: 20 }}>
-          <div key={item.id + curColorId + side} className="ovr-fade" style={{
+          <div ref={zoomRef} key={item.id + curColorId + side} className="ovr-fade"
+            onMouseMove={itemImg ? onZoomMove : undefined}
+            onMouseLeave={() => setZoom(null)}
+            style={{
             position: "relative", width: "100%", aspectRatio: "4 / 5",
-            background: "radial-gradient(ellipse at 50% 40%, #f1eee9 0%, #e6e3dc 66%, #dad7cf 100%)", display: "flex", alignItems: "center",
+            background: "radial-gradient(ellipse at 50% 42%, #f4f2ee 0%, #ece9e3 70%, #e2ded6 100%)", display: "flex", alignItems: "center",
             justifyContent: "center", overflow: "hidden",
-            borderRadius: 18, border: "1px solid rgba(0,0,0,0.08)",
-            boxShadow: "0 24px 60px rgba(0,0,0,0.14)",
+            borderRadius: 14,
+            cursor: itemImg ? "zoom-in" : "default",
           }}>
-            {/* spotlight + grilă doar pentru placeholder (nu peste fotografie) */}
-            {!itemImg && (<>
-              <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(60% 55% at 50% 42%, rgba(255,120,60,0.16), transparent 70%)" }} />
-              <div aria-hidden style={{ position: "absolute", inset: 0, opacity: 0.55,
-                backgroundImage: "linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px)",
-                backgroundSize: "34px 34px",
-                maskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)", WebkitMaskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)" }} />
-            </>)}
-            {/* scanline (rămâne — efect de scanare peste produs) */}
-            <div aria-hidden style={{ position: "absolute", left: 0, right: 0, height: 2, zIndex: 2,
-              background: `linear-gradient(90deg, transparent, ${ORANGE}, transparent)`, boxShadow: `0 0 12px ${ORANGE}`,
-              animation: "ovrScan 4.5s linear infinite" }} />
-
             {itemImg ? (
-              <img src={itemImg} alt={item.name[lang]} style={{ position: "relative", width: "90%", height: "90%", objectFit: "contain", display: "block", filter: "drop-shadow(0 26px 34px rgba(0,0,0,0.2))" }} />
+              <img src={itemImg} alt={item.name[lang]} style={{
+                position: "relative", width: "100%", height: "100%", objectFit: "contain", display: "block",
+                filter: "drop-shadow(0 22px 30px rgba(0,0,0,0.16))",
+                transform: zoom ? "scale(2.6)" : "scale(1)",
+                transformOrigin: zoom ? `${zoom.ox}% ${zoom.oy}%` : "center",
+                transition: zoom ? "transform .08s ease-out" : "transform .3s ease",
+                willChange: "transform",
+              }} />
             ) : (
               <div style={{ position: "relative", textAlign: "center", padding: 24 }}>
                 <img src={curColor.dark ? "/brand/logo-white.png" : "/brand/logo-black.png"} alt="OVRTHINK"
@@ -1600,17 +1606,18 @@ export default function App() {
               </div>
             )}
 
-            {/* colțuri de reticul */}
-            {["tl", "tr", "bl", "br"].map(pos => {
-              const m = { tl: { top: 12, left: 12 }, tr: { top: 12, right: 12, transform: "scaleX(-1)" }, bl: { bottom: 12, left: 12, transform: "scaleY(-1)" }, br: { bottom: 12, right: 12, transform: "scale(-1)" } }[pos];
-              return <div key={pos} aria-hidden style={{ position: "absolute", width: 16, height: 16, borderTop: `1.5px solid ${ORANGE}`, borderLeft: `1.5px solid ${ORANGE}`, opacity: 0.85, ...m }} />;
-            })}
-            {/* etichete tech */}
-            <div aria-hidden style={{ position: "absolute", top: 13, left: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: "#6b6660", opacity: 0.55, zIndex: 2 }}>OVR·{item.id.toUpperCase()}</div>
-            <div aria-hidden style={{ position: "absolute", top: 13, right: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: "#6b6660", opacity: 0.55 }}>1440×1920</div>
-            <div aria-hidden style={{ position: "absolute", bottom: 13, left: 36, display: "flex", alignItems: "center", gap: 6, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: "#6b6660", opacity: 0.6 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: ORANGE, animation: "ovrBlink 1.6s ease-in-out infinite" }} />READY
-            </div>
+            {/* indiciu lupă (dispare la hover) */}
+            {itemImg && !zoom && (
+              <div aria-hidden style={{ position: "absolute", bottom: 14, right: 14, display: "flex", alignItems: "center", gap: 7,
+                fontFamily: "'Jost', sans-serif", fontSize: 9.5, letterSpacing: 2, textTransform: "uppercase", color: "#8a877f",
+                background: "rgba(255,255,255,0.55)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)",
+                padding: "6px 11px", borderRadius: 20, pointerEvents: "none" }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a877f" strokeWidth="2.2" strokeLinecap="round">
+                  <circle cx="10.5" cy="10.5" r="7" /><line x1="21" y1="21" x2="15.8" y2="15.8" />
+                </svg>
+                {lang === "ro" ? "Mărește" : "Zoom"}
+              </div>
+            )}
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(58px, 1fr))", gap: 8, marginTop: 12 }}>
