@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import * as THREE from "three";
 import { CATALOG, COLLECTIONS } from "@/lib/catalog";
 import { CollectionBg, CollectionsHub, THEME } from "./Collections";
+import { HomePage, CollectionsPage, AboutPage } from "./Pages";
 
 /* ─────────────────────────────────────────────
    [OVRTHINK] STUDIO — full custom
@@ -947,7 +948,8 @@ export default function App() {
   const [view, setView] = useState("studio"); // studio (catalog) | checkout
   const [cart, setCart] = useState([]);
   const [selId, setSelId] = useState(CATALOG[0].id); // produsul din catalog vizionat
-  const [cat, setCat] = useState("tee"); // pagina activă: tee | hoodie
+  const [cat, setCat] = useState("tee"); // categoria din shop: tee | hoodie
+  const [page, setPage] = useState("home"); // home | shop | collections | about
   const [side, setSide] = useState("front"); // față | spate (mockup afișat)
   const [col, setCol] = useState(null); // colecția deschisă: null = hub | summer | winter | sport
   const [payMethod, setPayMethod] = useState("card");
@@ -1027,14 +1029,14 @@ export default function App() {
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   };
 
+  const scrollTop = () => { if (typeof window !== "undefined") window.scrollTo({ top: 0 }); };
   const openCat = (c) => {
-    setCat(c);
-    setSide("front");
+    setPage("shop"); setView("studio"); setCat(c); setSide("front");
     const first = CATALOG.find(p => p.product === c);
     if (first) setSelId(first.id);
-    if (view === "checkout") setView("studio");
-    if (typeof window !== "undefined") window.scrollTo({ top: 0 });
+    scrollTop();
   };
+  const navTo = (p) => { setPage(p); setView("studio"); scrollTop(); };
   const ANIM_SRC = { tee: "/anim/tricou-2.mp4", hoodie: "/anim/hoodie-2.mp4" };
 
   /* ── temă UI adaptivă peste fundalul colecției ── */
@@ -1236,6 +1238,13 @@ export default function App() {
         .ovr-thumb:hover { transform: translateY(-3px); }
         .ovr-opt    { transition: background .18s ease, color .18s ease, border-color .18s ease; }
         .ovr-pop    { animation: ovrPop .45s ease; }
+        .ovr-tile-img { transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+        .ovr-tile:hover .ovr-tile-img { transform: scale(1.05); }
+        .ovr-hbtn { transition: background .25s ease, color .25s ease, transform .12s ease; }
+        .ovr-hbtn:hover { background: ${ORANGE} !important; color: #fff !important; border-color: ${ORANGE} !important; }
+        .ovr-hbtn:active { transform: translateY(1px); }
+        .ovr-navlink { transition: color .2s ease; }
+        @media (max-width: 820px) { .ovr-cat { grid-template-columns: 1fr !important; } }
         @media (prefers-reduced-motion: reduce) {
           .ovr-rise, .ovr-rise-2, .ovr-fade, .ovr-pop { animation: none !important; }
           .ovr-cta, .ovr-thumb, .ovr-opt { transition: none !important; }
@@ -1266,17 +1275,24 @@ export default function App() {
         backdropFilter: "blur(16px) saturate(1.3)", WebkitBackdropFilter: "blur(16px) saturate(1.3)",
         borderBottom: `1px solid ${GLINE}`,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <button onClick={() => navTo("home")} aria-label="OVRTHINK — Acasă" style={{
+          display: "flex", alignItems: "center", gap: 14, background: "transparent", border: "none", cursor: "pointer", padding: 0,
+        }}>
           <img src={logoSrc} alt="OVRTHINK" style={{ height: 22, width: "auto", display: "block" }} />
-        </div>
-        <nav style={{ display: "flex", gap: 6 }}>
-          {[["tee", lang === "ro" ? "Tricouri" : "T-shirts"], ["hoodie", lang === "ro" ? "Hoodie" : "Hoodies"]].map(([id, label]) => (
-            <button key={id} onClick={() => openCat(id)} style={{
+        </button>
+        <nav style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "center" }}>
+          {[
+            ["tee", lang === "ro" ? "Tricouri" : "T-shirts", () => openCat("tee"), page === "shop" && cat === "tee" && view !== "checkout"],
+            ["hoodie", lang === "ro" ? "Hoodie" : "Hoodies", () => openCat("hoodie"), page === "shop" && cat === "hoodie" && view !== "checkout"],
+            ["collections", lang === "ro" ? "Colecții" : "Collections", () => navTo("collections"), page === "collections" && view !== "checkout"],
+            ["about", lang === "ro" ? "Despre" : "About", () => navTo("about"), page === "about" && view !== "checkout"],
+          ].map(([id, label, fn, active]) => (
+            <button key={id} onClick={fn} className="ovr-navlink" style={{
               fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 2.5, textTransform: "uppercase",
-              padding: "8px 16px", cursor: "pointer", borderRadius: 8,
-              background: cat === id && view !== "checkout" ? "rgba(255,74,28,0.16)" : "transparent",
-              border: cat === id && view !== "checkout" ? `1px solid ${ORANGE}` : "1px solid transparent",
-              color: cat === id && view !== "checkout" ? "#fff" : uiMuted,
+              padding: "8px 14px", cursor: "pointer", borderRadius: 8,
+              background: active ? "rgba(255,74,28,0.14)" : "transparent",
+              border: active ? `1px solid ${ORANGE}` : "1px solid transparent",
+              color: active ? "#b23410" : uiMuted,
             }}>{label}</button>
           ))}
         </nav>
@@ -1325,7 +1341,14 @@ export default function App() {
         fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: MUTED, textTransform: "uppercase",
       }}>
         <span>OVRTHINK//OS · v1.0</span>
-        <span style={{ opacity: 0.5 }}>{lang === "ro" ? `pagina: ${cat === "tee" ? "tricouri" : "hoodie"}` : `page: ${cat === "tee" ? "t-shirts" : "hoodies"}`}</span>
+        <span style={{ opacity: 0.5 }}>{(() => {
+          const pl = view === "checkout" ? { ro: "checkout", en: "checkout" }
+            : page === "home" ? { ro: "acasă", en: "home" }
+            : page === "collections" ? { ro: "colecții", en: "collections" }
+            : page === "about" ? { ro: "despre", en: "about" }
+            : { ro: cat === "tee" ? "tricouri" : "hoodie", en: cat === "tee" ? "t-shirts" : "hoodies" };
+          return `${lang === "ro" ? "pagina" : "page"}: ${pl[lang]}`;
+        })()}</span>
         <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ width: 6, height: 6, borderRadius: "50%", background: ORANGE, animation: "ovrBlink 1.6s ease-in-out infinite" }} />
           {lang === "ro" ? "sistem online" : "system online"}
@@ -1531,6 +1554,12 @@ export default function App() {
             </>
           )}
         </main>
+      ) : page === "home" ? (
+        <HomePage lang={lang} onShop={openCat} onCollections={() => navTo("collections")} />
+      ) : page === "collections" ? (
+        <CollectionsPage lang={lang} onShop={openCat} />
+      ) : page === "about" ? (
+        <AboutPage lang={lang} onShop={openCat} />
       ) : (
       <main className="cfg" style={{
         display: "grid", gridTemplateColumns: cat === "tee" ? "0.92fr 0.72fr 1.12fr" : "1fr 0.82fr 0.95fr", gap: "2.4vw",
