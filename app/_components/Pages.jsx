@@ -256,8 +256,8 @@ export function CollectionsPage({ lang, onShop }) {
         <div>
           <img src="/home/collectii-hero.png" alt="OVRTHINK" style={{
             width: "100%", display: "block", marginTop: "-2%",
-            maskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 9%, #000 96%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 9%, #000 96%, transparent 100%)",
+            maskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 70%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 9%, #000 66%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 70%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 9%, #000 66%, transparent 100%)",
             maskComposite: "intersect", WebkitMaskComposite: "source-in",
           }} />
         </div>
