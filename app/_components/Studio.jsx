@@ -1451,32 +1451,10 @@ export default function App() {
             </>
           )}
         </main>
-      ) : col === null ? (
-        <CollectionsHub collections={COLLECTIONS} lang={lang} onOpen={openCol} />
       ) : (
-      <>
-        <CollectionBg theme={col} lang={lang} />
-        <div className="ovr-rise" style={{ maxWidth: 1240, margin: "0 auto", padding: "24px 5vw 2px", position: "relative" }}>
-          <button onClick={() => setCol(null)} style={{
-            fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase",
-            border: "none", background: "transparent", cursor: "pointer", padding: 0,
-            color: darkUI ? "rgba(250,250,248,0.85)" : "#6f6c64",
-          }}>{lang === "ro" ? "← Toate colecțiile" : "← All collections"}</button>
-          <h1 style={{
-            fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(30px, 6.4vw, 66px)",
-            letterSpacing: "0.09em", textTransform: "uppercase", lineHeight: 1.02, margin: "16px 0 0",
-            color: THEME[col].title,
-            textShadow: darkUI ? "0 2px 30px rgba(0,0,0,0.4)" : "0 1px 16px rgba(255,255,255,0.3)",
-          }}>{COLLECTIONS.find(c => c.id === col).name[lang]}</h1>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, color: THEME[col].sub, margin: "10px 0 0" }}>
-            {COLLECTIONS.find(c => c.id === col).tagline[lang]}
-          </p>
-        </div>
       <main className="cfg" style={{
         display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: "4vw",
-        padding: "30px 5vw 64px", maxWidth: 1240, margin: "18px auto 0", alignItems: "start",
-        background: "rgba(250,250,248,0.96)", borderRadius: 4, position: "relative",
-        boxShadow: "0 24px 70px rgba(20,20,20,0.22)",
+        padding: "34px 5vw 90px", maxWidth: 1240, margin: "0 auto", alignItems: "start",
       }}>
         {/* stânga: mockup mare + selectorul colecției */}
         <div className="stick ovr-rise" style={{ position: "sticky", top: 20 }}>
@@ -1579,7 +1557,6 @@ export default function App() {
           </p>
         </div>
       </main>
-      </>
       )}
 
       {showAddedModal && (
