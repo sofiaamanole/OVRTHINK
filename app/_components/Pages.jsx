@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import { CATALOG } from "@/lib/catalog";
+
 /* Paginile OVRTHINK: Home, Colecții, Despre. Temă albă/portocalie. */
 
 const O = "#FF4A1C";
@@ -59,52 +62,199 @@ const T = {
   },
 };
 
-/* ── HOME (minimal) ── */
-export function HomePage({ lang, onShop }) {
-  const L = T[lang];
-  const products = [
-    { id: "tee", name: lang === "ro" ? "Tricou OVRTHINK" : "OVRTHINK Tee", price: "189 lei", img: "/catalog/tee-black.png" },
-    { id: "hoodie", name: lang === "ro" ? "Hoodie OVRTHINK" : "OVRTHINK Hoodie", price: "329 lei", img: "/catalog/hoodie-black.png" },
+/* stiluri comune homepage */
+const eyebrow = { fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: O };
+const h2style = { fontFamily: "'Jost', sans-serif", fontWeight: 200, letterSpacing: "0.08em", textTransform: "uppercase", color: INK, margin: 0 };
+const bodyStyle = { fontFamily: "'Inter', sans-serif", fontSize: 15, color: MUTED, lineHeight: 1.85 };
+const secPad = { padding: "clamp(56px, 8vw, 108px) 6vw" };
+
+/* ── HOME — premium / editorial ── */
+export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
+  const ro = lang === "ro";
+  const price = (v) => (fmt ? fmt(v) : `${v} lei`);
+  const tee = CATALOG.find(c => c.id === "tee") || CATALOG[0];
+  const hoodie = CATALOG.find(c => c.id === "hoodie") || CATALOG[1];
+
+  const drops = [
+    { p: tee, desc: ro ? "Tricou oversized, bumbac heavyweight." : "Oversized tee, heavyweight cotton." },
+    { p: hoodie, desc: ro ? "Hanorac oversized, bumbac dens." : "Oversized hoodie, dense cotton." },
   ];
+  const collections = [
+    { name: "OVRCORE", text: ro ? "Esențiale streetwear de zi cu zi." : "Everyday streetwear essentials." },
+    { name: "OVRHEAT", text: ro ? "Piese primăvară/vară, senzație lejeră." : "Spring/Summer pieces with a lighter feel." },
+    { name: "OVRLAYER", text: ro ? "Straturi toamnă/iarnă, hanorace, croieli groase." : "Autumn/Winter layers, hoodies and heavier cuts." },
+    { name: "OVRMOVE", text: ro ? "Piese de gym și sport, făcute pentru mișcare." : "Gym and sport pieces made for movement." },
+    { name: "OVRSHIFT", text: ro ? "Streetwear inspirat din racing și riding." : "Rider and racing inspired streetwear." },
+  ];
+  const looks = [
+    { src: "/home/hero-male.jpg", alt: ro ? "Tricou · model" : "Tee · model" },        /* imagine tricou/model */
+    { src: "/home/campaign.jpg", alt: ro ? "Hanorac · model" : "Hoodie · model" },      /* imagine hoodie/model */
+    { src: "/home/extra.jpg", alt: ro ? "Detaliu material" : "Material close-up" },      /* close-up material/logo */
+  ];
+  const why = [
+    { t: "Heavyweight cotton", d: ro ? "Material premium, dens, cu structură." : "Premium, dense fabric with structure." },
+    { t: "Oversized fit", d: ro ? "Croială relaxată, construită pentru prezență." : "Relaxed cut, built for presence." },
+    { t: "Minimal identity", d: ro ? "Design alb/negru cu accent portocaliu OVR." : "Black/white design with the OVR orange accent." },
+  ];
+
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const joinNewsletter = (e) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSent(true); // TODO: integrare backend newsletter (POST către serviciul de email) — momentan doar UI
+  };
+
   return (
     <main>
-      {/* HERO minimal: logo + tagline + 2 butoane, mult spațiu */}
-      <section style={{ position: "relative", minHeight: "76vh", display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center", textAlign: "center", padding: "70px 6vw 50px", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: "4%", left: "14%", width: "44vw", height: "44vw",
-          background: "radial-gradient(circle, rgba(255,74,28,0.26), transparent 62%)", filter: "blur(72px)",
-          animation: "ovrGlowA 22s ease-in-out infinite", pointerEvents: "none" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: "0%", right: "12%", width: "38vw", height: "38vw",
-          background: "radial-gradient(circle, rgba(255,138,61,0.2), transparent 62%)", filter: "blur(78px)",
-          animation: "ovrGlowB 26s ease-in-out infinite", pointerEvents: "none" }} />
-        <div className="ovr-rise" style={{ position: "relative" }}>
-          <img src="/brand/logo-black.png" alt="OVRTHINK" style={{ width: "min(76vw, 500px)", display: "block", margin: "0 auto" }} />
-          <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(15px, 2vw, 22px)", letterSpacing: 1.5, color: MUTED, margin: "28px 0 32px" }}>
-            {L.heroSub}
-          </p>
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Btn primary onClick={() => onShop("tee")}>{L.tee}</Btn>
-            <Btn onClick={() => onShop("hoodie")}>{L.hoodie}</Btn>
+      {/* 1 — HERO */}
+      <section style={{ position: "relative", ...secPad, paddingTop: "clamp(40px, 5vw, 72px)", overflow: "hidden" }}>
+        <div aria-hidden style={{ position: "absolute", top: "-6%", left: "6%", width: "40vw", height: "40vw",
+          background: "radial-gradient(circle, rgba(255,74,28,0.16), transparent 64%)", filter: "blur(80px)", pointerEvents: "none" }} />
+        <div className="ovr-hero ovr-rise" style={{ position: "relative", maxWidth: 1200, margin: "0 auto" }}>
+          <div>
+            <div style={eyebrow}>OVRTHINK / 01</div>
+            <h1 style={{ ...h2style, fontWeight: 200, fontSize: "clamp(38px, 6.4vw, 82px)", lineHeight: 1.0, margin: "18px 0 0" }}>
+              OVRTHINK<br />THE ORDINARY
+            </h1>
+            <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(16px, 2vw, 22px)", letterSpacing: 1, color: INK, margin: "22px 0 14px" }}>
+              {ro ? "Streetwear pentru cei care gândesc prea mult." : "Streetwear for those who think too much."}
+            </p>
+            <p style={{ ...bodyStyle, maxWidth: 440, margin: "0 0 30px" }}>
+              {ro
+                ? "Piese clean, oversized, în alb, negru și portocaliu. Create pentru cei care transformă supra-gândirea într-o estetică."
+                : "Clean, oversized pieces in white, black and orange. Made for those who turn overthinking into an aesthetic."}
+            </p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <Btn primary onClick={() => onShop("tee")}>{ro ? "Cumpără acum" : "Shop now"}</Btn>
+              <Btn onClick={onCollections}>{ro ? "Vezi colecțiile" : "View collections"}</Btn>
+            </div>
+          </div>
+          {/* Vizual editorial: model + fum portocaliu. Înlocuiește /home/tile-tee.jpg dacă vrei alt editorial. */}
+          <div style={{ overflow: "hidden" }}>
+            <img src="/home/tile-tee.jpg" alt="OVRTHINK editorial"
+              style={{ width: "100%", display: "block", objectFit: "cover", aspectRatio: "4 / 5" }} />
           </div>
         </div>
       </section>
 
-      {/* Două produse, curat */}
-      <section style={{ maxWidth: 880, margin: "0 auto", padding: "0 6vw 90px" }}>
-        <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22 }}>
-          {products.map(p => (
-            <button key={p.id} onClick={() => onShop(p.id)} className="ovr-tile" style={{
-              background: "transparent", border: "none", padding: 0, cursor: "pointer", textAlign: "left",
-            }}>
-              <div style={{ overflow: "hidden", borderRadius: 4, aspectRatio: "4 / 5", background: "#eceae5" }}>
-                <img src={p.img} alt={p.name} className="ovr-tile-img" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", padding: "8%" }} />
+      {/* 2 — CURRENT DROP */}
+      <section style={{ ...secPad, paddingTop: 0 }}>
+        <div style={{ maxWidth: 1120, margin: "0 auto" }}>
+          <div style={eyebrow}>CURRENT DROP</div>
+          <h2 style={{ ...h2style, fontWeight: 300, fontSize: "clamp(30px, 4.6vw, 54px)", margin: "8px 0 10px", textTransform: "none", letterSpacing: "0.02em" }}>Essentials 01</h2>
+          <p style={{ ...bodyStyle, maxWidth: 560, margin: "0 0 34px" }}>
+            {ro ? "Primul drop OVRthink: tricou, hoodie, croieli oversized și bumbac heavyweight." : "The first OVRthink drop: tee, hoodie, oversized cuts and heavyweight cotton."}
+          </p>
+          <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+            {drops.map(({ p, desc }) => (
+              <div key={p.id} className="ovr-tile" style={{ border: "1px solid rgba(0,0,0,0.1)" }}>
+                <div style={{ overflow: "hidden", aspectRatio: "4 / 5", background: "#f1eee9" }}>
+                  <img src={p.img.black} alt={p.name[lang]} className="ovr-tile-img" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", padding: "6%" }} />
+                </div>
+                <div style={{ padding: "20px 22px 24px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10 }}>
+                    <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 18, letterSpacing: 1 }}>{p.name[lang]}</span>
+                    <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 17, color: O }}>{price(p.price)}</span>
+                  </div>
+                  <p style={{ ...bodyStyle, fontSize: 13.5, margin: "8px 0 18px" }}>{desc}</p>
+                  <Btn primary onClick={() => onShop(p.id)}>{ro ? "Vezi produsul" : "View product"}</Btn>
+                </div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 14 }}>
-                <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 15, letterSpacing: 1 }}>{p.name}</span>
-                <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 15, color: O }}>{p.price}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3 — SHOP BY COLLECTION */}
+      <section style={{ ...secPad, background: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(0,0,0,0.06)", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+          <div style={{ ...eyebrow, marginBottom: 26 }}>SHOP BY COLLECTION</div>
+          <div className="ovr-collgrid">
+            {collections.map(c => (
+              <button key={c.name} onClick={onCollections} className="ovr-glass" style={{
+                textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column",
+                border: "1px solid rgba(0,0,0,0.12)", borderRadius: 12, background: "rgba(255,255,255,0.5)",
+                padding: "22px 20px", minHeight: 178,
+              }}>
+                <h3 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 400, fontSize: 19, letterSpacing: "0.1em", margin: "0 0 8px" }}>{c.name}</h3>
+                <p style={{ ...bodyStyle, fontSize: 13, margin: 0 }}>{c.text}</p>
+                <div style={{ flex: 1 }} />
+                <span className="ovr-arrow" style={{ fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 2.5, textTransform: "uppercase", color: O, marginTop: 16 }}>
+                  {ro ? "Explorează" : "Explore"} →
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4 — BRAND STATEMENT */}
+      <section style={{ ...secPad, textAlign: "center" }}>
+        <div style={{ maxWidth: 720, margin: "0 auto" }}>
+          <div style={eyebrow}>THE OVRTHINK CODE</div>
+          <h2 style={{ ...h2style, fontWeight: 200, fontSize: "clamp(30px, 5vw, 60px)", textTransform: "none", letterSpacing: "0.01em", margin: "14px 0 20px" }}>Made from overthinking.</h2>
+          <p style={{ ...bodyStyle, fontSize: 16, margin: "0 auto 30px", maxWidth: 600 }}>
+            {ro
+              ? "OVRthink este pentru cei care gândesc prea mult, simt prea mult și aleg să transforme asta într-o estetică. Minimal, clean, oversized — cu un singur accent: portocaliul OVR."
+              : "OVRthink is for those who think too much, feel too much, and choose to turn it into an aesthetic. Minimal, clean, oversized — with a single accent: the OVR orange."}
+          </p>
+          <Btn onClick={onAbout}>{ro ? "Despre brand" : "About the brand"}</Btn>
+        </div>
+      </section>
+
+      {/* 5 — LOOKBOOK STRIP */}
+      <section style={{ ...secPad, paddingTop: 0 }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+          <div style={{ ...eyebrow, marginBottom: 24 }}>OVRTHINK IN MOTION</div>
+          <div className="ovr-trio">
+            {looks.map(l => (
+              <div key={l.src} className="ovr-lookcard" style={{ background: "#f1eee9" }}>
+                <img src={l.src} alt={l.alt} style={{ width: "100%", height: "100%", objectFit: "cover", aspectRatio: "3 / 4", display: "block" }} />
               </div>
-            </button>
-          ))}
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6 — WHY OVRTHINK */}
+      <section style={{ ...secPad, background: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+        <div style={{ maxWidth: 1120, margin: "0 auto" }}>
+          <div style={{ ...eyebrow, marginBottom: 26 }}>{ro ? "DE CE OVRTHINK" : "WHY OVRTHINK"}</div>
+          <div className="ovr-trio">
+            {why.map(w => (
+              <div key={w.t} style={{ border: "1px solid rgba(0,0,0,0.1)", borderRadius: 10, padding: "30px 26px", background: "rgba(255,255,255,0.5)" }}>
+                <h3 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 400, fontSize: 18, letterSpacing: "0.04em", margin: "0 0 10px" }}>{w.t}</h3>
+                <p style={{ ...bodyStyle, fontSize: 14, margin: 0 }}>{w.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7 — NEWSLETTER */}
+      <section style={{ ...secPad, textAlign: "center" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+          <div style={eyebrow}>JOIN OVR</div>
+          <h2 style={{ ...h2style, fontWeight: 300, fontSize: "clamp(26px, 4vw, 44px)", textTransform: "none", letterSpacing: "0.02em", margin: "12px 0 12px" }}>
+            {ro ? "Intră în OVR" : "Join OVR"}
+          </h2>
+          <p style={{ ...bodyStyle, margin: "0 0 26px" }}>
+            {ro ? "Primești acces la drop-uri, colecții noi și lansări limitate." : "Get access to drops, new collections and limited releases."}
+          </p>
+          {sent ? (
+            <p style={{ fontFamily: "'Jost', sans-serif", fontSize: 14, letterSpacing: 1, color: O }}>
+              {ro ? "Mulțumim — ești pe listă." : "Thanks — you're on the list."}
+            </p>
+          ) : (
+            <form onSubmit={joinNewsletter} style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+              <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                placeholder={ro ? "Adresa ta de email" : "Your email address"}
+                style={{ flex: "1 1 260px", maxWidth: 320, fontFamily: "'Inter', sans-serif", fontSize: 14,
+                  padding: "14px 16px", border: "1px solid rgba(0,0,0,0.22)", borderRadius: 0, background: "rgba(255,255,255,0.7)", color: INK }} />
+              <Btn primary>{ro ? "Join" : "Join"}</Btn>
+            </form>
+          )}
         </div>
       </section>
     </main>

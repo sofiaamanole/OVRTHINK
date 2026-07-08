@@ -1261,7 +1261,15 @@ export default function App() {
         .ovr-subpill { transition: background .25s ease, border-color .25s ease, color .25s ease, transform .2s ease; }
         .ovr-subpill:hover { background: rgba(255,74,28,0.16) !important; border-color: rgba(255,74,28,0.55) !important; color: #b23410 !important; transform: translateY(-2px); }
         @keyframes ovrGlassPulse { 0%,100%{ box-shadow: 0 10px 34px rgba(255,74,28,0.16), inset 0 1px 0 rgba(255,255,255,0.6);} 50%{ box-shadow: 0 14px 44px rgba(255,74,28,0.26), inset 0 1px 0 rgba(255,255,255,0.66);} }
-        @media (max-width: 820px) { .ovr-cat { grid-template-columns: 1fr !important; } .ovr-glassrow { grid-template-columns: 1fr !important; } }
+        .ovr-hero { display: grid; grid-template-columns: 1.02fr 0.98fr; gap: clamp(28px, 4vw, 68px); align-items: center; }
+        .ovr-collgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+        .ovr-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .ovr-lookcard { overflow: hidden; }
+        .ovr-lookcard img { transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .5s ease; }
+        .ovr-lookcard:hover img { transform: scale(1.05); opacity: .92; }
+        @media (max-width: 1040px) { .ovr-collgrid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 820px) { .ovr-cat { grid-template-columns: 1fr !important; } .ovr-glassrow { grid-template-columns: 1fr !important; } .ovr-hero { grid-template-columns: 1fr; } .ovr-trio { grid-template-columns: 1fr; } .ovr-collgrid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 520px) { .ovr-collgrid { grid-template-columns: 1fr; } }
         @media (prefers-reduced-motion: reduce) {
           .ovr-rise, .ovr-rise-2, .ovr-fade, .ovr-pop { animation: none !important; }
           .ovr-cta, .ovr-thumb, .ovr-opt { transition: none !important; }
@@ -1299,6 +1307,7 @@ export default function App() {
         </button>
         <nav style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "center" }}>
           {[
+            ["home", lang === "ro" ? "Acasă" : "Home", () => navTo("home"), page === "home" && view !== "checkout"],
             ["tee", lang === "ro" ? "Tricouri" : "T-shirts", () => openCat("tee"), page === "shop" && cat === "tee" && view !== "checkout"],
             ["hoodie", lang === "ro" ? "Hoodie" : "Hoodies", () => openCat("hoodie"), page === "shop" && cat === "hoodie" && view !== "checkout"],
             ["collections", lang === "ro" ? "Colecții" : "Collections", () => navTo("collections"), page === "collections" && view !== "checkout"],
@@ -1572,7 +1581,7 @@ export default function App() {
           )}
         </main>
       ) : page === "home" ? (
-        <HomePage lang={lang} onShop={openCat} onCollections={() => navTo("collections")} />
+        <HomePage lang={lang} onShop={openCat} onCollections={() => navTo("collections")} onAbout={() => navTo("about")} fmt={fmt} />
       ) : page === "collections" ? (
         <CollectionsPage lang={lang} onShop={openCat} />
       ) : page === "about" ? (
