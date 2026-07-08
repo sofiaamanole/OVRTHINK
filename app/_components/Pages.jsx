@@ -135,7 +135,7 @@ export function CollectionsPage({ lang, onShop }) {
       <div style={{ textAlign: "center", fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: O, marginTop: 12 }}>{L.colSub}</div>
 
       {/* Stânga: imaginea (fum + modele, fără logo) · Dreapta: tab-urile colecțiilor */}
-      <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1.02fr 0.9fr", gap: "clamp(18px, 3vw, 48px)", alignItems: "center", marginTop: 26 }}>
+      <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1.32fr 0.8fr", gap: "clamp(16px, 2.4vw, 40px)", alignItems: "center", marginTop: 20 }}>
         {/* stânga: imagine cu marginile topite pe toate laturile */}
         <div>
           <img src="/home/collectii-hero.png" alt="OVRTHINK" style={{
