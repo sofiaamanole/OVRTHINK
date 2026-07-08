@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { CATALOG } from "@/lib/catalog";
 
 /* Paginile OVRTHINK: Home, Colecții, Despre. Temă albă/portocalie. */
 
@@ -71,14 +70,6 @@ const secPad = { padding: "clamp(56px, 8vw, 108px) 6vw" };
 /* ── HOME — premium / editorial ── */
 export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
   const ro = lang === "ro";
-  const price = (v) => (fmt ? fmt(v) : `${v} lei`);
-  const tee = CATALOG.find(c => c.id === "tee") || CATALOG[0];
-  const hoodie = CATALOG.find(c => c.id === "hoodie") || CATALOG[1];
-
-  const drops = [
-    { p: tee, desc: ro ? "Tricou oversized, bumbac heavyweight." : "Oversized tee, heavyweight cotton." },
-    { p: hoodie, desc: ro ? "Hanorac oversized, bumbac dens." : "Oversized hoodie, dense cotton." },
-  ];
   const collections = [
     { name: "OVRCORE", text: ro ? "Esențiale streetwear de zi cu zi." : "Everyday streetwear essentials." },
     { name: "OVRHEAT", text: ro ? "Piese primăvară/vară, senzație lejeră." : "Spring/Summer pieces with a lighter feel." },
@@ -130,43 +121,15 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
               <Btn onClick={onCollections}>{ro ? "Vezi colecțiile" : "View collections"}</Btn>
             </div>
           </div>
-          {/* Vizual editorial: model + fum portocaliu. Înlocuiește /home/tile-tee.jpg dacă vrei alt editorial. */}
+          {/* Animația de home. Sursă: /home/acasa-animatie.mp4 (transcodată din acasa-animatie.mov) */}
           <div style={{ overflow: "hidden" }}>
-            <img src="/home/tile-tee.jpg" alt="OVRTHINK editorial"
+            <video src="/home/acasa-animatie.mp4" autoPlay muted loop playsInline preload="auto"
               style={{ width: "100%", display: "block", objectFit: "cover", aspectRatio: "4 / 5" }} />
           </div>
         </div>
       </section>
 
-      {/* 2 — CURRENT DROP */}
-      <section style={{ ...secPad, paddingTop: 0 }}>
-        <div style={{ maxWidth: 1120, margin: "0 auto" }}>
-          <div style={eyebrow}>CURRENT DROP</div>
-          <h2 style={{ ...h2style, fontWeight: 300, fontSize: "clamp(30px, 4.6vw, 54px)", margin: "8px 0 10px", textTransform: "none", letterSpacing: "0.02em" }}>Essentials 01</h2>
-          <p style={{ ...bodyStyle, maxWidth: 560, margin: "0 0 34px" }}>
-            {ro ? "Primul drop OVRthink: tricou, hoodie, croieli oversized și bumbac heavyweight." : "The first OVRthink drop: tee, hoodie, oversized cuts and heavyweight cotton."}
-          </p>
-          <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
-            {drops.map(({ p, desc }) => (
-              <div key={p.id} className="ovr-tile" style={{ border: "1px solid rgba(0,0,0,0.1)" }}>
-                <div style={{ overflow: "hidden", aspectRatio: "4 / 5", background: "#f1eee9" }}>
-                  <img src={p.img.black} alt={p.name[lang]} className="ovr-tile-img" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", padding: "6%" }} />
-                </div>
-                <div style={{ padding: "20px 22px 24px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10 }}>
-                    <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 18, letterSpacing: 1 }}>{p.name[lang]}</span>
-                    <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 17, color: O }}>{price(p.price)}</span>
-                  </div>
-                  <p style={{ ...bodyStyle, fontSize: 13.5, margin: "8px 0 18px" }}>{desc}</p>
-                  <Btn primary onClick={() => onShop(p.id)}>{ro ? "Vezi produsul" : "View product"}</Btn>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 3 — SHOP BY COLLECTION */}
+      {/* 2 — SHOP BY COLLECTION */}
       <section style={{ ...secPad, background: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(0,0,0,0.06)", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <div style={{ ...eyebrow, marginBottom: 26 }}>SHOP BY COLLECTION</div>
