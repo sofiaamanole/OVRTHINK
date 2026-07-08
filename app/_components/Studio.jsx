@@ -1512,13 +1512,16 @@ export default function App() {
             borderRadius: 18, border: "1px solid rgba(255,255,255,0.14)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2), 0 30px 70px rgba(0,0,0,0.5)",
           }}>
-            {/* stagiul HUD: spotlight + grilă + scanline */}
-            <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(60% 55% at 50% 42%, rgba(255,120,60,0.16), transparent 70%)" }} />
-            <div aria-hidden style={{ position: "absolute", inset: 0, opacity: 0.55,
-              backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
-              backgroundSize: "34px 34px",
-              maskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)", WebkitMaskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)" }} />
-            <div aria-hidden style={{ position: "absolute", left: 0, right: 0, height: 2,
+            {/* spotlight + grilă doar pentru placeholder (nu peste fotografie) */}
+            {!itemImg && (<>
+              <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(60% 55% at 50% 42%, rgba(255,120,60,0.16), transparent 70%)" }} />
+              <div aria-hidden style={{ position: "absolute", inset: 0, opacity: 0.55,
+                backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
+                backgroundSize: "34px 34px",
+                maskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)", WebkitMaskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)" }} />
+            </>)}
+            {/* scanline (rămâne — efect de scanare peste produs) */}
+            <div aria-hidden style={{ position: "absolute", left: 0, right: 0, height: 2, zIndex: 2,
               background: `linear-gradient(90deg, transparent, ${ORANGE}, transparent)`, boxShadow: `0 0 12px ${ORANGE}`,
               animation: "ovrScan 4.5s linear infinite" }} />
 
@@ -1541,7 +1544,7 @@ export default function App() {
               return <div key={pos} aria-hidden style={{ position: "absolute", width: 16, height: 16, borderTop: `1.5px solid ${ORANGE}`, borderLeft: `1.5px solid ${ORANGE}`, opacity: 0.85, ...m }} />;
             })}
             {/* etichete tech */}
-            <div aria-hidden style={{ position: "absolute", top: 13, left: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.55 }}>OVR·{item.id.slice(-2).toUpperCase()}</div>
+            <div aria-hidden style={{ position: "absolute", top: 13, left: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.55, zIndex: 2 }}>OVR·{item.id.toUpperCase()}</div>
             <div aria-hidden style={{ position: "absolute", top: 13, right: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.55 }}>1440×1920</div>
             <div aria-hidden style={{ position: "absolute", bottom: 13, left: 36, display: "flex", alignItems: "center", gap: 6, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.6 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: ORANGE, animation: "ovrBlink 1.6s ease-in-out infinite" }} />READY
