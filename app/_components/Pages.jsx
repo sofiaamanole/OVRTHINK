@@ -135,13 +135,13 @@ export function CollectionsPage({ lang, onShop }) {
       <div style={{ textAlign: "center", fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: O, marginTop: 12 }}>{L.colSub}</div>
 
       {/* Stânga: imaginea (fum + modele, fără logo) · Dreapta: tab-urile colecțiilor */}
-      <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1.5fr 0.78fr", gap: "clamp(14px, 2.2vw, 36px)", alignItems: "center", marginTop: 16 }}>
-        {/* stânga: imagine cu marginile topite pe toate laturile */}
+      <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1.62fr 0.74fr", gap: "clamp(12px, 2vw, 32px)", alignItems: "start", marginTop: 12 }}>
+        {/* stânga: imagine cu marginile topite (capul NU se atinge de fade — are padding transparent deasupra) */}
         <div>
           <img src="/home/collectii-hero.png" alt="OVRTHINK" style={{
-            width: "100%", display: "block",
-            maskImage: "linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 11%, #000 89%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 11%, #000 89%, transparent 100%)",
+            width: "100%", display: "block", marginTop: "-2%",
+            maskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 9%, #000 96%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 9%, #000 96%, transparent 100%)",
             maskComposite: "intersect", WebkitMaskComposite: "source-in",
           }} />
         </div>
