@@ -1696,24 +1696,11 @@ export default function App() {
         <div className="stick anim-side" style={{ position: "sticky", top: 20 }}>
           <div style={{ position: "relative", width: "100%", height: "min(82vh, 740px)", overflow: "hidden" }}>
             <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
-              style={{ width: "100%", height: "100%", objectFit: "cover",
-                objectPosition: "center 38%", display: "block" }} />
-            {/* feather uniformă pe TOATE marginile (culoarea paginii) — fără chenar */}
-            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              boxShadow: "inset 0 0 100px 48px #F4F2EE" }} />
-            {/* extra blend pe STÂNGA */}
-            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: cat === "tee"
-                ? "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.45) 16%, transparent 40%)"
-                : "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.6) 11%, transparent 28%)" }} />
-            {/* aceeași trecere lină pe DREAPTA — se pierde la fel în website */}
-            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: cat === "tee"
-                ? "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.45) 16%, transparent 40%)"
-                : "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.6) 11%, transparent 28%)" }} />
-            {/* aceeași trecere lină SUS + JOS */}
-            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(180deg, #F4F2EE 0%, rgba(244,242,238,0.55) 6%, transparent 20%, transparent 80%, rgba(244,242,238,0.55) 94%, #F4F2EE 100%)" }} />
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 38%", display: "block",
+                maskImage: `linear-gradient(90deg, transparent 0%, #000 ${cat === "tee" ? "20%" : "15%"}, #000 84%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 13%, #000 87%, transparent 100%)`,
+                WebkitMaskImage: `linear-gradient(90deg, transparent 0%, #000 ${cat === "tee" ? "20%" : "15%"}, #000 84%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 13%, #000 87%, transparent 100%)`,
+                maskComposite: "intersect", WebkitMaskComposite: "source-in",
+              }} />
           </div>
         </div>
       </main>
