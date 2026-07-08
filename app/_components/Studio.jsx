@@ -1,7 +1,8 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import * as THREE from "three";
-import { CATALOG } from "@/lib/catalog";
+import { CATALOG, COLLECTIONS } from "@/lib/catalog";
+import { CollectionBg, CollectionsHub, THEME } from "./Collections";
 
 /* ─────────────────────────────────────────────
    [OVRTHINK] STUDIO — full custom
@@ -356,7 +357,7 @@ const T = {
     addCart: "Adaugă în coș", added: "Adăugat ✓",
     addedToCart: "Adăugat în coș", viewCart: "Vezi coșul", keepShopping: "Continuă cumpărăturile",
     defaultText: "Textul tău aici",
-    footerMat: "100% bumbac · heavyweight · print DTG",
+    footerMat: "100% bumbac · heavyweight",
     cart: "Coș", checkoutTitle: "Finalizare comandă",
     emptyCart: "Coșul e gol — vezi colecția.",
     backStudio: "← Continuă cumpărăturile", newOrder: "Comandă nouă",
@@ -423,7 +424,7 @@ const T = {
     addCart: "Add to cart", added: "Added ✓",
     addedToCart: "Added to cart", viewCart: "View cart", keepShopping: "Keep shopping",
     defaultText: "Your text here",
-    footerMat: "100% cotton · heavyweight · DTG print",
+    footerMat: "100% cotton · heavyweight",
     cart: "Cart", checkoutTitle: "Checkout",
     emptyCart: "Your cart is empty — browse the collection.",
     backStudio: "← Keep shopping", newOrder: "New order",
@@ -933,6 +934,7 @@ export default function App() {
   const [view, setView] = useState("studio"); // studio (catalog) | checkout
   const [cart, setCart] = useState([]);
   const [selId, setSelId] = useState(CATALOG[0].id); // produsul din catalog vizionat
+  const [col, setCol] = useState(null); // colecția deschisă: null = hub | summer | winter | sport
   const [payMethod, setPayMethod] = useState("card");
   const [payState, setPayState] = useState("idle"); // idle | processing | done
   const [payErr, setPayErr] = useState("");
@@ -974,8 +976,9 @@ export default function App() {
   const shipCost = shipMethod === "dhl" ? 89 : 19;
   const calc = computeCart(cart, { account: account && accMode === "create", promo, shipCost });
 
-  /* ── catalog: produsul selectat + opțiuni valide ── */
-  const item = CATALOG.find(c => c.id === selId) || CATALOG[0];
+  /* ── catalog: produsul selectat (din colecția activă) + opțiuni valide ── */
+  const colItems = col ? CATALOG.filter(c => c.collection === col) : CATALOG;
+  const item = colItems.find(c => c.id === selId) || colItems[0] || CATALOG[0];
   const availColors = GARMENT_COLORS.filter(c => item.colors.includes(c.id));
   const curColorId = item.colors.includes(colorId) ? colorId : item.colors[0];
   const curColor = GARMENT_COLORS.find(c => c.id === curColorId) || GARMENT_COLORS[0];
@@ -991,6 +994,23 @@ export default function App() {
     }]);
     setShowAddedModal(true);
   };
+
+  const openCol = (id) => {
+    setCol(id);
+    const first = CATALOG.find(c => c.collection === id);
+    if (first) setSelId(first.id);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0 });
+  };
+
+  /* ── temă UI adaptivă peste fundalul colecției ── */
+  const inCollection = view !== "checkout" && !!col;
+  const darkUI = inCollection && (col === "winter" || col === "sport");
+  const headerBg = !inCollection ? "transparent"
+    : col === "summer" ? "rgba(255,240,214,0.45)" : "rgba(14,11,9,0.42)";
+  const uiText = darkUI ? "#FAFAF8" : "#141414";
+  const uiMuted = darkUI ? "rgba(250,250,248,0.72)" : "#8a877f";
+  const uiBorder = darkUI ? "rgba(250,250,248,0.4)" : "#dddbd5";
+  const logoSrc = darkUI ? "/brand/logo-white.png" : "/brand/logo-black.png";
 
   const applyPromo = () => {
     const code = promoInput.trim().toUpperCase();
@@ -1153,7 +1173,7 @@ export default function App() {
   const layout = computeLayout(elements, tab, animVbW);
 
   return (
-    <div style={{ background: "#FAFAF8", minHeight: "100vh", color: "#141414" }}>
+    <div style={{ background: inCollection ? "transparent" : "#FAFAF8", minHeight: "100vh", color: "#141414" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Inter:wght@400;500&display=swap');
         * { box-sizing: border-box; }
@@ -1161,43 +1181,66 @@ export default function App() {
         button:hover { border-color: #141414 !important; }
         @media (max-width: 880px) { .cfg { grid-template-columns: 1fr !important; } .stick { position: static !important; } }
         .ovr-stage, .ovr-stage * { touch-action: none !important; -ms-touch-action: none !important; }
+
+        /* ── animații subtile ── */
+        @keyframes ovrRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+        @keyframes ovrFade { from { opacity: 0; transform: scale(1.015); } to { opacity: 1; transform: none; } }
+        @keyframes ovrPop  { 0% { transform: scale(1); } 45% { transform: scale(1.12); } 100% { transform: scale(1); } }
+        .ovr-rise   { animation: ovrRise .6s cubic-bezier(.2,.7,.2,1) both; }
+        .ovr-rise-2 { animation: ovrRise .6s cubic-bezier(.2,.7,.2,1) .12s both; }
+        .ovr-fade   { animation: ovrFade .5s ease both; }
+        .ovr-cta    { transition: background .25s ease, color .25s ease, transform .12s ease; }
+        .ovr-cta:hover  { background: ${ORANGE} !important; color: #141414 !important; border-color: ${ORANGE} !important; }
+        .ovr-cta:active { transform: translateY(1px); }
+        .ovr-thumb  { transition: transform .22s ease, border-color .22s ease; }
+        .ovr-thumb:hover { transform: translateY(-3px); }
+        .ovr-opt    { transition: background .18s ease, color .18s ease, border-color .18s ease; }
+        .ovr-pop    { animation: ovrPop .45s ease; }
+        @media (prefers-reduced-motion: reduce) {
+          .ovr-rise, .ovr-rise-2, .ovr-fade, .ovr-pop { animation: none !important; }
+          .ovr-cta, .ovr-thumb, .ovr-opt { transition: none !important; }
+        }
       `}</style>
 
       {/* header */}
       <header style={{
+        position: "sticky", top: 0, zIndex: 20,
         display: "flex", justifyContent: "space-between", alignItems: "center",
-        padding: "16px 5vw", borderBottom: "1px solid #e7e5df", gap: 12, flexWrap: "wrap",
+        padding: "16px 5vw", gap: 12, flexWrap: "wrap",
+        background: inCollection ? headerBg : "rgba(250,250,248,0.85)",
+        backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+        borderBottom: `1px solid ${darkUI ? "rgba(250,250,248,0.15)" : "#e7e5df"}`,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <img src="/brand/logo-black.png" alt="OVRTHINK" style={{ height: 22, width: "auto", display: "block" }} />
+          <img src={logoSrc} alt="OVRTHINK" style={{ height: 22, width: "auto", display: "block" }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ display: "flex", gap: 0, border: "1px solid #dddbd5" }}>
+          <div style={{ display: "flex", gap: 0, border: `1px solid ${uiBorder}` }}>
             {["ro", "en"].map(lg => (
               <button key={lg} onClick={() => setLang(lg)} style={{
                 fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase",
                 padding: "7px 12px", cursor: "pointer", border: "none", borderRadius: 0,
-                background: lang === lg ? "#141414" : "transparent",
-                color: lang === lg ? "#FAFAF8" : "#8a877f",
+                background: lang === lg ? (darkUI ? "#FAFAF8" : "#141414") : "transparent",
+                color: lang === lg ? (darkUI ? "#141414" : "#FAFAF8") : uiMuted,
               }}>{lg}</button>
             ))}
           </div>
-          <div style={{ display: "flex", gap: 0, border: "1px solid #dddbd5" }}>
+          <div style={{ display: "flex", gap: 0, border: `1px solid ${uiBorder}` }}>
             {["RON", "EUR", "USD"].map(cc => (
               <button key={cc} onClick={() => setCur(cc)} style={{
                 fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 1, textTransform: "uppercase",
                 padding: "7px 9px", cursor: "pointer", border: "none", borderRadius: 0,
-                background: cur === cc ? "#141414" : "transparent",
-                color: cur === cc ? "#FAFAF8" : "#8a877f",
+                background: cur === cc ? (darkUI ? "#FAFAF8" : "#141414") : "transparent",
+                color: cur === cc ? (darkUI ? "#141414" : "#FAFAF8") : uiMuted,
               }}>{cc}</button>
             ))}
           </div>
           <button onClick={() => { setView(view === "checkout" ? "studio" : "checkout"); setPayState("idle"); }} style={{
             fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase",
             padding: "8px 14px", cursor: "pointer", borderRadius: 0,
-            border: "1px solid #141414", display: "flex", alignItems: "center", gap: 7,
+            border: `1px solid ${uiText}`, display: "flex", alignItems: "center", gap: 7,
             background: cartCount > 0 ? ORANGE : (view === "checkout" ? "#141414" : "transparent"),
-            color: (cartCount > 0 || view === "checkout") ? "#FAFAF8" : "#141414",
+            color: cartCount > 0 ? "#FAFAF8" : (view === "checkout" ? "#FAFAF8" : uiText),
           }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M4 6 H20 L18.5 16 H6 Z M4 6 L3 3 H1.5" strokeLinejoin="round" strokeLinecap="round" />
@@ -1408,14 +1451,36 @@ export default function App() {
             </>
           )}
         </main>
+      ) : col === null ? (
+        <CollectionsHub collections={COLLECTIONS} lang={lang} onOpen={openCol} />
       ) : (
+      <>
+        <CollectionBg theme={col} />
+        <div className="ovr-rise" style={{ maxWidth: 1240, margin: "0 auto", padding: "24px 5vw 2px", position: "relative" }}>
+          <button onClick={() => setCol(null)} style={{
+            fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase",
+            border: "none", background: "transparent", cursor: "pointer", padding: 0,
+            color: darkUI ? "rgba(250,250,248,0.85)" : "#6f6c64",
+          }}>{lang === "ro" ? "← Toate colecțiile" : "← All collections"}</button>
+          <h1 style={{
+            fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(30px, 6.4vw, 66px)",
+            letterSpacing: "0.09em", textTransform: "uppercase", lineHeight: 1.02, margin: "16px 0 0",
+            color: THEME[col].title,
+            textShadow: darkUI ? "0 2px 30px rgba(0,0,0,0.4)" : "0 1px 16px rgba(255,255,255,0.3)",
+          }}>{COLLECTIONS.find(c => c.id === col).name[lang]}</h1>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, color: THEME[col].sub, margin: "10px 0 0" }}>
+            {COLLECTIONS.find(c => c.id === col).tagline[lang]}
+          </p>
+        </div>
       <main className="cfg" style={{
         display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: "4vw",
-        padding: "34px 5vw 90px", maxWidth: 1240, margin: "0 auto", alignItems: "start",
+        padding: "30px 5vw 64px", maxWidth: 1240, margin: "18px auto 0", alignItems: "start",
+        background: "rgba(250,250,248,0.96)", borderRadius: 4, position: "relative",
+        boxShadow: "0 24px 70px rgba(20,20,20,0.22)",
       }}>
         {/* stânga: mockup mare + selectorul colecției */}
-        <div className="stick" style={{ position: "sticky", top: 20 }}>
-          <div style={{
+        <div className="stick ovr-rise" style={{ position: "sticky", top: 20 }}>
+          <div key={item.id + curColorId} className="ovr-fade" style={{
             position: "relative", width: "100%", aspectRatio: "4 / 5",
             background: curColor.hex, display: "flex", alignItems: "center",
             justifyContent: "center", overflow: "hidden",
@@ -1434,12 +1499,12 @@ export default function App() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(62px, 1fr))", gap: 8, marginTop: 12 }}>
-            {CATALOG.map(ci => {
+            {colItems.map(ci => {
               const c0 = GARMENT_COLORS.find(g => g.id === ci.colors[0]) || GARMENT_COLORS[0];
               const active = ci.id === item.id;
               const thumb = ci.img ? ci.img[ci.colors[0]] : null;
               return (
-                <button key={ci.id} onClick={() => setSelId(ci.id)} aria-label={ci.name[lang]} style={{
+                <button key={ci.id} onClick={() => setSelId(ci.id)} aria-label={ci.name[lang]} className="ovr-thumb" style={{
                   aspectRatio: "1 / 1", background: c0.hex, cursor: "pointer", padding: 0, overflow: "hidden",
                   border: active ? `2px solid ${ORANGE}` : "1px solid #dddbd5", borderRadius: 0,
                 }}>
@@ -1456,7 +1521,7 @@ export default function App() {
         </div>
 
         {/* dreapta: detalii produs + opțiuni */}
-        <div>
+        <div className="ovr-rise-2">
           <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3.5, textTransform: "uppercase", color: "#a8a59c" }}>
             {PRODUCTS.find(p => p.id === item.product).name[lang]}
           </div>
@@ -1470,7 +1535,7 @@ export default function App() {
           </div>
           <div style={{ display: "flex", gap: 10 }}>
             {availColors.map(c => (
-              <button key={c.id} onClick={() => setColorId(c.id)} aria-label={c.name[lang]} style={{
+              <button key={c.id} onClick={() => setColorId(c.id)} aria-label={c.name[lang]} className="ovr-opt" style={{
                 width: 34, height: 34, borderRadius: "50%", background: c.hex, cursor: "pointer",
                 border: c.id === curColorId ? `2px solid ${ORANGE}` : "1px solid #d4d1c9",
               }} />
@@ -1482,7 +1547,7 @@ export default function App() {
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {availSizes.map(s => (
-              <button key={s} onClick={() => setSize(s)} style={{
+              <button key={s} onClick={() => setSize(s)} className="ovr-opt" style={{
                 minWidth: 46, padding: "11px 0", cursor: "pointer", borderRadius: 0,
                 fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 1,
                 border: s === curSize ? "1px solid #141414" : "1px solid #dddbd5",
@@ -1501,10 +1566,10 @@ export default function App() {
             <button onClick={() => setQty(q => q + 1)} style={{ padding: "10px 16px", cursor: "pointer", border: "none", background: "transparent", fontSize: 16 }}>+</button>
           </div>
 
-          <button onClick={addCatalog} style={{
+          <button onClick={addCatalog} className="ovr-cta" style={{
             width: "100%", marginTop: 30,
             fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 3.5, textTransform: "uppercase",
-            padding: "18px 0", cursor: "pointer", border: "none", borderRadius: 0, background: "#141414", color: "#FAFAF8",
+            padding: "18px 0", cursor: "pointer", border: "1px solid #141414", borderRadius: 0, background: "#141414", color: "#FAFAF8",
           }}>
             {L.addCart} · {fmt(item.price * qty)}
           </button>
@@ -1514,6 +1579,7 @@ export default function App() {
           </p>
         </div>
       </main>
+      </>
       )}
 
       {showAddedModal && (
