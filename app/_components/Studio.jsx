@@ -1251,14 +1251,8 @@ export default function App() {
         }
       `}</style>
 
-      {/* fundal futurist static */}
+      {/* fundal uniform (fără glow sub animații — margini invizibile pe orice lățime) */}
       <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <div style={{ position: "absolute", top: "-15%", left: "6%", width: "52vw", height: "52vw",
-          background: "radial-gradient(circle, rgba(255,74,28,0.32), transparent 62%)", filter: "blur(60px)",
-          animation: "ovrGlowA 20s ease-in-out infinite" }} />
-        <div style={{ position: "absolute", bottom: "-20%", right: "3%", width: "48vw", height: "48vw",
-          background: "radial-gradient(circle, rgba(255,138,61,0.22), transparent 62%)", filter: "blur(65px)",
-          animation: "ovrGlowB 26s ease-in-out infinite" }} />
         <div style={{ position: "absolute", inset: 0, opacity: 0.45,
           backgroundImage: "linear-gradient(rgba(0,0,0,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.028) 1px, transparent 1px)",
           backgroundSize: "64px 64px" }} />
@@ -1696,11 +1690,20 @@ export default function App() {
         <div className="stick anim-side" style={{ position: "sticky", top: 20 }}>
           <div style={{ position: "relative", width: "100%", height: "min(82vh, 740px)", overflow: "hidden" }}>
             <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 38%", display: "block",
-                maskImage: `linear-gradient(90deg, transparent 0%, #000 ${cat === "tee" ? "20%" : "15%"}, #000 84%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 13%, #000 87%, transparent 100%)`,
-                WebkitMaskImage: `linear-gradient(90deg, transparent 0%, #000 ${cat === "tee" ? "20%" : "15%"}, #000 84%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 13%, #000 87%, transparent 100%)`,
-                maskComposite: "intersect", WebkitMaskComposite: "source-in",
-              }} />
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 38%", display: "block" }} />
+            {/* stânga */}
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: cat === "tee"
+                ? "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.5) 14%, transparent 38%)"
+                : "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.62) 10%, transparent 26%)" }} />
+            {/* dreapta */}
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: cat === "tee"
+                ? "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.5) 14%, transparent 38%)"
+                : "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.62) 10%, transparent 26%)" }} />
+            {/* sus + jos */}
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: "linear-gradient(180deg, #F4F2EE 0%, rgba(244,242,238,0.5) 6%, transparent 18%, transparent 82%, rgba(244,242,238,0.5) 94%, #F4F2EE 100%)" }} />
           </div>
         </div>
       </main>
