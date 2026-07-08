@@ -947,6 +947,8 @@ export default function App() {
   const [view, setView] = useState("studio"); // studio (catalog) | checkout
   const [cart, setCart] = useState([]);
   const [selId, setSelId] = useState(CATALOG[0].id); // produsul din catalog vizionat
+  const [cat, setCat] = useState("tee"); // pagina activă: tee | hoodie
+  const [side, setSide] = useState("front"); // față | spate (mockup afișat)
   const [col, setCol] = useState(null); // colecția deschisă: null = hub | summer | winter | sport
   const [payMethod, setPayMethod] = useState("card");
   const [payState, setPayState] = useState("idle"); // idle | processing | done
@@ -990,14 +992,24 @@ export default function App() {
   const calc = computeCart(cart, { account: account && accMode === "create", promo, shipCost });
 
   /* ── catalog: produsul selectat (din colecția activă) + opțiuni valide ── */
-  const colItems = col ? CATALOG.filter(c => c.collection === col) : CATALOG;
-  const item = colItems.find(c => c.id === selId) || colItems[0] || CATALOG[0];
+  const catItems = CATALOG.filter(p => p.product === cat);
+  const item = catItems.find(c => c.id === selId) || catItems[0] || CATALOG[0];
   const availColors = GARMENT_COLORS.filter(c => item.colors.includes(c.id));
   const curColorId = item.colors.includes(colorId) ? colorId : item.colors[0];
   const curColor = GARMENT_COLORS.find(c => c.id === curColorId) || GARMENT_COLORS[0];
   const availSizes = SIZES_BY_PRODUCT[item.product];
   const curSize = availSizes.includes(size) ? size : availSizes[0];
-  const itemImg = item.img ? item.img[curColorId] : null;
+  const itemImg = side === "back"
+    ? (item.imgBack && item.imgBack[curColorId]) || (item.img && item.img[curColorId])
+    : (item.img && item.img[curColorId]);
+  // variantele categoriei active (produs × culoare × față/spate) pentru galeria de jos
+  const allThumbs = [];
+  catItems.forEach(p => {
+    p.colors.forEach(c => {
+      if (p.img && p.img[c]) allThumbs.push({ pid: p.id, color: c, side: "front", img: p.img[c] });
+      if (p.imgBack && p.imgBack[c]) allThumbs.push({ pid: p.id, color: c, side: "back", img: p.imgBack[c] });
+    });
+  });
 
   const addCatalog = () => {
     setCart(c => [...c, {
@@ -1012,6 +1024,15 @@ export default function App() {
     setCol(id);
     const first = CATALOG.find(c => c.collection === id);
     if (first) setSelId(first.id);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0 });
+  };
+
+  const openCat = (c) => {
+    setCat(c);
+    setSide("front");
+    const first = CATALOG.find(p => p.product === c);
+    if (first) setSelId(first.id);
+    if (view === "checkout") setView("studio");
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   };
 
@@ -1247,6 +1268,17 @@ export default function App() {
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <img src={logoSrc} alt="OVRTHINK" style={{ height: 22, width: "auto", display: "block" }} />
         </div>
+        <nav style={{ display: "flex", gap: 6 }}>
+          {[["tee", lang === "ro" ? "Tricouri" : "T-shirts"], ["hoodie", lang === "ro" ? "Hoodie" : "Hoodies"]].map(([id, label]) => (
+            <button key={id} onClick={() => openCat(id)} style={{
+              fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 2.5, textTransform: "uppercase",
+              padding: "8px 16px", cursor: "pointer", borderRadius: 8,
+              background: cat === id && view !== "checkout" ? "rgba(255,74,28,0.16)" : "transparent",
+              border: cat === id && view !== "checkout" ? `1px solid ${ORANGE}` : "1px solid transparent",
+              color: cat === id && view !== "checkout" ? "#fff" : uiMuted,
+            }}>{label}</button>
+          ))}
+        </nav>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <div style={{ display: "flex", gap: 0, border: `1px solid ${uiBorder}` }}>
             {["ro", "en"].map(lg => (
@@ -1292,7 +1324,7 @@ export default function App() {
         fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: MUTED, textTransform: "uppercase",
       }}>
         <span>OVRTHINK//OS · v1.0</span>
-        <span style={{ opacity: 0.5 }}>{lang === "ro" ? "colecție: toate" : "collection: all"}</span>
+        <span style={{ opacity: 0.5 }}>{lang === "ro" ? `pagina: ${cat === "tee" ? "tricouri" : "hoodie"}` : `page: ${cat === "tee" ? "t-shirts" : "hoodies"}`}</span>
         <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ width: 6, height: 6, borderRadius: "50%", background: ORANGE, animation: "ovrBlink 1.6s ease-in-out infinite" }} />
           {lang === "ro" ? "sistem online" : "system online"}
@@ -1505,7 +1537,7 @@ export default function App() {
       }}>
         {/* stânga: mockup mare + selectorul colecției */}
         <div className="stick ovr-rise" style={{ position: "sticky", top: 20 }}>
-          <div key={item.id + curColorId} className="ovr-fade" style={{
+          <div key={item.id + curColorId + side} className="ovr-fade" style={{
             position: "relative", width: "100%", aspectRatio: "4 / 5",
             background: curColor.hex, display: "flex", alignItems: "center",
             justifyContent: "center", overflow: "hidden",
@@ -1551,22 +1583,20 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(62px, 1fr))", gap: 8, marginTop: 12 }}>
-            {colItems.map(ci => {
-              const c0 = GARMENT_COLORS.find(g => g.id === ci.colors[0]) || GARMENT_COLORS[0];
-              const active = ci.id === item.id;
-              const thumb = ci.img ? ci.img[ci.colors[0]] : null;
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(58px, 1fr))", gap: 8, marginTop: 12 }}>
+            {allThumbs.map(t => {
+              const active = t.pid === item.id && t.color === curColorId && t.side === side;
               return (
-                <button key={ci.id} onClick={() => setSelId(ci.id)} aria-label={ci.name[lang]} className="ovr-thumb" style={{
-                  aspectRatio: "1 / 1", background: c0.hex, cursor: "pointer", padding: 0, overflow: "hidden",
-                  border: active ? `2px solid ${ORANGE}` : "1px solid rgba(255,255,255,0.16)", borderRadius: 0,
-                }}>
-                  {thumb ? (
-                    <img src={thumb} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  ) : (
-                    <img src={c0.dark ? "/brand/monogram-white.png" : "/brand/monogram-black.png"} alt=""
-                      style={{ width: "56%", margin: "22% auto", display: "block", opacity: 0.8 }} />
-                  )}
+                <button key={t.pid + t.color + t.side}
+                  onClick={() => { setSelId(t.pid); setColorId(t.color); setSide(t.side); }}
+                  aria-label={`${t.pid} ${t.color} ${t.side}`} className="ovr-thumb" style={{
+                    position: "relative", aspectRatio: "1 / 1", background: "#111214", cursor: "pointer", padding: 0, overflow: "hidden",
+                    border: active ? `2px solid ${ORANGE}` : "1px solid rgba(255,255,255,0.16)", borderRadius: 6,
+                  }}>
+                  <img src={t.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <span style={{ position: "absolute", bottom: 2, right: 3, fontFamily: "ui-monospace, monospace", fontSize: 7.5, letterSpacing: 1, color: "#fff", opacity: 0.75, textShadow: "0 1px 2px rgba(0,0,0,0.85)" }}>
+                    {t.side === "back" ? (lang === "ro" ? "SP" : "BK") : (lang === "ro" ? "FA" : "FR")}
+                  </span>
                 </button>
               );
             })}
