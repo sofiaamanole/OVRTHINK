@@ -26,7 +26,14 @@ export default function Intro({ children }) {
 
   const finish = () => {
     setPhase(p => (p === "playing" ? "fadeout" : p));
-    setTimeout(() => setPhase("done"), 1200);
+    setTimeout(() => setPhase("done"), 1100);
+  };
+
+  // pornește tranziția cu ~1.8s înainte de finalul video-ului (trecere mai devreme, suprapusă)
+  const onTime = () => {
+    const v = videoRef.current;
+    if (!v || !v.duration || isNaN(v.duration)) return;
+    if (v.duration - v.currentTime <= 1.8) finish();
   };
 
   const toggleSound = (e) => {
@@ -56,6 +63,7 @@ export default function Intro({ children }) {
             muted
             playsInline
             preload="auto"
+            onTimeUpdate={onTime}
             onEnded={finish}
             style={{
               position: "absolute", inset: 0, width: "100%", height: "100%",
