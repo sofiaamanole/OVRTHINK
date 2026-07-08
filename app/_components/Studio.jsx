@@ -859,9 +859,9 @@ function Opt({ active, onClick, children, style }) {
     <button onClick={onClick} style={{
       fontFamily: "'Inter', sans-serif", fontSize: 13, letterSpacing: 0.3,
       padding: "9px 14px", cursor: "pointer",
-      background: active ? "rgba(255,74,28,0.16)" : "rgba(0,0,0,0.04)",
+      background: active ? "rgba(255,74,28,0.14)" : "rgba(0,0,0,0.03)",
       border: "1px solid", borderColor: active ? ORANGE : "rgba(0,0,0,0.18)",
-      color: active ? "#fff" : "rgba(26,23,18,0.62)",
+      color: active ? "#b23410" : "rgba(26,23,18,0.62)",
       borderRadius: 8, ...style,
     }}>{children}</button>
   );
@@ -1404,7 +1404,7 @@ export default function App() {
                 <Opt active={accMode === "guest"} onClick={() => { setAccMode("guest"); setAccount(false); }}>{L.guest}</Opt>
               </div>
               {accMode === "create" && (
-                <div style={{ background: "rgba(255,74,28,0.12)", border: `1px solid rgba(255,74,28,0.4)`, borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#ffd9c9" }}>
+                <div style={{ background: "rgba(255,74,28,0.1)", border: `1px solid rgba(255,74,28,0.4)`, borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#9a4218" }}>
                   {L.createAccountNote}
                 </div>
               )}
@@ -1463,7 +1463,7 @@ export default function App() {
                 <input value={promoInput} onChange={e => setPromoInput(e.target.value)}
                   placeholder={L.promoLabel}
                   style={{ flex: 1, padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14, border: "1px solid rgba(0,0,0,0.16)", background: "transparent", borderRadius: 0 }} />
-                <Opt onClick={applyPromo} style={{ borderColor: ORANGE, color: "#fff", background: "rgba(255,74,28,0.16)" }}>{L.promoApply}</Opt>
+                <Opt onClick={applyPromo} style={{ borderColor: ORANGE, color: "#b23410", background: "rgba(255,74,28,0.14)" }}>{L.promoApply}</Opt>
               </div>
               {promo && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#1a7f4e", marginTop: 6 }}>{L.promoOk}: {PROMO_CODES[promo].label}</div>}
               {promoErr && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#c0341d", marginTop: 6 }}>{L.promoBad}</div>}
@@ -1688,8 +1688,8 @@ export default function App() {
           display: "flex", alignItems: "center", justifyContent: "center", padding: 24, zIndex: 50,
         }}>
           <div onClick={e => e.stopPropagation()} style={{
-            background: "rgba(22,22,25,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-            border: "1px solid rgba(0,0,0,0.14)", borderRadius: 16,
+            background: "rgba(255,255,255,0.96)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(0,0,0,0.1)", borderRadius: 16,
             maxWidth: 360, width: "100%", padding: "32px 26px", textAlign: "center",
           }}>
             <svg width="44" height="44" viewBox="0 0 52 52" style={{ margin: "0 auto 14px", display: "block" }}>
