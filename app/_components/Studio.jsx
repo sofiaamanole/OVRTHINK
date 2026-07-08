@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { CATALOG, COLLECTIONS } from "@/lib/catalog";
 import { CollectionBg, CollectionsHub, THEME } from "./Collections";
 import { HomePage, CollectionsPage, AboutPage } from "./Pages";
+import { CustomPage } from "./Custom";
 
 /* ─────────────────────────────────────────────
    [OVRTHINK] STUDIO — full custom
@@ -1264,6 +1265,8 @@ export default function App() {
         .ovr-hero { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: clamp(24px, 3.4vw, 56px); align-items: center; }
         .ovr-collgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
         .ovr-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .ovr-input { transition: border-color .2s ease; }
+        .ovr-input:focus, .ovr-input:focus-within { border-color: ${ORANGE} !important; outline: none; }
         .ovr-lookcard { overflow: hidden; }
         .ovr-lookcard img { transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .5s ease; }
         .ovr-lookcard:hover img { transform: scale(1.05); opacity: .92; }
@@ -1311,6 +1314,7 @@ export default function App() {
             ["tee", lang === "ro" ? "Tricouri" : "T-shirts", () => openCat("tee"), page === "shop" && cat === "tee" && view !== "checkout"],
             ["hoodie", lang === "ro" ? "Hoodie" : "Hoodies", () => openCat("hoodie"), page === "shop" && cat === "hoodie" && view !== "checkout"],
             ["collections", lang === "ro" ? "Colecții" : "Collections", () => navTo("collections"), page === "collections" && view !== "checkout"],
+            ["custom", "Custom", () => navTo("custom"), page === "custom" && view !== "checkout"],
             ["about", lang === "ro" ? "Despre" : "About", () => navTo("about"), page === "about" && view !== "checkout"],
           ].map(([id, label, fn, active]) => (
             <button key={id} onClick={fn} className="ovr-navlink" style={{
@@ -1371,6 +1375,7 @@ export default function App() {
           const pl = view === "checkout" ? { ro: "checkout", en: "checkout" }
             : page === "home" ? { ro: "acasă", en: "home" }
             : page === "collections" ? { ro: "colecții", en: "collections" }
+            : page === "custom" ? { ro: "custom", en: "custom" }
             : page === "about" ? { ro: "despre", en: "about" }
             : { ro: cat === "tee" ? "tricouri" : "hoodie", en: cat === "tee" ? "t-shirts" : "hoodies" };
           return `${lang === "ro" ? "pagina" : "page"}: ${pl[lang]}`;
@@ -1584,6 +1589,8 @@ export default function App() {
         <HomePage lang={lang} onShop={openCat} onCollections={() => navTo("collections")} onAbout={() => navTo("about")} fmt={fmt} />
       ) : page === "collections" ? (
         <CollectionsPage lang={lang} onShop={openCat} />
+      ) : page === "custom" ? (
+        <CustomPage lang={lang} />
       ) : page === "about" ? (
         <AboutPage lang={lang} onShop={openCat} />
       ) : (
