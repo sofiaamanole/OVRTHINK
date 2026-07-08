@@ -134,60 +134,61 @@ export function CollectionsPage({ lang, onShop }) {
       </div>
       <div style={{ textAlign: "center", fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: O, marginTop: 12 }}>{L.colSub}</div>
 
-      {/* Colecțiile — sus, liquid glass portocaliu, interactive */}
-      <div className="ovr-glassrow" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr", gap: 16, margin: "30px auto 0", maxWidth: 1080 }}>
-        {cols.map(c => (
-          <div key={c.id} className="ovr-glass" onClick={c.live ? () => onShop("tee") : undefined}
-            style={{
-              position: "relative", cursor: c.live ? "pointer" : "default", overflow: "hidden",
-              border: "1px solid rgba(255,74,28,0.32)", borderRadius: 20,
-              background: "rgba(255,255,255,0.34)",
-              backdropFilter: "blur(16px) saturate(1.35)", WebkitBackdropFilter: "blur(16px) saturate(1.35)",
-              boxShadow: "0 10px 34px rgba(255,74,28,0.16), inset 0 1px 0 rgba(255,255,255,0.6)",
-              padding: "clamp(20px, 2.3vw, 30px)", minHeight: 196,
-              display: "flex", flexDirection: "column",
-              animation: c.live ? "ovrGlassPulse 4.5s ease-in-out infinite" : "none",
-            }}>
-            {/* highlight portocaliu în colț */}
-            <div aria-hidden style={{ position: "absolute", top: -40, right: -30, width: 150, height: 150,
-              background: "radial-gradient(circle, rgba(255,74,28,0.28), transparent 68%)", filter: "blur(20px)", pointerEvents: "none" }} />
-            <span style={{ position: "absolute", top: 16, right: 16, fontFamily: "'Jost', sans-serif", fontSize: 9.5, letterSpacing: 2, textTransform: "uppercase",
-              color: "#fff", background: c.live ? O : "rgba(26,23,18,0.45)", borderRadius: 20, padding: "4px 12px" }}>
-              {c.live ? (ro ? "Disponibil" : "Available") : L.soon}
-            </span>
-            <h2 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(28px, 3.4vw, 44px)", letterSpacing: "0.06em", margin: "2px 0 6px" }}>{c.name}</h2>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: MUTED, margin: 0 }}>{c.tag}</p>
+      {/* Stânga: imaginea (fum + modele, fără logo) · Dreapta: tab-urile colecțiilor */}
+      <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1.02fr 0.9fr", gap: "clamp(18px, 3vw, 48px)", alignItems: "center", marginTop: 26 }}>
+        {/* stânga: imagine cu marginile topite pe toate laturile */}
+        <div>
+          <img src="/home/collectii-hero.png" alt="OVRTHINK" style={{
+            width: "100%", display: "block",
+            maskImage: "linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 11%, #000 89%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 11%, #000 89%, transparent 100%)",
+            maskComposite: "intersect", WebkitMaskComposite: "source-in",
+          }} />
+        </div>
 
-            {c.subs && (
-              <div style={{ display: "flex", gap: 9, marginTop: 18, flexWrap: "wrap" }}>
-                {c.subs.map(s => (
-                  <div key={s.name} className="ovr-subpill" title={s.tag}
-                    style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: "0.12em",
-                      border: "1px solid rgba(0,0,0,0.16)", borderRadius: 20, padding: "8px 14px", background: "rgba(255,255,255,0.4)" }}>
-                    {s.name}
-                  </div>
-                ))}
-              </div>
-            )}
+        {/* dreapta: tab-uri colecții liquid glass, stivuite vertical */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {cols.map(c => (
+            <div key={c.id} className="ovr-glass" onClick={c.live ? () => onShop("tee") : undefined}
+              style={{
+                position: "relative", cursor: c.live ? "pointer" : "default", overflow: "hidden",
+                border: "1px solid rgba(255,74,28,0.32)", borderRadius: 18,
+                background: "rgba(255,255,255,0.34)",
+                backdropFilter: "blur(16px) saturate(1.35)", WebkitBackdropFilter: "blur(16px) saturate(1.35)",
+                boxShadow: "0 10px 34px rgba(255,74,28,0.16), inset 0 1px 0 rgba(255,255,255,0.6)",
+                padding: "clamp(18px, 2vw, 26px)",
+                display: "flex", flexDirection: "column",
+                animation: c.live ? "ovrGlassPulse 4.5s ease-in-out infinite" : "none",
+              }}>
+              <div aria-hidden style={{ position: "absolute", top: -40, right: -30, width: 140, height: 140,
+                background: "radial-gradient(circle, rgba(255,74,28,0.28), transparent 68%)", filter: "blur(20px)", pointerEvents: "none" }} />
+              <span style={{ position: "absolute", top: 14, right: 14, fontFamily: "'Jost', sans-serif", fontSize: 9, letterSpacing: 2, textTransform: "uppercase",
+                color: "#fff", background: c.live ? O : "rgba(26,23,18,0.45)", borderRadius: 20, padding: "4px 11px" }}>
+                {c.live ? (ro ? "Disponibil" : "Available") : L.soon}
+              </span>
+              <h2 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(26px, 3vw, 40px)", letterSpacing: "0.06em", margin: "2px 0 5px" }}>{c.name}</h2>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13.5, color: MUTED, margin: 0 }}>{c.tag}</p>
 
-            <div style={{ flex: 1 }} />
-            {c.live && (
-              <div className="ovr-arrow" style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase", color: O, marginTop: 16 }}>
-                {L.view} →
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+              {c.subs && (
+                <div style={{ display: "flex", gap: 9, marginTop: 16, flexWrap: "wrap" }}>
+                  {c.subs.map(s => (
+                    <div key={s.name} className="ovr-subpill" title={s.tag}
+                      style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: "0.12em",
+                        border: "1px solid rgba(0,0,0,0.16)", borderRadius: 20, padding: "8px 14px", background: "rgba(255,255,255,0.4)" }}>
+                      {s.name}
+                    </div>
+                  ))}
+                </div>
+              )}
 
-      {/* Imagine întreagă — marginile topite în fundal (toate laturile) */}
-      <div style={{ maxWidth: 1040, margin: "36px auto 0" }}>
-        <img src="/home/collectii.png" alt="OVRTHINK" style={{
-          width: "100%", display: "block",
-          maskImage: "linear-gradient(to right, transparent 0%, #000 15%, #000 85%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 15%, #000 85%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%)",
-          maskComposite: "intersect", WebkitMaskComposite: "source-in",
-        }} />
+              {c.live && (
+                <div className="ovr-arrow" style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase", color: O, marginTop: 16 }}>
+                  {L.view} →
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );
