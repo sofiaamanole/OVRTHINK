@@ -1569,10 +1569,10 @@ export default function App() {
         <div className="stick ovr-rise" style={{ position: "sticky", top: 20 }}>
           <div key={item.id + curColorId + side} className="ovr-fade" style={{
             position: "relative", width: "100%", aspectRatio: "4 / 5",
-            background: curColor.hex, display: "flex", alignItems: "center",
+            background: "radial-gradient(ellipse at 50% 40%, #f1eee9 0%, #e6e3dc 66%, #dad7cf 100%)", display: "flex", alignItems: "center",
             justifyContent: "center", overflow: "hidden",
-            borderRadius: 18, border: "1px solid rgba(0,0,0,0.14)",
-            boxShadow: "inset 0 1px 0 rgba(0,0,0,0.2), 0 30px 70px rgba(0,0,0,0.5)",
+            borderRadius: 18, border: "1px solid rgba(0,0,0,0.08)",
+            boxShadow: "0 24px 60px rgba(0,0,0,0.14)",
           }}>
             {/* spotlight + grilă doar pentru placeholder (nu peste fotografie) */}
             {!itemImg && (<>
@@ -1588,13 +1588,13 @@ export default function App() {
               animation: "ovrScan 4.5s linear infinite" }} />
 
             {itemImg ? (
-              <img src={itemImg} alt={item.name[lang]} style={{ position: "relative", width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src={itemImg} alt={item.name[lang]} style={{ position: "relative", width: "90%", height: "90%", objectFit: "contain", display: "block", filter: "drop-shadow(0 26px 34px rgba(0,0,0,0.2))" }} />
             ) : (
               <div style={{ position: "relative", textAlign: "center", padding: 24 }}>
                 <img src={curColor.dark ? "/brand/logo-white.png" : "/brand/logo-black.png"} alt="OVRTHINK"
                   style={{ width: "46%", maxWidth: 180, opacity: 0.92, display: "block", margin: "0 auto",
                     filter: curColor.dark ? "drop-shadow(0 0 22px rgba(255,74,28,0.3))" : "none" }} />
-                <div style={{ marginTop: 16, fontFamily: "ui-monospace, monospace", fontSize: 10.5, letterSpacing: 3, textTransform: "uppercase", color: curColor.ink, opacity: 0.5 }}>
+                <div style={{ marginTop: 16, fontFamily: "ui-monospace, monospace", fontSize: 10.5, letterSpacing: 3, textTransform: "uppercase", color: "#6b6660", opacity: 0.5 }}>
                   {lang === "ro" ? "Mockup în curând" : "Mockup coming soon"}
                 </div>
               </div>
@@ -1606,9 +1606,9 @@ export default function App() {
               return <div key={pos} aria-hidden style={{ position: "absolute", width: 16, height: 16, borderTop: `1.5px solid ${ORANGE}`, borderLeft: `1.5px solid ${ORANGE}`, opacity: 0.85, ...m }} />;
             })}
             {/* etichete tech */}
-            <div aria-hidden style={{ position: "absolute", top: 13, left: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.55, zIndex: 2 }}>OVR·{item.id.toUpperCase()}</div>
-            <div aria-hidden style={{ position: "absolute", top: 13, right: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.55 }}>1440×1920</div>
-            <div aria-hidden style={{ position: "absolute", bottom: 13, left: 36, display: "flex", alignItems: "center", gap: 6, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: curColor.ink, opacity: 0.6 }}>
+            <div aria-hidden style={{ position: "absolute", top: 13, left: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: "#6b6660", opacity: 0.55, zIndex: 2 }}>OVR·{item.id.toUpperCase()}</div>
+            <div aria-hidden style={{ position: "absolute", top: 13, right: 36, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: "#6b6660", opacity: 0.55 }}>1440×1920</div>
+            <div aria-hidden style={{ position: "absolute", bottom: 13, left: 36, display: "flex", alignItems: "center", gap: 6, fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: "#6b6660", opacity: 0.6 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: ORANGE, animation: "ovrBlink 1.6s ease-in-out infinite" }} />READY
             </div>
           </div>
@@ -1620,10 +1620,10 @@ export default function App() {
                 <button key={t.pid + t.color + t.side}
                   onClick={() => { setSelId(t.pid); setColorId(t.color); setSide(t.side); }}
                   aria-label={`${t.pid} ${t.color} ${t.side}`} className="ovr-thumb" style={{
-                    position: "relative", aspectRatio: "1 / 1", background: "#111214", cursor: "pointer", padding: 0, overflow: "hidden",
+                    position: "relative", aspectRatio: "1 / 1", background: "#e8e5df", cursor: "pointer", padding: 0, overflow: "hidden",
                     border: active ? `2px solid ${ORANGE}` : "1px solid rgba(0,0,0,0.16)", borderRadius: 6,
                   }}>
-                  <img src={t.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <img src={t.img} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
                   <span style={{ position: "absolute", bottom: 2, right: 3, fontFamily: "ui-monospace, monospace", fontSize: 7.5, letterSpacing: 1, color: "#fff", opacity: 0.75, textShadow: "0 1px 2px rgba(0,0,0,0.85)" }}>
                     {t.side === "back" ? (lang === "ro" ? "SP" : "BK") : (lang === "ro" ? "FA" : "FR")}
                   </span>

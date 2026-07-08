@@ -63,8 +63,8 @@ const T = {
 export function HomePage({ lang, onShop }) {
   const L = T[lang];
   const products = [
-    { id: "tee", name: lang === "ro" ? "Tricou OVRTHINK" : "OVRTHINK Tee", price: "189 lei", img: "/catalog/tee-black.jpg" },
-    { id: "hoodie", name: lang === "ro" ? "Hoodie OVRTHINK" : "OVRTHINK Hoodie", price: "329 lei", img: "/catalog/hoodie-black.jpg" },
+    { id: "tee", name: lang === "ro" ? "Tricou OVRTHINK" : "OVRTHINK Tee", price: "189 lei", img: "/catalog/tee-black.png" },
+    { id: "hoodie", name: lang === "ro" ? "Hoodie OVRTHINK" : "OVRTHINK Hoodie", price: "329 lei", img: "/catalog/hoodie-black.png" },
   ];
   return (
     <main>
@@ -97,7 +97,7 @@ export function HomePage({ lang, onShop }) {
               background: "transparent", border: "none", padding: 0, cursor: "pointer", textAlign: "left",
             }}>
               <div style={{ overflow: "hidden", borderRadius: 4, aspectRatio: "4 / 5", background: "#eceae5" }}>
-                <img src={p.img} alt={p.name} className="ovr-tile-img" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                <img src={p.img} alt={p.name} className="ovr-tile-img" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", padding: "8%" }} />
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 14 }}>
                 <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 15, letterSpacing: 1 }}>{p.name}</span>
