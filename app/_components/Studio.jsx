@@ -1696,9 +1696,13 @@ export default function App() {
         <div className="stick anim-side" style={{ position: "sticky", top: 20 }}>
           <div style={{ position: "relative", width: "100%", height: "min(82vh, 740px)", overflow: "hidden" }}>
             <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 40%", display: "block",
-                maskImage: "radial-gradient(ellipse 50% 58% at 50% 42%, #000 8%, rgba(0,0,0,0.4) 52%, transparent 84%)",
-                WebkitMaskImage: "radial-gradient(ellipse 50% 58% at 50% 42%, #000 8%, rgba(0,0,0,0.4) 52%, transparent 84%)" }} />
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 38%", display: "block" }} />
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.5) 13%, transparent 36%)" }} />
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.5) 11%, transparent 30%)" }} />
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: "linear-gradient(180deg, #F4F2EE 0%, rgba(244,242,238,0.5) 6%, transparent 18%, transparent 82%, rgba(244,242,238,0.5) 94%, #F4F2EE 100%)" }} />
           </div>
         </div>
       </main>
