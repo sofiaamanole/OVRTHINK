@@ -1533,8 +1533,8 @@ export default function App() {
         </main>
       ) : (
       <main className="cfg" style={{
-        display: "grid", gridTemplateColumns: "1.05fr 0.95fr 0.7fr", gap: "3vw",
-        padding: "34px 5vw 90px", maxWidth: 1440, margin: "0 auto", alignItems: "start",
+        display: "grid", gridTemplateColumns: "1fr 0.82fr 0.95fr", gap: "2.4vw",
+        padding: "34px 5vw 90px", maxWidth: 1480, margin: "0 auto", alignItems: "start",
       }}>
         {/* stânga: mockup mare + selectorul colecției */}
         <div className="stick ovr-rise" style={{ position: "sticky", top: 20 }}>
@@ -1663,14 +1663,18 @@ export default function App() {
           </p>
         </div>
 
-        {/* coloana din dreapta: actorul din animația categoriei, cropat vertical */}
+        {/* coloana din dreapta: actorul din animația categoriei, îmbinat lin cu pagina */}
         <div className="stick anim-side" style={{ position: "sticky", top: 20 }}>
-          <div style={{ position: "relative", width: "100%", height: "min(76vh, 660px)", overflow: "hidden", borderRadius: 16 }}>
+          <div style={{ position: "relative", width: "100%", height: "min(80vh, 720px)", overflow: "hidden" }}>
             <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 40%", display: "block",
-                maskImage: "linear-gradient(90deg, transparent 0%, #000 14%, #000 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 82%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(90deg, transparent 0%, #000 14%, #000 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 82%, transparent 100%)",
-                maskComposite: "intersect", WebkitMaskComposite: "source-in" }} />
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 38%", display: "block",
+                maskImage: "linear-gradient(180deg, transparent 0%, #000 13%, #000 84%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 13%, #000 84%, transparent 100%)" }} />
+            {/* îmbinare aproape imperceptibilă spre centru: lumina se stinge lent în negrul paginii */}
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: "linear-gradient(90deg, #080809 0%, rgba(8,8,9,0.92) 12%, rgba(8,8,9,0.55) 32%, rgba(8,8,9,0.15) 50%, transparent 66%)" }} />
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: "linear-gradient(180deg, #080809 0%, transparent 15%, transparent 85%, #080809 100%)" }} />
           </div>
         </div>
       </main>
