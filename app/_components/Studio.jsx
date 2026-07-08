@@ -1711,6 +1711,9 @@ export default function App() {
               background: cat === "tee"
                 ? "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.45) 16%, transparent 40%)"
                 : "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.6) 11%, transparent 28%)" }} />
+            {/* aceeași trecere lină SUS + JOS */}
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: "linear-gradient(180deg, #F4F2EE 0%, rgba(244,242,238,0.55) 6%, transparent 20%, transparent 80%, rgba(244,242,238,0.55) 94%, #F4F2EE 100%)" }} />
           </div>
         </div>
       </main>
