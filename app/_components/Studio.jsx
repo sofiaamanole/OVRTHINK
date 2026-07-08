@@ -1701,11 +1701,16 @@ export default function App() {
             {/* feather uniformă pe TOATE marginile (culoarea paginii) — fără chenar */}
             <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
               boxShadow: "inset 0 0 100px 48px #F4F2EE" }} />
-            {/* extra blend pe stânga — se vede mai mult din stânga (tricou) */}
+            {/* extra blend pe STÂNGA */}
             <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
               background: cat === "tee"
                 ? "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.45) 16%, transparent 40%)"
                 : "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.6) 11%, transparent 28%)" }} />
+            {/* aceeași trecere lină pe DREAPTA — se pierde la fel în website */}
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: cat === "tee"
+                ? "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.45) 16%, transparent 40%)"
+                : "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.6) 11%, transparent 28%)" }} />
           </div>
         </div>
       </main>
