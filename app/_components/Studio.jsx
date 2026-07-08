@@ -13,6 +13,17 @@ import { CollectionBg, CollectionsHub, THEME } from "./Collections";
    ───────────────────────────────────────────── */
 
 const ORANGE = "#FF4A1C";
+/* ── tema liquid glass ── */
+const GLASS = {
+  background: "rgba(255,255,255,0.055)",
+  backdropFilter: "blur(22px) saturate(1.3)",
+  WebkitBackdropFilter: "blur(22px) saturate(1.3)",
+  border: "1px solid rgba(255,255,255,0.14)",
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2), 0 24px 60px rgba(0,0,0,0.4)",
+};
+const INK = "#f3f1ec";        // text principal
+const MUTED = "rgba(243,241,236,0.6)"; // text secundar
+const GLINE = "rgba(255,255,255,0.14)"; // linii/borduri
 const STAGE_W = 400, STAGE_H = 430;
 const CANVAS_S = 2.5; // rezoluția texturii 3D
 
@@ -847,10 +858,11 @@ function Opt({ active, onClick, children, style }) {
   return (
     <button onClick={onClick} style={{
       fontFamily: "'Inter', sans-serif", fontSize: 13, letterSpacing: 0.3,
-      padding: "9px 14px", cursor: "pointer", background: "transparent",
-      border: "1px solid", borderColor: active ? "#141414" : "#dddbd5",
-      color: active ? "#141414" : "#8a877f",
-      borderRadius: 0, ...style,
+      padding: "9px 14px", cursor: "pointer",
+      background: active ? "rgba(255,74,28,0.16)" : "rgba(255,255,255,0.04)",
+      border: "1px solid", borderColor: active ? ORANGE : "rgba(255,255,255,0.18)",
+      color: active ? "#fff" : "rgba(243,241,236,0.62)",
+      borderRadius: 8, ...style,
     }}>{children}</button>
   );
 }
@@ -877,14 +889,15 @@ function Ck({ ph, span, num, value, onChange, type }) {
       style={{
       gridColumn: span ? "1 / -1" : "auto",
       padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14,
-      border: "1px solid #dddbd5", background: "transparent", borderRadius: 0,
+      border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.04)",
+      color: "#f3f1ec", borderRadius: 10,
     }} />
   );
 }
 
 function SumRow({ label, value, green }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", color: green ? "#1a7f4e" : "#141414" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", color: green ? "#5fd39a" : "#f3f1ec" }}>
       <span>{label}</span><span>{value}</span>
     </div>
   );
@@ -894,7 +907,7 @@ function Label({ n, children }) {
   return (
     <div style={{
       fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3.5,
-      textTransform: "uppercase", color: "#141414", margin: "28px 0 12px",
+      textTransform: "uppercase", color: "#f3f1ec", margin: "28px 0 12px",
       display: "flex", alignItems: "baseline", gap: 10,
     }}>
       <span style={{ color: ORANGE, fontSize: 10 }}>{n}</span>{children}
@@ -1003,14 +1016,14 @@ export default function App() {
   };
 
   /* ── temă UI adaptivă peste fundalul colecției ── */
-  const inCollection = view !== "checkout" && !!col;
-  const darkUI = inCollection && (col === "winter" || col === "sport");
-  const headerBg = !inCollection ? "transparent"
-    : col === "summer" ? "rgba(255,240,214,0.45)" : "rgba(14,11,9,0.42)";
-  const uiText = darkUI ? "#FAFAF8" : "#141414";
-  const uiMuted = darkUI ? "rgba(250,250,248,0.72)" : "#8a877f";
-  const uiBorder = darkUI ? "rgba(250,250,248,0.4)" : "#dddbd5";
-  const logoSrc = darkUI ? "/brand/logo-white.png" : "/brand/logo-black.png";
+  // temă globală: dark liquid-glass futurist
+  const inCollection = false;
+  const darkUI = true;
+  const headerBg = "rgba(14,14,16,0.55)";
+  const uiText = "#f3f1ec";
+  const uiMuted = "rgba(243,241,236,0.6)";
+  const uiBorder = "rgba(255,255,255,0.16)";
+  const logoSrc = "/brand/logo-white.png";
 
   const applyPromo = () => {
     const code = promoInput.trim().toUpperCase();
@@ -1173,14 +1186,17 @@ export default function App() {
   const layout = computeLayout(elements, tab, animVbW);
 
   return (
-    <div style={{ background: inCollection ? "transparent" : "#FAFAF8", minHeight: "100vh", color: "#141414" }}>
+    <div style={{ background: "#080809", minHeight: "100vh", color: INK }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Inter:wght@400;500&display=swap');
         * { box-sizing: border-box; }
         input:focus, textarea:focus, button:focus-visible { outline: 2px solid ${ORANGE}; outline-offset: 2px; }
-        button:hover { border-color: #141414 !important; }
+        input::placeholder { color: rgba(243,241,236,0.38); }
+        ::selection { background: ${ORANGE}; color: #fff; }
         @media (max-width: 880px) { .cfg { grid-template-columns: 1fr !important; } .stick { position: static !important; } }
         .ovr-stage, .ovr-stage * { touch-action: none !important; -ms-touch-action: none !important; }
+        @keyframes ovrGlowA { 0%,100%{ transform: translate(-8%,-4%) scale(1);} 50%{ transform: translate(10%,6%) scale(1.15);} }
+        @keyframes ovrGlowB { 0%,100%{ transform: translate(6%,4%) scale(1.1);} 50%{ transform: translate(-8%,-6%) scale(1);} }
 
         /* ── animații subtile ── */
         @keyframes ovrRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
@@ -1202,14 +1218,29 @@ export default function App() {
         }
       `}</style>
 
+      {/* fundal futurist static */}
+      <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
+        <div style={{ position: "absolute", top: "-15%", left: "6%", width: "55vw", height: "55vw",
+          background: "radial-gradient(circle, rgba(255,74,28,0.5), transparent 62%)", filter: "blur(55px)",
+          animation: "ovrGlowA 20s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", bottom: "-22%", right: "3%", width: "52vw", height: "52vw",
+          background: "radial-gradient(circle, rgba(255,138,61,0.3), transparent 62%)", filter: "blur(65px)",
+          animation: "ovrGlowB 26s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", inset: 0, opacity: 0.5,
+          backgroundImage: "linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px)",
+          backgroundSize: "64px 64px" }} />
+      </div>
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+
       {/* header */}
       <header style={{
         position: "sticky", top: 0, zIndex: 20,
         display: "flex", justifyContent: "space-between", alignItems: "center",
         padding: "16px 5vw", gap: 12, flexWrap: "wrap",
-        background: inCollection ? headerBg : "rgba(250,250,248,0.85)",
-        backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
-        borderBottom: `1px solid ${darkUI ? "rgba(250,250,248,0.15)" : "#e7e5df"}`,
+        background: headerBg,
+        backdropFilter: "blur(16px) saturate(1.3)", WebkitBackdropFilter: "blur(16px) saturate(1.3)",
+        borderBottom: `1px solid ${GLINE}`,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <img src={logoSrc} alt="OVRTHINK" style={{ height: 22, width: "auto", display: "block" }} />
@@ -1260,30 +1291,30 @@ export default function App() {
           }}>{L.checkoutTitle}</h1>
 
           {payState === "done" ? (
-            <div style={{ border: "1px solid #e7e5df", padding: "44px 28px", textAlign: "center" }}>
+            <div style={{ border: "1px solid rgba(255,255,255,0.12)", padding: "44px 28px", textAlign: "center" }}>
               <svg width="52" height="52" viewBox="0 0 52 52" style={{ margin: "0 auto 16px", display: "block" }}>
                 <circle cx="26" cy="26" r="24" fill="none" stroke={ORANGE} strokeWidth="2" />
-                <path d="M16 27 L23 34 L37 19" fill="none" stroke="#141414" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M16 27 L23 34 L37 19" fill="none" stroke="#f3f1ec" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 18, letterSpacing: 3, textTransform: "uppercase" }}>{L.orderOk}</div>
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#8a877f", marginTop: 10 }}>{L.orderOkSub}</p>
               <button onClick={resetOrder} style={{
                 marginTop: 22, fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                padding: "14px 28px", cursor: "pointer", border: "none", borderRadius: 0, background: "#141414", color: "#FAFAF8",
+                padding: "14px 28px", cursor: "pointer", border: "none", borderRadius: 0, background: ORANGE, color: "#fff",
               }}>{L.newOrder}</button>
             </div>
           ) : cart.length === 0 ? (
-            <div style={{ border: "1px solid #e7e5df", padding: "44px 28px", textAlign: "center" }}>
+            <div style={{ border: "1px solid rgba(255,255,255,0.12)", padding: "44px 28px", textAlign: "center" }}>
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#8a877f", margin: 0 }}>{L.emptyCart}</p>
               <button onClick={() => setView("studio")} style={{
                 marginTop: 18, fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                padding: "13px 26px", cursor: "pointer", border: "1px solid #141414", borderRadius: 0, background: "transparent",
+                padding: "13px 26px", cursor: "pointer", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 10, background: "rgba(255,255,255,0.05)", color: "#f3f1ec",
               }}>{L.backStudio}</button>
             </div>
           ) : (
             <>
               {/* articole */}
-              <div style={{ borderTop: "1px solid #e7e5df" }}>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)" }}>
                 {cart.map(it => {
                   const c = GARMENT_COLORS.find(x => x.id === it.colorId);
                   const pr = PRODUCTS.find(x => x.id === it.product);
@@ -1292,7 +1323,7 @@ export default function App() {
                   return (
                     <div key={it.id} style={{
                       display: "flex", alignItems: "center", gap: 14,
-                      padding: "16px 0", borderBottom: "1px solid #e7e5df",
+                      padding: "16px 0", borderBottom: "1px solid rgba(255,255,255,0.12)",
                     }}>
                       <span style={{ width: 22, height: 22, borderRadius: "50%", background: c.hex, border: "1px solid #d4d1c9", flexShrink: 0 }} />
                       <div style={{ flex: 1, fontFamily: "'Inter', sans-serif", fontSize: 13.5 }}>
@@ -1311,7 +1342,7 @@ export default function App() {
 
               {/* oferte active */}
               <CkSection n="01" title={L.offersTitle} />
-              <div style={{ border: "1px solid #e7e5df", padding: "14px 16px", fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.9 }}>
+              <div style={{ border: "1px solid rgba(255,255,255,0.12)", padding: "14px 16px", fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.9 }}>
                 <div>· {L.offer1}</div><div>· {L.offer2}</div><div>· {L.offer3}</div>
                 <div style={{ fontSize: 11.5, color: "#a8a59c", marginTop: 6 }}>{L.bundleHint}</div>
               </div>
@@ -1324,7 +1355,7 @@ export default function App() {
                 <Opt active={accMode === "guest"} onClick={() => { setAccMode("guest"); setAccount(false); }}>{L.guest}</Opt>
               </div>
               {accMode === "create" && (
-                <div style={{ background: "#f6f0e9", border: `1px solid ${ORANGE}`, padding: "10px 14px", marginBottom: 12, fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#7a5230" }}>
+                <div style={{ background: "rgba(255,74,28,0.12)", border: `1px solid rgba(255,74,28,0.4)`, borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#ffd9c9" }}>
                   {L.createAccountNote}
                 </div>
               )}
@@ -1382,8 +1413,8 @@ export default function App() {
               <div style={{ display: "flex", gap: 8 }}>
                 <input value={promoInput} onChange={e => setPromoInput(e.target.value)}
                   placeholder={L.promoLabel}
-                  style={{ flex: 1, padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14, border: "1px solid #dddbd5", background: "transparent", borderRadius: 0 }} />
-                <Opt onClick={applyPromo} style={{ borderColor: "#141414" }}>{L.promoApply}</Opt>
+                  style={{ flex: 1, padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", borderRadius: 0 }} />
+                <Opt onClick={applyPromo} style={{ borderColor: ORANGE, color: "#fff", background: "rgba(255,74,28,0.16)" }}>{L.promoApply}</Opt>
               </div>
               {promo && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#1a7f4e", marginTop: 6 }}>{L.promoOk}: {PROMO_CODES[promo].label}</div>}
               {promoErr && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#c0341d", marginTop: 6 }}>{L.promoBad}</div>}
@@ -1410,7 +1441,7 @@ export default function App() {
               )}
 
               {/* sumar */}
-              <div style={{ borderTop: "1px solid #e7e5df", marginTop: 28, paddingTop: 18, fontFamily: "'Inter', sans-serif", fontSize: 13.5 }}>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)", marginTop: 28, paddingTop: 18, fontFamily: "'Inter', sans-serif", fontSize: 13.5 }}>
                 <SumRow label={L.subtotal} value={fmt(calc.subtotal)} />
                 {calc.freeTees > 0 && <SumRow label={L.bundleFree(calc.freeTees)} value={`− ${fmt(calc.bundleDiscount)}`} green />}
                 {calc.accountDiscount > 0 && <SumRow label={L.accountDisc} value={`− ${fmt(calc.accountDiscount)}`} green />}
@@ -1421,7 +1452,7 @@ export default function App() {
                   <SumRow label={L.vatLabel} value={fmt(calc.vat)} />
                 </div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 12, paddingTop: 12, borderTop: "1px solid #e7e5df" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.12)" }}>
                 <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f" }}>{L.total}</span>
                 <span style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 30 }}>{fmt(calc.grand)}</span>
               </div>
@@ -1431,7 +1462,7 @@ export default function App() {
                 width: "100%", marginTop: 20,
                 fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 3.5, textTransform: "uppercase",
                 padding: "18px 0", cursor: payState === "processing" ? "wait" : "pointer",
-                border: "none", borderRadius: 0, background: "#141414", color: "#FAFAF8",
+                border: "none", borderRadius: 0, background: ORANGE, color: "#fff",
                 opacity: payState === "processing" ? 0.7 : 1,
               }}>
                 {payState === "processing" ? L.processing : `${lang === "ro" ? "Plătește" : "Pay"} ${fmt(calc.grand)}`}
@@ -1462,6 +1493,8 @@ export default function App() {
             position: "relative", width: "100%", aspectRatio: "4 / 5",
             background: curColor.hex, display: "flex", alignItems: "center",
             justifyContent: "center", overflow: "hidden",
+            borderRadius: 18, border: "1px solid rgba(255,255,255,0.14)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2), 0 30px 70px rgba(0,0,0,0.5)",
           }}>
             {itemImg ? (
               <img src={itemImg} alt={item.name[lang]} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
@@ -1484,7 +1517,7 @@ export default function App() {
               return (
                 <button key={ci.id} onClick={() => setSelId(ci.id)} aria-label={ci.name[lang]} className="ovr-thumb" style={{
                   aspectRatio: "1 / 1", background: c0.hex, cursor: "pointer", padding: 0, overflow: "hidden",
-                  border: active ? `2px solid ${ORANGE}` : "1px solid #dddbd5", borderRadius: 0,
+                  border: active ? `2px solid ${ORANGE}` : "1px solid rgba(255,255,255,0.16)", borderRadius: 0,
                 }}>
                   {thumb ? (
                     <img src={thumb} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
@@ -1526,11 +1559,11 @@ export default function App() {
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {availSizes.map(s => (
               <button key={s} onClick={() => setSize(s)} className="ovr-opt" style={{
-                minWidth: 46, padding: "11px 0", cursor: "pointer", borderRadius: 0,
+                minWidth: 46, padding: "11px 0", cursor: "pointer", borderRadius: 8,
                 fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 1,
-                border: s === curSize ? "1px solid #141414" : "1px solid #dddbd5",
-                background: s === curSize ? "#141414" : "transparent",
-                color: s === curSize ? "#FAFAF8" : "#141414",
+                border: s === curSize ? `1px solid ${ORANGE}` : "1px solid rgba(255,255,255,0.16)",
+                background: s === curSize ? "rgba(255,74,28,0.18)" : "rgba(255,255,255,0.04)",
+                color: s === curSize ? "#fff" : "rgba(243,241,236,0.7)",
               }}>{s}</button>
             ))}
           </div>
@@ -1538,7 +1571,7 @@ export default function App() {
           <div style={{ marginTop: 26, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f", marginBottom: 10 }}>
             {lang === "ro" ? "Cantitate" : "Quantity"}
           </div>
-          <div style={{ display: "inline-flex", alignItems: "center", border: "1px solid #dddbd5" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", border: "1px solid rgba(255,255,255,0.16)" }}>
             <button onClick={() => setQty(q => Math.max(1, q - 1))} style={{ padding: "10px 16px", cursor: "pointer", border: "none", background: "transparent", fontSize: 16 }}>−</button>
             <span style={{ minWidth: 34, textAlign: "center", fontFamily: "'Jost', sans-serif", fontSize: 15 }}>{qty}</span>
             <button onClick={() => setQty(q => q + 1)} style={{ padding: "10px 16px", cursor: "pointer", border: "none", background: "transparent", fontSize: 16 }}>+</button>
@@ -1547,7 +1580,7 @@ export default function App() {
           <button onClick={addCatalog} className="ovr-cta" style={{
             width: "100%", marginTop: 30,
             fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 3.5, textTransform: "uppercase",
-            padding: "18px 0", cursor: "pointer", border: "1px solid #141414", borderRadius: 0, background: "#141414", color: "#FAFAF8",
+            padding: "18px 0", cursor: "pointer", border: "none", borderRadius: 12, background: ORANGE, color: "#fff",
           }}>
             {L.addCart} · {fmt(item.price * qty)}
           </button>
@@ -1565,21 +1598,23 @@ export default function App() {
           display: "flex", alignItems: "center", justifyContent: "center", padding: 24, zIndex: 50,
         }}>
           <div onClick={e => e.stopPropagation()} style={{
-            background: "#FAFAF8", maxWidth: 360, width: "100%", padding: "32px 26px", textAlign: "center",
+            background: "rgba(22,22,25,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.14)", borderRadius: 16,
+            maxWidth: 360, width: "100%", padding: "32px 26px", textAlign: "center",
           }}>
             <svg width="44" height="44" viewBox="0 0 52 52" style={{ margin: "0 auto 14px", display: "block" }}>
               <circle cx="26" cy="26" r="24" fill="none" stroke={ORANGE} strokeWidth="2" />
-              <path d="M16 27 L23 34 L37 19" fill="none" stroke="#141414" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M16 27 L23 34 L37 19" fill="none" stroke="#f3f1ec" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 15, letterSpacing: 2.5, textTransform: "uppercase" }}>{L.addedToCart}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 22 }}>
               <button onClick={() => { setShowAddedModal(false); setView("checkout"); setPayState("idle"); }} style={{
                 fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                padding: "15px 0", cursor: "pointer", border: "none", borderRadius: 0, background: "#141414", color: "#FAFAF8",
+                padding: "15px 0", cursor: "pointer", border: "none", borderRadius: 0, background: ORANGE, color: "#fff",
               }}>{L.viewCart} ({cartCount})</button>
               <button onClick={() => setShowAddedModal(false)} style={{
                 fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                padding: "15px 0", cursor: "pointer", border: "1px solid #141414", borderRadius: 0, background: "transparent", color: "#141414",
+                padding: "15px 0", cursor: "pointer", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 10, background: "rgba(255,255,255,0.05)", color: "#f3f1ec",
               }}>{L.keepShopping}</button>
             </div>
           </div>
@@ -1587,15 +1622,16 @@ export default function App() {
       )}
 
       <footer style={{
-        borderTop: "1px solid #e7e5df", padding: "26px 5vw",
+        borderTop: `1px solid ${GLINE}`, padding: "26px 5vw",
         display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10,
-        fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, color: "#a8a59c", textTransform: "uppercase",
+        fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, color: MUTED, textTransform: "uppercase",
       }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 9 }}>
-          <img src="/brand/logo-black.png" alt="OVRTHINK" style={{ height: 13, width: "auto", display: "block", opacity: 0.85 }} />
+          <img src="/brand/logo-white.png" alt="OVRTHINK" style={{ height: 13, width: "auto", display: "block", opacity: 0.85 }} />
         </span>
         <span>{L.footerMat}</span>
       </footer>
+      </div>
     </div>
   );
 }
