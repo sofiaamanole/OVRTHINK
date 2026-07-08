@@ -1581,7 +1581,7 @@ export default function App() {
             onMouseLeave={() => setZoom(null)}
             style={{
             position: "relative", width: "100%", aspectRatio: "4 / 5",
-            background: "radial-gradient(ellipse at 50% 42%, #f4f2ee 0%, #ece9e3 70%, #e2ded6 100%)", display: "flex", alignItems: "center",
+            background: "#f1eee9", display: "flex", alignItems: "center",
             justifyContent: "center", overflow: "hidden",
             borderRadius: 14,
             cursor: itemImg ? "zoom-in" : "default",
@@ -1627,7 +1627,7 @@ export default function App() {
                 <button key={t.pid + t.color + t.side}
                   onClick={() => { setSelId(t.pid); setColorId(t.color); setSide(t.side); }}
                   aria-label={`${t.pid} ${t.color} ${t.side}`} className="ovr-thumb" style={{
-                    position: "relative", aspectRatio: "1 / 1", background: "#e8e5df", cursor: "pointer", padding: 0, overflow: "hidden",
+                    position: "relative", aspectRatio: "1 / 1", background: "#f1eee9", cursor: "pointer", padding: 0, overflow: "hidden",
                     border: active ? `2px solid ${ORANGE}` : "1px solid rgba(0,0,0,0.16)", borderRadius: 6,
                   }}>
                   <img src={t.img} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
