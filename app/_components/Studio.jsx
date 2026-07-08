@@ -5,6 +5,9 @@ import { CATALOG, COLLECTIONS } from "@/lib/catalog";
 import { CollectionBg, CollectionsHub, THEME } from "./Collections";
 import { HomePage, CollectionsPage, AboutPage } from "./Pages";
 import { CustomPage } from "./Custom";
+import { LegalRouter, LEGAL_KEYS } from "./Legal";
+import Footer from "./Footer";
+import CookieBanner from "./CookieBanner";
 
 /* ─────────────────────────────────────────────
    [OVRTHINK] STUDIO — full custom
@@ -1265,6 +1268,8 @@ export default function App() {
         .ovr-hero { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: clamp(24px, 3.4vw, 56px); align-items: center; }
         .ovr-collgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
         .ovr-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .ovr-flink { transition: color .2s ease; }
+        .ovr-flink:hover { color: ${ORANGE} !important; }
         .ovr-input { transition: border-color .2s ease; }
         .ovr-input:focus, .ovr-input:focus-within { border-color: ${ORANGE} !important; outline: none; }
         .ovr-lookcard { overflow: hidden; }
@@ -1273,6 +1278,8 @@ export default function App() {
         @media (max-width: 1040px) { .ovr-collgrid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 820px) { .ovr-cat { grid-template-columns: 1fr !important; } .ovr-glassrow { grid-template-columns: 1fr !important; } .ovr-hero { grid-template-columns: 1fr; } .ovr-trio { grid-template-columns: 1fr; } .ovr-collgrid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 520px) { .ovr-collgrid { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .ovr-footgrid { grid-template-columns: 1fr 1fr !important; } }
+        @media (max-width: 560px) { .ovr-footgrid { grid-template-columns: 1fr !important; } }
         @media (prefers-reduced-motion: reduce) {
           .ovr-rise, .ovr-rise-2, .ovr-fade, .ovr-pop { animation: none !important; }
           .ovr-cta, .ovr-thumb, .ovr-opt { transition: none !important; }
@@ -1376,6 +1383,7 @@ export default function App() {
             : page === "home" ? { ro: "acasă", en: "home" }
             : page === "collections" ? { ro: "colecții", en: "collections" }
             : page === "custom" ? { ro: "custom", en: "custom" }
+            : LEGAL_KEYS.includes(page) ? { ro: page, en: page }
             : page === "about" ? { ro: "despre", en: "about" }
             : { ro: cat === "tee" ? "tricouri" : "hoodie", en: cat === "tee" ? "t-shirts" : "hoodies" };
           return `${lang === "ro" ? "pagina" : "page"}: ${pl[lang]}`;
@@ -1593,6 +1601,8 @@ export default function App() {
         <CustomPage lang={lang} />
       ) : page === "about" ? (
         <AboutPage lang={lang} onShop={openCat} />
+      ) : LEGAL_KEYS.includes(page) ? (
+        <LegalRouter page={page} onHome={() => navTo("home")} />
       ) : (
       <main className="cfg" style={{
         display: "grid", gridTemplateColumns: cat === "tee" ? "0.92fr 0.72fr 1.12fr" : "1fr 0.82fr 0.95fr", gap: "2.4vw",
@@ -1768,17 +1778,9 @@ export default function App() {
         </div>
       )}
 
-      <footer style={{
-        borderTop: `1px solid ${GLINE}`, padding: "26px 5vw",
-        display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10,
-        fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, color: MUTED, textTransform: "uppercase",
-      }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 9 }}>
-          <img src="/brand/logo-white.png" alt="OVRTHINK" style={{ height: 13, width: "auto", display: "block", opacity: 0.85 }} />
-        </span>
-        <span>{L.footerMat}</span>
-      </footer>
+      <Footer lang={lang} nav={navTo} onShop={openCat} />
       </div>
+      <CookieBanner lang={lang} />
     </div>
   );
 }

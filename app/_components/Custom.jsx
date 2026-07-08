@@ -185,7 +185,9 @@ function CustomRequestForm({ ro }) {
             <label style={{ display: "flex", gap: 12, alignItems: "flex-start", margin: "22px 0 26px", cursor: "pointer" }}>
               <input name="confirm" type="checkbox" required value="da" style={{ marginTop: 3, width: 16, height: 16, accentColor: O }} />
               <span style={{ ...body, fontSize: 13.5 }}>
-                {ro ? "Confirm că fișierul trimis este PNG și am citit cerințele pentru print." : "I confirm the file is PNG and I have read the print requirements."}
+                {ro
+                  ? "Confirm că fișierul trimis este PNG, HD, recomandat 300 DPI, cu fundal transparent, și înțeleg că produsul custom este personalizat și nu poate fi returnat prin simpla exercitare a dreptului de retragere."
+                  : "I confirm the file is PNG, HD, recommended 300 DPI, transparent background, and I understand the custom product is personalized and cannot be returned by simply exercising the right of withdrawal."}
               </span>
             </label>
 
@@ -202,6 +204,10 @@ function CustomRequestForm({ ro }) {
             }}>
               {state === "sending" ? (ro ? "Se trimite…" : "Sending…") : (ro ? "Trimite cererea" : "Send request")}
             </button>
+
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#8a877f", margin: "18px 0 0" }}>
+              {ro ? "Produsele custom pot fi returnate doar în cazul unui defect de fabricație sau al unei neconformități." : "Custom products can only be returned in case of a manufacturing defect or non-conformity."}
+            </p>
           </form>
         )}
       </div>
