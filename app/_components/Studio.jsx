@@ -1609,8 +1609,8 @@ export default function App() {
 
         {/* dreapta: detalii produs + opțiuni (panou de sticlă peste fundalul viu) */}
         <div className="ovr-rise-2" style={{
-          background: "rgba(14,14,16,0.5)", backdropFilter: "blur(22px) saturate(1.2)", WebkitBackdropFilter: "blur(22px) saturate(1.2)",
-          border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: "26px 28px 30px",
+          background: "rgba(14,14,16,0.34)", backdropFilter: "blur(26px) saturate(1.2)", WebkitBackdropFilter: "blur(26px) saturate(1.2)",
+          border: "1px solid rgba(255,255,255,0.14)", borderRadius: 16, padding: "26px 28px 30px",
         }}>
           <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3.5, textTransform: "uppercase", color: "#a8a59c" }}>
             {PRODUCTS.find(p => p.id === item.product).name[lang]}
@@ -1640,9 +1640,9 @@ export default function App() {
               <button key={s} onClick={() => setSize(s)} className="ovr-opt" style={{
                 minWidth: 46, padding: "11px 0", cursor: "pointer", borderRadius: 8,
                 fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 1,
-                border: s === curSize ? `1px solid ${ORANGE}` : "1px solid rgba(255,255,255,0.16)",
-                background: s === curSize ? "rgba(255,74,28,0.18)" : "rgba(255,255,255,0.04)",
-                color: s === curSize ? "#fff" : "rgba(243,241,236,0.7)",
+                border: s === curSize ? `1px solid ${ORANGE}` : "1px solid rgba(255,255,255,0.28)",
+                background: s === curSize ? "rgba(255,74,28,0.2)" : "transparent",
+                color: s === curSize ? "#fff" : "rgba(243,241,236,0.82)",
               }}>{s}</button>
             ))}
           </div>
