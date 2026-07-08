@@ -1322,7 +1322,8 @@ export default function App() {
               padding: "8px 14px", cursor: "pointer", borderRadius: 8,
               background: active ? "rgba(255,74,28,0.14)" : "transparent",
               border: active ? `1px solid ${ORANGE}` : "1px solid transparent",
-              color: active ? "#b23410" : uiMuted,
+              color: id === "custom" ? ORANGE : (active ? "#b23410" : uiMuted),
+              fontWeight: id === "custom" ? 500 : 400,
             }}>{label}</button>
           ))}
         </nav>
