@@ -246,7 +246,7 @@ export function CollectionsPage({ lang, onShop }) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "clamp(14px, 2.8vw, 34px)", flexWrap: "wrap" }}>
         <img src="/brand/logo-black.png" alt="OVRTHINK" style={{ height: "clamp(34px, 5vw, 58px)", display: "block" }} />
         <span style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(30px, 4.4vw, 50px)", color: MUTED, lineHeight: 1 }}>—</span>
-        <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(34px, 5vw, 58px)", letterSpacing: "0.06em", textTransform: "uppercase", margin: 0, lineHeight: 0.9 }}>{L.colTitle}</h1>
+        <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(30px, 4.4vw, 51px)", letterSpacing: "0.04em", textTransform: "uppercase", margin: 0, lineHeight: 0.9 }}>{L.colTitle}</h1>
       </div>
       <div style={{ textAlign: "center", fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: O, marginTop: 12 }}>{L.colSub}</div>
 
