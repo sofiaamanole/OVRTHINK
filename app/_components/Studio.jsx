@@ -1667,10 +1667,13 @@ export default function App() {
         <div className="stick anim-side" style={{ position: "sticky", top: 20 }}>
           <div style={{ position: "relative", width: "100%", height: "min(82vh, 740px)", overflow: "hidden" }}>
             <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 38%", display: "block" }} />
-            {/* îmbinare lină spre centru — se vede mai mult din stânga clipului */}
+              style={{ width: "100%", height: "100%", objectFit: "cover",
+                objectPosition: cat === "tee" ? "22% 36%" : "center 38%", display: "block" }} />
+            {/* îmbinare lină spre centru — tricoul: mai mult din stânga + fade mult mai lung/smooth */}
             <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.72) 9%, rgba(244,242,238,0.25) 24%, transparent 42%)" }} />
+              background: cat === "tee"
+                ? "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.5) 20%, rgba(244,242,238,0.12) 46%, transparent 72%)"
+                : "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.72) 9%, rgba(244,242,238,0.25) 24%, transparent 42%)" }} />
             {/* aceeași tranziție pe DREAPTA */}
             <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
               background: "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.55) 7%, transparent 20%)" }} />
