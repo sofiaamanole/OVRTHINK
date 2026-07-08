@@ -59,68 +59,52 @@ const T = {
   },
 };
 
-/* ── HOME ── */
-export function HomePage({ lang, onShop, onCollections }) {
+/* ── HOME (minimal) ── */
+export function HomePage({ lang, onShop }) {
   const L = T[lang];
+  const products = [
+    { id: "tee", name: lang === "ro" ? "Tricou OVRTHINK" : "OVRTHINK Tee", price: "189 lei", img: "/catalog/tee-black.jpg" },
+    { id: "hoodie", name: lang === "ro" ? "Hoodie OVRTHINK" : "OVRTHINK Hoodie", price: "329 lei", img: "/catalog/hoodie-black.jpg" },
+  ];
   return (
     <main>
-      {/* HERO */}
-      <section style={{ position: "relative", width: "100%", height: "min(92vh, 860px)", overflow: "hidden" }}>
-        <img src="/home/hero-newera.jpg" alt="OVRTHINK — Noua Eră" style={{
-          width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 44%", display: "block",
-          maskImage: "linear-gradient(180deg, #000 62%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(180deg, #000 62%, transparent 100%)",
-        }} />
-        <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-          background: "radial-gradient(115% 95% at 0% 100%, rgba(244,242,238,0.9) 0%, rgba(244,242,238,0.5) 28%, transparent 52%)" }} />
-        <div className="ovr-rise" style={{ position: "absolute", left: "6vw", bottom: "11%", maxWidth: 620 }}>
-          <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: O }}>{L.heroEyebrow}</div>
-          <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(40px, 7vw, 92px)", letterSpacing: "0.04em", textTransform: "uppercase", margin: "6px 0 12px", lineHeight: 0.95, color: INK }}>{L.heroTitle}</h1>
-          <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(15px, 2vw, 21px)", letterSpacing: 1, color: MUTED, margin: "0 0 22px", lineHeight: 1.3 }}>
+      {/* HERO minimal: logo + tagline + 2 butoane, mult spațiu */}
+      <section style={{ position: "relative", minHeight: "76vh", display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center", textAlign: "center", padding: "70px 6vw 50px", overflow: "hidden" }}>
+        <div aria-hidden style={{ position: "absolute", top: "4%", left: "14%", width: "44vw", height: "44vw",
+          background: "radial-gradient(circle, rgba(255,74,28,0.26), transparent 62%)", filter: "blur(72px)",
+          animation: "ovrGlowA 22s ease-in-out infinite", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: "0%", right: "12%", width: "38vw", height: "38vw",
+          background: "radial-gradient(circle, rgba(255,138,61,0.2), transparent 62%)", filter: "blur(78px)",
+          animation: "ovrGlowB 26s ease-in-out infinite", pointerEvents: "none" }} />
+        <div className="ovr-rise" style={{ position: "relative" }}>
+          <img src="/brand/logo-black.png" alt="OVRTHINK" style={{ width: "min(76vw, 500px)", display: "block", margin: "0 auto" }} />
+          <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(15px, 2vw, 22px)", letterSpacing: 1.5, color: MUTED, margin: "28px 0 32px" }}>
             {L.heroSub}
           </p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Btn primary onClick={() => onShop("tee")}>{L.shop}</Btn>
-            <Btn onClick={onCollections}>{L.collections}</Btn>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <Btn primary onClick={() => onShop("tee")}>{L.tee}</Btn>
+            <Btn onClick={() => onShop("hoodie")}>{L.hoodie}</Btn>
           </div>
         </div>
       </section>
 
-      {/* CATEGORII */}
-      <section style={{ maxWidth: 1280, margin: "0 auto", padding: "20px 5vw 40px" }}>
-        <h2 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "0.1em", textTransform: "uppercase", textAlign: "center", margin: "0 0 30px" }}>
-          {L.catTitle}
-        </h2>
-        <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-          {[["tee", L.tee, "/home/tile-tee.jpg"], ["hoodie", L.hoodie, "/home/tile-hoodie.jpg"]].map(([id, label, img]) => (
-            <button key={id} onClick={() => onShop(id)} className="ovr-tile" style={{
-              position: "relative", overflow: "hidden", cursor: "pointer", border: "none", padding: 0,
-              aspectRatio: "4 / 5", borderRadius: 4, background: "#eceae5",
+      {/* Două produse, curat */}
+      <section style={{ maxWidth: 880, margin: "0 auto", padding: "0 6vw 90px" }}>
+        <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22 }}>
+          {products.map(p => (
+            <button key={p.id} onClick={() => onShop(p.id)} className="ovr-tile" style={{
+              background: "transparent", border: "none", padding: 0, cursor: "pointer", textAlign: "left",
             }}>
-              <img src={img} alt={label} className="ovr-tile-img" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-              <span style={{ position: "absolute", left: 24, bottom: 22, fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(22px, 2.6vw, 34px)", letterSpacing: 3, textTransform: "uppercase", color: INK }}>
-                {label} <span style={{ color: O }}>→</span>
-              </span>
+              <div style={{ overflow: "hidden", borderRadius: 4, aspectRatio: "4 / 5", background: "#eceae5" }}>
+                <img src={p.img} alt={p.name} className="ovr-tile-img" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 14 }}>
+                <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 15, letterSpacing: 1 }}>{p.name}</span>
+                <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 15, color: O }}>{p.price}</span>
+              </div>
             </button>
           ))}
-        </div>
-      </section>
-
-      {/* CAMPANIE */}
-      <section style={{ position: "relative", width: "100%", height: "min(76vh, 700px)", overflow: "hidden", marginTop: 30 }}>
-        <img src="/home/hero-male.jpg" alt="" style={{
-          width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 32%", display: "block",
-          maskImage: "linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%)",
-        }} />
-        <div className="ovr-rise" style={{ position: "absolute", right: "6vw", top: "50%", transform: "translateY(-50%)", maxWidth: 400, textAlign: "right" }}>
-          <h3 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(24px, 3.2vw, 40px)", letterSpacing: 1, margin: "0 0 14px", color: INK }}>
-            {L.campTitle}
-          </h3>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14.5, color: MUTED, lineHeight: 1.7, margin: "0 0 22px" }}>
-            {L.campText}
-          </p>
-          <Btn primary onClick={() => onShop("hoodie")}>{L.shop}</Btn>
         </div>
       </section>
     </main>

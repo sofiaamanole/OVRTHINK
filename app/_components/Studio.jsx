@@ -1698,17 +1698,14 @@ export default function App() {
             <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
               style={{ width: "100%", height: "100%", objectFit: "cover",
                 objectPosition: "center 38%", display: "block" }} />
-            {/* îmbinare lină spre centru (fade smooth) */}
+            {/* feather uniformă pe TOATE marginile (culoarea paginii) — fără chenar */}
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              boxShadow: "inset 0 0 100px 48px #F4F2EE" }} />
+            {/* extra blend pe stânga — se vede mai mult din stânga (tricou) */}
             <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
               background: cat === "tee"
-                ? "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.6) 13%, rgba(244,242,238,0.18) 33%, transparent 55%)"
-                : "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.72) 9%, rgba(244,242,238,0.25) 24%, transparent 42%)" }} />
-            {/* aceeași tranziție pe DREAPTA */}
-            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.55) 7%, transparent 20%)" }} />
-            {/* sus + jos */}
-            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(180deg, #F4F2EE 0%, transparent 14%, transparent 86%, #F4F2EE 100%)" }} />
+                ? "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.45) 16%, transparent 40%)"
+                : "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.6) 11%, transparent 28%)" }} />
           </div>
         </div>
       </main>
