@@ -99,9 +99,7 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
   return (
     <main>
       {/* 1 — HERO */}
-      <section style={{ position: "relative", ...secPad, paddingTop: "clamp(40px, 5vw, 72px)", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: "-6%", left: "6%", width: "40vw", height: "40vw",
-          background: "radial-gradient(circle, rgba(255,74,28,0.16), transparent 64%)", filter: "blur(80px)", pointerEvents: "none" }} />
+      <section style={{ position: "relative", ...secPad, paddingTop: "clamp(40px, 5vw, 72px)" }}>
         <div className="ovr-hero ovr-rise" style={{ position: "relative", maxWidth: 1200, margin: "0 auto" }}>
           <div>
             <div style={eyebrow}>OVRTHINK / 01</div>
@@ -121,16 +119,21 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
               <Btn onClick={onCollections}>{ro ? "Vezi colecțiile" : "View collections"}</Btn>
             </div>
           </div>
-          {/* Animația de home. Sursă: /home/acasa-animatie.mp4 (transcodată din acasa-animatie.mov) */}
-          <div style={{ overflow: "hidden" }}>
+          {/* Animația de home — marginile topite în fundal pe toate laturile. Sursă: /home/acasa-animatie.mp4 */}
+          <div>
             <video src="/home/acasa-animatie.mp4" autoPlay muted loop playsInline preload="auto"
-              style={{ width: "100%", display: "block", objectFit: "cover", aspectRatio: "4 / 5" }} />
+              style={{
+                width: "100%", display: "block", objectFit: "cover", aspectRatio: "4 / 5",
+                maskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%)",
+                maskComposite: "intersect", WebkitMaskComposite: "source-in",
+              }} />
           </div>
         </div>
       </section>
 
       {/* 2 — SHOP BY COLLECTION */}
-      <section style={{ ...secPad, background: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(0,0,0,0.06)", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+      <section style={{ ...secPad }}>
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <div style={{ ...eyebrow, marginBottom: 26 }}>SHOP BY COLLECTION</div>
           <div className="ovr-collgrid">
@@ -181,7 +184,7 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
       </section>
 
       {/* 6 — WHY OVRTHINK */}
-      <section style={{ ...secPad, background: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+      <section style={{ ...secPad }}>
         <div style={{ maxWidth: 1120, margin: "0 auto" }}>
           <div style={{ ...eyebrow, marginBottom: 26 }}>{ro ? "DE CE OVRTHINK" : "WHY OVRTHINK"}</div>
           <div className="ovr-trio">
