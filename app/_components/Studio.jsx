@@ -1035,6 +1035,7 @@ export default function App() {
     if (view === "checkout") setView("studio");
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   };
+  const ANIM_SRC = { tee: "/anim/tricou-2.mp4", hoodie: "/anim/hoodie-2.mp4" };
 
   /* ── temă UI adaptivă peste fundalul colecției ── */
   // temă globală: dark liquid-glass futurist
@@ -1241,15 +1242,18 @@ export default function App() {
         }
       `}</style>
 
-      {/* fundal futurist static */}
+      {/* fundal VIU: animația categoriei rulează în spatele conținutului */}
       <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <div style={{ position: "absolute", top: "-15%", left: "6%", width: "55vw", height: "55vw",
-          background: "radial-gradient(circle, rgba(255,74,28,0.5), transparent 62%)", filter: "blur(55px)",
+        <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+        {/* scrim ca produsul + textul să rămână lizibile */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(8,8,9,0.55) 0%, rgba(8,8,9,0.66) 55%, rgba(8,8,9,0.82) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(78% 68% at 50% 32%, transparent, rgba(8,8,9,0.5))" }} />
+        {/* glow portocaliu subtil + grilă tech deasupra */}
+        <div style={{ position: "absolute", top: "-15%", left: "6%", width: "50vw", height: "50vw",
+          background: "radial-gradient(circle, rgba(255,74,28,0.2), transparent 62%)", filter: "blur(60px)",
           animation: "ovrGlowA 20s ease-in-out infinite" }} />
-        <div style={{ position: "absolute", bottom: "-22%", right: "3%", width: "52vw", height: "52vw",
-          background: "radial-gradient(circle, rgba(255,138,61,0.3), transparent 62%)", filter: "blur(65px)",
-          animation: "ovrGlowB 26s ease-in-out infinite" }} />
-        <div style={{ position: "absolute", inset: 0, opacity: 0.5,
+        <div style={{ position: "absolute", inset: 0, opacity: 0.4,
           backgroundImage: "linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px)",
           backgroundSize: "64px 64px" }} />
       </div>
@@ -1603,8 +1607,11 @@ export default function App() {
           </div>
         </div>
 
-        {/* dreapta: detalii produs + opțiuni */}
-        <div className="ovr-rise-2">
+        {/* dreapta: detalii produs + opțiuni (panou de sticlă peste fundalul viu) */}
+        <div className="ovr-rise-2" style={{
+          background: "rgba(14,14,16,0.5)", backdropFilter: "blur(22px) saturate(1.2)", WebkitBackdropFilter: "blur(22px) saturate(1.2)",
+          border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: "26px 28px 30px",
+        }}>
           <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3.5, textTransform: "uppercase", color: "#a8a59c" }}>
             {PRODUCTS.find(p => p.id === item.product).name[lang]}
           </div>
