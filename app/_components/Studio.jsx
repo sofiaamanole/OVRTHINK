@@ -1261,7 +1261,7 @@ export default function App() {
         .ovr-subpill { transition: background .25s ease, border-color .25s ease, color .25s ease, transform .2s ease; }
         .ovr-subpill:hover { background: rgba(255,74,28,0.16) !important; border-color: rgba(255,74,28,0.55) !important; color: #b23410 !important; transform: translateY(-2px); }
         @keyframes ovrGlassPulse { 0%,100%{ box-shadow: 0 10px 34px rgba(255,74,28,0.16), inset 0 1px 0 rgba(255,255,255,0.6);} 50%{ box-shadow: 0 14px 44px rgba(255,74,28,0.26), inset 0 1px 0 rgba(255,255,255,0.66);} }
-        .ovr-hero { display: grid; grid-template-columns: 1.02fr 0.98fr; gap: clamp(28px, 4vw, 68px); align-items: center; }
+        .ovr-hero { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: clamp(24px, 3.4vw, 56px); align-items: center; }
         .ovr-collgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
         .ovr-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .ovr-lookcard { overflow: hidden; }
