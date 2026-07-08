@@ -1455,7 +1455,7 @@ export default function App() {
         <CollectionsHub collections={COLLECTIONS} lang={lang} onOpen={openCol} />
       ) : (
       <>
-        <CollectionBg theme={col} />
+        <CollectionBg theme={col} lang={lang} />
         <div className="ovr-rise" style={{ maxWidth: 1240, margin: "0 auto", padding: "24px 5vw 2px", position: "relative" }}>
           <button onClick={() => setCol(null)} style={{
             fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase",
