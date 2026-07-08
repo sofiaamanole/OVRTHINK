@@ -12,9 +12,7 @@ export default function Intro({ children }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem("ovr_intro_seen") === "1") { setPhase("done"); return; }
-    } catch {}
+    // apare de fiecare dată la intrarea pe site (refresh/link nou)
     setPhase("gate");
   }, []);
 
@@ -74,12 +72,6 @@ export default function Intro({ children }) {
               }}>
                 Intră
               </button>
-              <div style={{
-                marginTop: 16, fontFamily: "'Inter', sans-serif", fontSize: 12,
-                letterSpacing: 1, color: "rgba(255,255,255,0.5)",
-              }}>
-                🔊 cu sunet
-              </div>
             </div>
           )}
 
