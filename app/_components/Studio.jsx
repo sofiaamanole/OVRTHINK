@@ -15,15 +15,15 @@ import { CollectionBg, CollectionsHub, THEME } from "./Collections";
 const ORANGE = "#FF4A1C";
 /* ── tema liquid glass ── */
 const GLASS = {
-  background: "rgba(255,255,255,0.055)",
+  background: "rgba(255,255,255,0.55)",
   backdropFilter: "blur(22px) saturate(1.3)",
   WebkitBackdropFilter: "blur(22px) saturate(1.3)",
-  border: "1px solid rgba(255,255,255,0.14)",
-  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2), 0 24px 60px rgba(0,0,0,0.4)",
+  border: "1px solid rgba(0,0,0,0.1)",
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6), 0 24px 50px rgba(0,0,0,0.12)",
 };
-const INK = "#f3f1ec";        // text principal
-const MUTED = "rgba(243,241,236,0.6)"; // text secundar
-const GLINE = "rgba(255,255,255,0.14)"; // linii/borduri
+const INK = "#1a1712";        // text principal
+const MUTED = "rgba(26,23,18,0.6)"; // text secundar
+const GLINE = "rgba(0,0,0,0.14)"; // linii/borduri
 const STAGE_W = 400, STAGE_H = 430;
 const CANVAS_S = 2.5; // rezoluția texturii 3D
 
@@ -859,9 +859,9 @@ function Opt({ active, onClick, children, style }) {
     <button onClick={onClick} style={{
       fontFamily: "'Inter', sans-serif", fontSize: 13, letterSpacing: 0.3,
       padding: "9px 14px", cursor: "pointer",
-      background: active ? "rgba(255,74,28,0.16)" : "rgba(255,255,255,0.04)",
-      border: "1px solid", borderColor: active ? ORANGE : "rgba(255,255,255,0.18)",
-      color: active ? "#fff" : "rgba(243,241,236,0.62)",
+      background: active ? "rgba(255,74,28,0.16)" : "rgba(0,0,0,0.04)",
+      border: "1px solid", borderColor: active ? ORANGE : "rgba(0,0,0,0.18)",
+      color: active ? "#fff" : "rgba(26,23,18,0.62)",
       borderRadius: 8, ...style,
     }}>{children}</button>
   );
@@ -889,15 +889,15 @@ function Ck({ ph, span, num, value, onChange, type }) {
       style={{
       gridColumn: span ? "1 / -1" : "auto",
       padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14,
-      border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.04)",
-      color: "#f3f1ec", borderRadius: 10,
+      border: "1px solid rgba(0,0,0,0.16)", background: "rgba(0,0,0,0.04)",
+      color: "#1a1712", borderRadius: 10,
     }} />
   );
 }
 
 function SumRow({ label, value, green }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", color: green ? "#5fd39a" : "#f3f1ec" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", color: green ? "#5fd39a" : "#1a1712" }}>
       <span>{label}</span><span>{value}</span>
     </div>
   );
@@ -907,7 +907,7 @@ function Label({ n, children }) {
   return (
     <div style={{
       fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3.5,
-      textTransform: "uppercase", color: "#f3f1ec", margin: "28px 0 12px",
+      textTransform: "uppercase", color: "#1a1712", margin: "28px 0 12px",
       display: "flex", alignItems: "baseline", gap: 10,
     }}>
       <span style={{ color: ORANGE, fontSize: 10 }}>{n}</span>{children}
@@ -1040,12 +1040,12 @@ export default function App() {
   /* ── temă UI adaptivă peste fundalul colecției ── */
   // temă globală: dark liquid-glass futurist
   const inCollection = false;
-  const darkUI = true;
-  const headerBg = "rgba(14,14,16,0.55)";
-  const uiText = "#f3f1ec";
-  const uiMuted = "rgba(243,241,236,0.6)";
-  const uiBorder = "rgba(255,255,255,0.16)";
-  const logoSrc = "/brand/logo-white.png";
+  const darkUI = false;
+  const headerBg = "rgba(255,255,255,0.62)";
+  const uiText = "#1a1712";
+  const uiMuted = "rgba(26,23,18,0.55)";
+  const uiBorder = "rgba(0,0,0,0.18)";
+  const logoSrc = "/brand/logo-black.png";
 
   const applyPromo = () => {
     const code = promoInput.trim().toUpperCase();
@@ -1203,17 +1203,17 @@ export default function App() {
   /* selectare la click — pozițiile sunt fixe (layout automat), fără drag */
   const selectEl = (e, id) => { e.stopPropagation(); setActiveId(id); };
 
-  const line = color.dark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.3)";
+  const line = color.dark ? "rgba(0,0,0,0.25)" : "rgba(0,0,0,0.3)";
   const sideElements = elements.filter(e => e.side === tab);
   const layout = computeLayout(elements, tab, animVbW);
 
   return (
-    <div style={{ background: "#080809", minHeight: "100vh", color: INK }}>
+    <div style={{ background: "#F4F2EE", minHeight: "100vh", color: INK }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Inter:wght@400;500&display=swap');
         * { box-sizing: border-box; }
         input:focus, textarea:focus, button:focus-visible { outline: 2px solid ${ORANGE}; outline-offset: 2px; }
-        input::placeholder { color: rgba(243,241,236,0.38); }
+        input::placeholder { color: rgba(26,23,18,0.38); }
         ::selection { background: ${ORANGE}; color: #fff; }
         @media (max-width: 880px) { .cfg { grid-template-columns: 1fr !important; } .stick { position: static !important; } }
         .ovr-stage, .ovr-stage * { touch-action: none !important; -ms-touch-action: none !important; }
@@ -1251,7 +1251,7 @@ export default function App() {
           background: "radial-gradient(circle, rgba(255,138,61,0.22), transparent 62%)", filter: "blur(65px)",
           animation: "ovrGlowB 26s ease-in-out infinite" }} />
         <div style={{ position: "absolute", inset: 0, opacity: 0.45,
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(rgba(0,0,0,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.028) 1px, transparent 1px)",
           backgroundSize: "64px 64px" }} />
       </div>
 
@@ -1340,10 +1340,10 @@ export default function App() {
           }}>{L.checkoutTitle}</h1>
 
           {payState === "done" ? (
-            <div style={{ border: "1px solid rgba(255,255,255,0.12)", padding: "44px 28px", textAlign: "center" }}>
+            <div style={{ border: "1px solid rgba(0,0,0,0.12)", padding: "44px 28px", textAlign: "center" }}>
               <svg width="52" height="52" viewBox="0 0 52 52" style={{ margin: "0 auto 16px", display: "block" }}>
                 <circle cx="26" cy="26" r="24" fill="none" stroke={ORANGE} strokeWidth="2" />
-                <path d="M16 27 L23 34 L37 19" fill="none" stroke="#f3f1ec" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M16 27 L23 34 L37 19" fill="none" stroke="#1a1712" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 18, letterSpacing: 3, textTransform: "uppercase" }}>{L.orderOk}</div>
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#8a877f", marginTop: 10 }}>{L.orderOkSub}</p>
@@ -1353,17 +1353,17 @@ export default function App() {
               }}>{L.newOrder}</button>
             </div>
           ) : cart.length === 0 ? (
-            <div style={{ border: "1px solid rgba(255,255,255,0.12)", padding: "44px 28px", textAlign: "center" }}>
+            <div style={{ border: "1px solid rgba(0,0,0,0.12)", padding: "44px 28px", textAlign: "center" }}>
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#8a877f", margin: 0 }}>{L.emptyCart}</p>
               <button onClick={() => setView("studio")} style={{
                 marginTop: 18, fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                padding: "13px 26px", cursor: "pointer", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 10, background: "rgba(255,255,255,0.05)", color: "#f3f1ec",
+                padding: "13px 26px", cursor: "pointer", border: "1px solid rgba(0,0,0,0.2)", borderRadius: 10, background: "rgba(0,0,0,0.05)", color: "#1a1712",
               }}>{L.backStudio}</button>
             </div>
           ) : (
             <>
               {/* articole */}
-              <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)" }}>
+              <div style={{ borderTop: "1px solid rgba(0,0,0,0.12)" }}>
                 {cart.map(it => {
                   const c = GARMENT_COLORS.find(x => x.id === it.colorId);
                   const pr = PRODUCTS.find(x => x.id === it.product);
@@ -1372,7 +1372,7 @@ export default function App() {
                   return (
                     <div key={it.id} style={{
                       display: "flex", alignItems: "center", gap: 14,
-                      padding: "16px 0", borderBottom: "1px solid rgba(255,255,255,0.12)",
+                      padding: "16px 0", borderBottom: "1px solid rgba(0,0,0,0.12)",
                     }}>
                       <span style={{ width: 22, height: 22, borderRadius: "50%", background: c.hex, border: "1px solid #d4d1c9", flexShrink: 0 }} />
                       <div style={{ flex: 1, fontFamily: "'Inter', sans-serif", fontSize: 13.5 }}>
@@ -1391,7 +1391,7 @@ export default function App() {
 
               {/* oferte active */}
               <CkSection n="01" title={L.offersTitle} />
-              <div style={{ border: "1px solid rgba(255,255,255,0.12)", padding: "14px 16px", fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.9 }}>
+              <div style={{ border: "1px solid rgba(0,0,0,0.12)", padding: "14px 16px", fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.9 }}>
                 <div>· {L.offer1}</div><div>· {L.offer2}</div><div>· {L.offer3}</div>
                 <div style={{ fontSize: 11.5, color: "#a8a59c", marginTop: 6 }}>{L.bundleHint}</div>
               </div>
@@ -1462,7 +1462,7 @@ export default function App() {
               <div style={{ display: "flex", gap: 8 }}>
                 <input value={promoInput} onChange={e => setPromoInput(e.target.value)}
                   placeholder={L.promoLabel}
-                  style={{ flex: 1, padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", borderRadius: 0 }} />
+                  style={{ flex: 1, padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14, border: "1px solid rgba(0,0,0,0.16)", background: "transparent", borderRadius: 0 }} />
                 <Opt onClick={applyPromo} style={{ borderColor: ORANGE, color: "#fff", background: "rgba(255,74,28,0.16)" }}>{L.promoApply}</Opt>
               </div>
               {promo && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#1a7f4e", marginTop: 6 }}>{L.promoOk}: {PROMO_CODES[promo].label}</div>}
@@ -1490,7 +1490,7 @@ export default function App() {
               )}
 
               {/* sumar */}
-              <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)", marginTop: 28, paddingTop: 18, fontFamily: "'Inter', sans-serif", fontSize: 13.5 }}>
+              <div style={{ borderTop: "1px solid rgba(0,0,0,0.12)", marginTop: 28, paddingTop: 18, fontFamily: "'Inter', sans-serif", fontSize: 13.5 }}>
                 <SumRow label={L.subtotal} value={fmt(calc.subtotal)} />
                 {calc.freeTees > 0 && <SumRow label={L.bundleFree(calc.freeTees)} value={`− ${fmt(calc.bundleDiscount)}`} green />}
                 {calc.accountDiscount > 0 && <SumRow label={L.accountDisc} value={`− ${fmt(calc.accountDiscount)}`} green />}
@@ -1501,7 +1501,7 @@ export default function App() {
                   <SumRow label={L.vatLabel} value={fmt(calc.vat)} />
                 </div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.12)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(0,0,0,0.12)" }}>
                 <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f" }}>{L.total}</span>
                 <span style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 30 }}>{fmt(calc.grand)}</span>
               </div>
@@ -1542,14 +1542,14 @@ export default function App() {
             position: "relative", width: "100%", aspectRatio: "4 / 5",
             background: curColor.hex, display: "flex", alignItems: "center",
             justifyContent: "center", overflow: "hidden",
-            borderRadius: 18, border: "1px solid rgba(255,255,255,0.14)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2), 0 30px 70px rgba(0,0,0,0.5)",
+            borderRadius: 18, border: "1px solid rgba(0,0,0,0.14)",
+            boxShadow: "inset 0 1px 0 rgba(0,0,0,0.2), 0 30px 70px rgba(0,0,0,0.5)",
           }}>
             {/* spotlight + grilă doar pentru placeholder (nu peste fotografie) */}
             {!itemImg && (<>
               <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(60% 55% at 50% 42%, rgba(255,120,60,0.16), transparent 70%)" }} />
               <div aria-hidden style={{ position: "absolute", inset: 0, opacity: 0.55,
-                backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
+                backgroundImage: "linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px)",
                 backgroundSize: "34px 34px",
                 maskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)", WebkitMaskImage: "radial-gradient(72% 72% at 50% 50%, #000, transparent 78%)" }} />
             </>)}
@@ -1592,7 +1592,7 @@ export default function App() {
                   onClick={() => { setSelId(t.pid); setColorId(t.color); setSide(t.side); }}
                   aria-label={`${t.pid} ${t.color} ${t.side}`} className="ovr-thumb" style={{
                     position: "relative", aspectRatio: "1 / 1", background: "#111214", cursor: "pointer", padding: 0, overflow: "hidden",
-                    border: active ? `2px solid ${ORANGE}` : "1px solid rgba(255,255,255,0.16)", borderRadius: 6,
+                    border: active ? `2px solid ${ORANGE}` : "1px solid rgba(0,0,0,0.16)", borderRadius: 6,
                   }}>
                   <img src={t.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   <span style={{ position: "absolute", bottom: 2, right: 3, fontFamily: "ui-monospace, monospace", fontSize: 7.5, letterSpacing: 1, color: "#fff", opacity: 0.75, textShadow: "0 1px 2px rgba(0,0,0,0.85)" }}>
@@ -1634,9 +1634,9 @@ export default function App() {
               <button key={s} onClick={() => setSize(s)} className="ovr-opt" style={{
                 minWidth: 46, padding: "11px 0", cursor: "pointer", borderRadius: 8,
                 fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 1,
-                border: s === curSize ? `1px solid ${ORANGE}` : "1px solid rgba(255,255,255,0.28)",
-                background: s === curSize ? "rgba(255,74,28,0.2)" : "transparent",
-                color: s === curSize ? "#fff" : "rgba(243,241,236,0.82)",
+                border: s === curSize ? `1px solid ${ORANGE}` : "1px solid rgba(0,0,0,0.22)",
+                background: s === curSize ? "rgba(255,74,28,0.14)" : "transparent",
+                color: s === curSize ? "#b23410" : "rgba(26,23,18,0.7)",
               }}>{s}</button>
             ))}
           </div>
@@ -1644,7 +1644,7 @@ export default function App() {
           <div style={{ marginTop: 26, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f", marginBottom: 10 }}>
             {lang === "ro" ? "Cantitate" : "Quantity"}
           </div>
-          <div style={{ display: "inline-flex", alignItems: "center", border: "1px solid rgba(255,255,255,0.16)" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", border: "1px solid rgba(0,0,0,0.16)" }}>
             <button onClick={() => setQty(q => Math.max(1, q - 1))} style={{ padding: "10px 16px", cursor: "pointer", border: "none", background: "transparent", fontSize: 16 }}>−</button>
             <span style={{ minWidth: 34, textAlign: "center", fontFamily: "'Jost', sans-serif", fontSize: 15 }}>{qty}</span>
             <button onClick={() => setQty(q => q + 1)} style={{ padding: "10px 16px", cursor: "pointer", border: "none", background: "transparent", fontSize: 16 }}>+</button>
@@ -1665,16 +1665,18 @@ export default function App() {
 
         {/* coloana din dreapta: actorul din animația categoriei, îmbinat lin cu pagina */}
         <div className="stick anim-side" style={{ position: "sticky", top: 20 }}>
-          <div style={{ position: "relative", width: "100%", height: "min(80vh, 720px)", overflow: "hidden" }}>
+          <div style={{ position: "relative", width: "100%", height: "min(82vh, 740px)", overflow: "hidden" }}>
             <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 38%", display: "block",
-                maskImage: "linear-gradient(180deg, transparent 0%, #000 13%, #000 84%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 13%, #000 84%, transparent 100%)" }} />
-            {/* îmbinare aproape imperceptibilă spre centru: lumina se stinge lent în negrul paginii */}
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 38%", display: "block" }} />
+            {/* îmbinare lină spre centru — se vede mai mult din stânga clipului */}
             <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(90deg, #080809 0%, rgba(8,8,9,0.92) 12%, rgba(8,8,9,0.55) 32%, rgba(8,8,9,0.15) 50%, transparent 66%)" }} />
+              background: "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.72) 9%, rgba(244,242,238,0.25) 24%, transparent 42%)" }} />
+            {/* aceeași tranziție pe DREAPTA */}
             <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(180deg, #080809 0%, transparent 15%, transparent 85%, #080809 100%)" }} />
+              background: "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.55) 7%, transparent 20%)" }} />
+            {/* sus + jos */}
+            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
+              background: "linear-gradient(180deg, #F4F2EE 0%, transparent 14%, transparent 86%, #F4F2EE 100%)" }} />
           </div>
         </div>
       </main>
@@ -1687,12 +1689,12 @@ export default function App() {
         }}>
           <div onClick={e => e.stopPropagation()} style={{
             background: "rgba(22,22,25,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-            border: "1px solid rgba(255,255,255,0.14)", borderRadius: 16,
+            border: "1px solid rgba(0,0,0,0.14)", borderRadius: 16,
             maxWidth: 360, width: "100%", padding: "32px 26px", textAlign: "center",
           }}>
             <svg width="44" height="44" viewBox="0 0 52 52" style={{ margin: "0 auto 14px", display: "block" }}>
               <circle cx="26" cy="26" r="24" fill="none" stroke={ORANGE} strokeWidth="2" />
-              <path d="M16 27 L23 34 L37 19" fill="none" stroke="#f3f1ec" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M16 27 L23 34 L37 19" fill="none" stroke="#1a1712" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 15, letterSpacing: 2.5, textTransform: "uppercase" }}>{L.addedToCart}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 22 }}>
@@ -1702,7 +1704,7 @@ export default function App() {
               }}>{L.viewCart} ({cartCount})</button>
               <button onClick={() => setShowAddedModal(false)} style={{
                 fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                padding: "15px 0", cursor: "pointer", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 10, background: "rgba(255,255,255,0.05)", color: "#f3f1ec",
+                padding: "15px 0", cursor: "pointer", border: "1px solid rgba(0,0,0,0.2)", borderRadius: 10, background: "rgba(0,0,0,0.05)", color: "#1a1712",
               }}>{L.keepShopping}</button>
             </div>
           </div>
