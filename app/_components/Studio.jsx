@@ -1253,7 +1253,15 @@ export default function App() {
         .ovr-hbtn:hover { background: ${ORANGE} !important; color: #fff !important; border-color: ${ORANGE} !important; }
         .ovr-hbtn:active { transform: translateY(1px); }
         .ovr-navlink { transition: color .2s ease; }
-        @media (max-width: 820px) { .ovr-cat { grid-template-columns: 1fr !important; } }
+        .ovr-glass { transition: transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease, border-color .4s ease, background .4s ease; will-change: transform; }
+        .ovr-glass:hover { transform: translateY(-7px); border-color: rgba(255,74,28,0.7) !important; box-shadow: 0 22px 55px rgba(255,74,28,0.30), inset 0 1px 0 rgba(255,255,255,0.75) !important; background: rgba(255,255,255,0.5) !important; }
+        .ovr-glass:active { transform: translateY(-2px); }
+        .ovr-glass .ovr-arrow { transition: transform .4s ease, opacity .4s ease; opacity: 0; transform: translateX(-8px); }
+        .ovr-glass:hover .ovr-arrow { opacity: 1; transform: translateX(0); }
+        .ovr-subpill { transition: background .25s ease, border-color .25s ease, color .25s ease, transform .2s ease; }
+        .ovr-subpill:hover { background: rgba(255,74,28,0.16) !important; border-color: rgba(255,74,28,0.55) !important; color: #b23410 !important; transform: translateY(-2px); }
+        @keyframes ovrGlassPulse { 0%,100%{ box-shadow: 0 10px 34px rgba(255,74,28,0.16), inset 0 1px 0 rgba(255,255,255,0.6);} 50%{ box-shadow: 0 14px 44px rgba(255,74,28,0.26), inset 0 1px 0 rgba(255,255,255,0.66);} }
+        @media (max-width: 820px) { .ovr-cat { grid-template-columns: 1fr !important; } .ovr-glassrow { grid-template-columns: 1fr !important; } }
         @media (prefers-reduced-motion: reduce) {
           .ovr-rise, .ovr-rise-2, .ovr-fade, .ovr-pop { animation: none !important; }
           .ovr-cta, .ovr-thumb, .ovr-opt { transition: none !important; }
