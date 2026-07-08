@@ -1533,7 +1533,7 @@ export default function App() {
         </main>
       ) : (
       <main className="cfg" style={{
-        display: "grid", gridTemplateColumns: "1fr 0.82fr 0.95fr", gap: "2.4vw",
+        display: "grid", gridTemplateColumns: cat === "tee" ? "0.92fr 0.72fr 1.12fr" : "1fr 0.82fr 0.95fr", gap: "2.4vw",
         padding: "34px 5vw 90px", maxWidth: 1480, margin: "0 auto", alignItems: "start",
       }}>
         {/* stânga: mockup mare + selectorul colecției */}
@@ -1668,11 +1668,11 @@ export default function App() {
           <div style={{ position: "relative", width: "100%", height: "min(82vh, 740px)", overflow: "hidden" }}>
             <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
               style={{ width: "100%", height: "100%", objectFit: "cover",
-                objectPosition: cat === "tee" ? "22% 36%" : "center 38%", display: "block" }} />
-            {/* îmbinare lină spre centru — tricoul: mai mult din stânga + fade mult mai lung/smooth */}
+                objectPosition: "center 38%", display: "block" }} />
+            {/* îmbinare lină spre centru (fade smooth) */}
             <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
               background: cat === "tee"
-                ? "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.5) 20%, rgba(244,242,238,0.12) 46%, transparent 72%)"
+                ? "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.6) 13%, rgba(244,242,238,0.18) 33%, transparent 55%)"
                 : "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.72) 9%, rgba(244,242,238,0.25) 24%, transparent 42%)" }} />
             {/* aceeași tranziție pe DREAPTA */}
             <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
