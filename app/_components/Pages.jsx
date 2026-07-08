@@ -99,7 +99,7 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
   return (
     <main>
       {/* 1 — HERO */}
-      <section style={{ position: "relative", ...secPad, paddingTop: "clamp(40px, 5vw, 72px)" }}>
+      <section style={{ position: "relative", ...secPad, paddingTop: "clamp(40px, 5vw, 72px)", paddingBottom: "clamp(12px, 1.6vw, 26px)" }}>
         <div className="ovr-hero ovr-rise" style={{ position: "relative", maxWidth: 1200, margin: "0 auto" }}>
           <div>
             <div style={eyebrow}>OVRTHINK / 01</div>
@@ -133,7 +133,7 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
       </section>
 
       {/* 2 — SHOP BY COLLECTION */}
-      <section style={{ ...secPad }}>
+      <section style={{ ...secPad, paddingTop: "clamp(14px, 1.8vw, 30px)" }}>
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <div style={{ ...eyebrow, marginBottom: 26 }}>SHOP BY COLLECTION</div>
           <div className="ovr-collgrid">
