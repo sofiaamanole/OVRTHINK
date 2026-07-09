@@ -1082,7 +1082,31 @@ export default function App() {
     const [firstName, ...rest] = form.fullName.trim().split(/\s+/);
     const lastName = rest.join(" ") || firstName;
     // sumă în valuta afișată (aceeași conversie ca UI-ul)
-    const amount = Math.round(calc.grand * CURRENCIES[cur].rate);
+    const rate = CURRENCIES[cur].rate;
+    const sym = CURRENCIES[cur].symbol;
+    const amount = Math.round(calc.grand * rate);
+
+    // detaliile comenzii pentru emailurile din IPN (produse, mărimi, culori, prețuri)
+    const orderData = {
+      items: cart.map(it => {
+        const ci = CATALOG.find(x => x.id === it.catId);
+        const pr = PRODUCTS.find(x => x.id === it.product);
+        const c = GARMENT_COLORS.find(x => x.id === it.colorId);
+        return {
+          name: ci ? ci.name[lang] : (pr ? pr.name[lang] : it.product),
+          product: pr ? pr.name[lang] : it.product,
+          color: c ? c.name[lang] : it.colorId,
+          size: it.size, qty: it.qty,
+          unit: Math.round(it.unitPrice * rate),
+          total: Math.round(it.total * rate),
+        };
+      }),
+      currency: cur, symbol: sym,
+      subtotal: Math.round(calc.subtotal * rate),
+      shipping: Math.round(calc.ship * rate),
+      shippingMethod: shipMethod === "sameday" ? L.sameday : L.dhl,
+      total: amount,
+    };
 
     try {
       const res = await fetch("/api/netopia/start", {
@@ -1100,6 +1124,7 @@ export default function App() {
             address: form.street.trim(),
             postalCode: form.zip.trim(),
           },
+          order: orderData,
         }),
       });
       const data = await res.json();

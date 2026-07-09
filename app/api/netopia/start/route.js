@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { startCardPayment, netopiaConfigured } from "@/lib/netopia";
+import { saveOrder } from "@/lib/orders";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,7 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: "BAD_JSON" }, { status: 400 });
   }
 
-  const { amount, currency, billing, products, language } = payload || {};
+  const { amount, currency, billing, products, language, order } = payload || {};
 
   if (!amount || amount <= 0) {
     return NextResponse.json({ ok: false, error: "INVALID_AMOUNT" }, { status: 400 });
@@ -37,6 +38,12 @@ export async function POST(req) {
   if (!netopiaConfigured()) {
     return NextResponse.json({ ok: true, demo: true, orderID });
   }
+
+  // persistă comanda pentru IPN (emailuri după confirmarea plății)
+  await saveOrder(orderID, {
+    orderID, amount, currency: currency || "RON", language: language || "ro",
+    billing, order: order || null, createdAt: new Date().toISOString(),
+  });
 
   const result = await startCardPayment({
     orderID,
