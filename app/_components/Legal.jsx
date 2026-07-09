@@ -103,7 +103,7 @@ function Termeni({ onHome }) {
         <P>O comandă este considerată plasată după completarea formularului de comandă și confirmarea acesteia de către client. Ne rezervăm dreptul de a refuza sau anula comenzi în cazul unor erori tehnice, informații incomplete, suspiciuni de fraudă sau indisponibilitate produs.</P>
       </Sec>
       <Sec n="4" title="Prețuri și plată">
-        <P>Prețurile afișate pe site sunt exprimate în lei și includ taxele aplicabile, cu excepția cazului în care este menționat altfel.</P>
+        <P>Prețurile afișate pe site sunt exprimate în lei și sunt prețuri finale. SC Aesthetic Studio Creator SRL este neplătitoare de TVA (regim special de scutire conform art. 310 din Codul fiscal), astfel încât prețurile nu includ și nu se adaugă TVA.</P>
         <P>Metode de plată acceptate: Card, PayPal.</P>
         <P>Costurile de livrare sunt afișate înainte de finalizarea comenzii.</P>
       </Sec>

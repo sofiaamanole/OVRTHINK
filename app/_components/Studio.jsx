@@ -278,9 +278,9 @@ function customizationCost(elements, isSlim, slimMode) {
   return c;
 }
 
-/* TVA România — cotă standard 21% (din aug. 2025), aplicabilă îmbrăcămintei.
-   Prețurile afișate includ deja TVA; îl evidențiem separat la checkout. */
-const VAT_RATE = 0.21;
+/* SC Aesthetic Studio Creator SRL este NEPLĂTITOR de TVA (regim special de
+   scutire, art. 310 Cod fiscal). Prețurile nu conțin TVA și nu se evidențiază
+   TVA la checkout sau pe factură. */
 
 /* coduri de reducere (extensibil) */
 const PROMO_CODES = {
@@ -316,11 +316,8 @@ function computeCart(cart, { account, promo, shipCost }) {
 
   const ship = freeShip ? 0 : shipCost;
   const grand = Math.max(0, afterBundle - accountDiscount - promoDiscount) + ship;
-  // prețurile includ TVA; extragem componenta de TVA din total (fără transport, care e separat)
-  const taxableBase = Math.max(0, grand - ship);
-  const vat = Math.round(taxableBase - taxableBase / (1 + VAT_RATE));
-  const net = taxableBase - vat;
-  return { subtotal, bundleDiscount, freeTees, accountDiscount, promoDiscount, ship, freeShip, grand, net, vat, teeCount, hoodieCount };
+  // firmă neplătitoare de TVA — nu se calculează/evidențiază TVA
+  return { subtotal, bundleDiscount, freeTees, accountDiscount, promoDiscount, ship, freeShip, grand, teeCount, hoodieCount };
 }
 
 /* ── traduceri ──────────────────────────────── */
@@ -371,7 +368,7 @@ const T = {
     remove: "Șterge", pcs: "buc.",
     lineUnisex: "Unisex / Bărbați", lineWomen: "Femei", soon: "în curând",
     subtotal: "Subtotal", discount: "Reducere", shipping: "Transport", freeShipLabel: "Gratuit",
-    netLabel: "Valoare fără TVA", vatLabel: "TVA (21%)", vatIncluded: "Prețurile includ TVA 21%",
+    vatNote: "Prețuri finale, fără TVA. Firmă neplătitoare de TVA (art. 310 Cod fiscal).",
     bundleFree: n => `Ofertă: ${n} ${n === 1 ? "tricou gratuit" : "tricouri gratuite"}`,
     accountDisc: "Reducere cont (−5%)",
     createAccount: "Creează cont", createAccountNote: "Cont pentru comenzi mai rapide și istoricul comenzilor.",
@@ -438,14 +435,14 @@ const T = {
     remove: "Remove", pcs: "pcs",
     lineUnisex: "Unisex / Men", lineWomen: "Women", soon: "coming soon",
     subtotal: "Subtotal", discount: "Discount", shipping: "Shipping", freeShipLabel: "Free",
-    netLabel: "Net (excl. VAT)", vatLabel: "VAT (21%)", vatIncluded: "Prices include 21% VAT",
+    vatNote: "Final prices, VAT not applicable. Seller is not VAT-registered (small-business exemption).",
     bundleFree: n => `Offer: ${n} free ${n === 1 ? "t-shirt" : "t-shirts"}`,
     accountDisc: "Account discount (−5%)",
     createAccount: "Create account", createAccountNote: "An account for faster checkout and order history.",
     haveAccount: "I have an account", guest: "Continue as guest",
     email: "Email", password: "Password", fullName: "Full name", phone: "Phone",
     custType: "Customer type", person: "Individual", company: "Business",
-    companyName: "Company name", cui: "VAT / Reg. no.", regCom: "Trade reg. no.",
+    companyName: "Company name", cui: "Reg. no. (CUI)", regCom: "Trade reg. no.",
     shipAddr: "Shipping address", billAddr: "Billing address",
     sameAsShip: "Same as shipping", street: "Street and number", city: "City",
     county: "County / Region", zip: "ZIP code", country: "Country",
@@ -741,7 +738,7 @@ export default function App() {
   const customCost = customizationCost(elements, isSlim, slimMode);
   const total = (unitPrice + customCost) * qty;
   const cartCount = cart.reduce((a, it) => a + it.qty, 0);
-  const shipCost = shipMethod === "dhl" ? 89 : 19;
+  const shipCost = shipMethod === "dhl" ? 89 : 0; // Sameday gratuit
   const calc = computeCart(cart, { account: account && accMode === "create", promo, shipCost });
 
   /* ── catalog: produsul selectat (din colecția activă) + opțiuni valide ── */
@@ -755,14 +752,13 @@ export default function App() {
   const itemImg = side === "back"
     ? (item.imgBack && item.imgBack[curColorId]) || (item.img && item.img[curColorId])
     : (item.img && item.img[curColorId]);
-  // variantele categoriei active (produs × culoare × față/spate) pentru galeria de jos
-  const allThumbs = [];
-  catItems.forEach(p => {
-    p.colors.forEach(c => {
-      if (p.img && p.img[c]) allThumbs.push({ pid: p.id, color: c, side: "front", img: p.img[c] });
-      if (p.imgBack && p.imgBack[c]) allThumbs.push({ pid: p.id, color: c, side: "back", img: p.imgBack[c] });
-    });
-  });
+  // galeria de jos: un thumb per produs, arătând latura cu print (hero)
+  const allThumbs = catItems.map(p => {
+    const c = p.colors[0];
+    const s = p.hero || "front";
+    const img = s === "back" ? (p.imgBack && p.imgBack[c]) : (p.img && p.img[c]);
+    return { pid: p.id, color: c, side: s, img };
+  }).filter(t => t.img);
 
   const addCatalog = () => {
     setCart(c => [...c, {
@@ -782,9 +778,10 @@ export default function App() {
 
   const scrollTop = () => { if (typeof window !== "undefined") window.scrollTo({ top: 0 }); };
   const openCat = (c) => {
-    setPage("shop"); setView("studio"); setCat(c); setSide("front");
+    setPage("shop"); setView("studio"); setCat(c);
     const first = CATALOG.find(p => p.product === c);
-    if (first) setSelId(first.id);
+    if (first) { setSelId(first.id); setSide(first.hero || "front"); }
+    else setSide("front");
     scrollTop();
   };
   const navTo = (p) => { setPage(p); setView("studio"); scrollTop(); };
@@ -1267,10 +1264,10 @@ export default function App() {
               {/* metodă livrare */}
               <CkSection n="04" title={L.shipMethod} />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                {[["sameday", L.sameday, L.samedayNote, 19], ["dhl", L.dhl, L.dhlNote, 89]].map(([id, lbl, note, cost]) => (
+                {[["sameday", L.sameday, L.samedayNote, 0], ["dhl", L.dhl, L.dhlNote, 89]].map(([id, lbl, note, cost]) => (
                   <Opt key={id} active={shipMethod === id} onClick={() => setShipMethod(id)} style={{ textAlign: "left", padding: "12px 14px" }}>
                     <span style={{ display: "block", fontWeight: 500 }}>{lbl}</span>
-                    <span style={{ display: "block", fontSize: 11.5, color: "#a8a59c", marginTop: 2 }}>{note} · {fmt(cost)}</span>
+                    <span style={{ display: "block", fontSize: 11.5, color: "#a8a59c", marginTop: 2 }}>{note} · {cost === 0 ? L.freeShipLabel : fmt(cost)}</span>
                   </Opt>
                 ))}
               </div>
@@ -1313,17 +1310,13 @@ export default function App() {
                 {calc.freeTees > 0 && <SumRow label={L.bundleFree(calc.freeTees)} value={`− ${fmt(calc.bundleDiscount)}`} green />}
                 {calc.accountDiscount > 0 && <SumRow label={L.accountDisc} value={`− ${fmt(calc.accountDiscount)}`} green />}
                 {calc.promoDiscount > 0 && <SumRow label={`${L.discount} (${PROMO_CODES[promo].label})`} value={`− ${fmt(calc.promoDiscount)}`} green />}
-                <SumRow label={L.shipping} value={calc.freeShip ? L.freeShipLabel : fmt(calc.ship)} />
-                <div style={{ borderTop: "1px dashed #e0ddd5", marginTop: 6, paddingTop: 6 }}>
-                  <SumRow label={L.netLabel} value={fmt(calc.net)} />
-                  <SumRow label={L.vatLabel} value={fmt(calc.vat)} />
-                </div>
+                <SumRow label={L.shipping} value={calc.ship === 0 ? L.freeShipLabel : fmt(calc.ship)} />
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(0,0,0,0.12)" }}>
                 <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f" }}>{L.total}</span>
                 <span style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 30 }}>{fmt(calc.grand)}</span>
               </div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11.5, color: "#a8a59c", textAlign: "right", marginTop: 4 }}>{L.vatIncluded}</div>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11.5, color: "#a8a59c", textAlign: "right", marginTop: 4 }}>{L.vatNote}</div>
 
               <button onClick={startPay} disabled={payState === "processing"} style={{
                 width: "100%", marginTop: 20,
@@ -1410,9 +1403,22 @@ export default function App() {
             )}
           </div>
 
+          {/* toggle față / spate pentru produsul curent */}
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            {[["front", lang === "ro" ? "Față" : "Front"], ["back", lang === "ro" ? "Spate" : "Back"]].map(([sv, lbl]) => (
+              <button key={sv} onClick={() => setSide(sv)} className="ovr-opt" style={{
+                flex: 1, padding: "9px 0", cursor: "pointer", borderRadius: 8,
+                fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase",
+                border: side === sv ? `1px solid ${ORANGE}` : "1px solid rgba(0,0,0,0.16)",
+                background: side === sv ? "rgba(255,74,28,0.12)" : "transparent",
+                color: side === sv ? "#b23410" : "rgba(26,23,18,0.6)",
+              }}>{lbl}</button>
+            ))}
+          </div>
+
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(58px, 1fr))", gap: 8, marginTop: 12 }}>
             {allThumbs.map(t => {
-              const active = t.pid === item.id && t.color === curColorId && t.side === side;
+              const active = t.pid === item.id;
               return (
                 <button key={t.pid + t.color + t.side}
                   onClick={() => { setSelId(t.pid); setColorId(t.color); setSide(t.side); }}
