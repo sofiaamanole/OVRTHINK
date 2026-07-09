@@ -1241,11 +1241,6 @@ export default function App() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Inter:wght@400;500&display=swap');
         * { box-sizing: border-box; }
-        /* GLOBAL: tot textul in fontul subtire Jost + CAPS (marimile pastrate) */
-        * { font-family: 'Jost', sans-serif !important; }
-        body * { text-transform: uppercase !important; }
-        input, textarea, select { text-transform: none !important; }
-        input::placeholder, textarea::placeholder { text-transform: uppercase; }
         input:focus, textarea:focus, button:focus-visible { outline: 2px solid ${ORANGE}; outline-offset: 2px; }
         input::placeholder { color: rgba(26,23,18,0.38); }
         ::selection { background: ${ORANGE}; color: #fff; }
