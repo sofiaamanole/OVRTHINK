@@ -1390,8 +1390,8 @@ export default function App() {
         <div className="ovr-teehub" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(14px,2vw,26px)" }}>
           {(cat === "hoodie"
             ? [
-                { color: "white", label: "White Hoodie", img: "/catalog/hoodie-hub-white.jpg" },
-                { color: "black", label: "Black Hoodie", img: "/catalog/hoodie-hub-black.jpg" },
+                { color: "white", label: "White Hoodie", video: "/anim/white-hoodie.mp4", poster: "/catalog/hoodie-blank-white-back.jpg" },
+                { color: "black", label: "Black Hoodie", video: "/anim/black-hoodie.mp4", poster: "/catalog/hoodie-blank-black-back.jpg" },
               ]
             : [
                 { color: "white", label: "White Tee", video: "/anim/white-tee.mp4", poster: "/catalog/tee-blank-white-front.jpg" },
