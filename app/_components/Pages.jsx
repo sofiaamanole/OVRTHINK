@@ -141,9 +141,9 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
               <button key={c.name} onClick={onCollections} className="ovr-glass" style={{
                 textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column",
                 border: "1px solid rgba(0,0,0,0.12)", borderRadius: 12, background: "rgba(255,255,255,0.5)",
-                padding: "22px 20px", minHeight: 178,
+                padding: "22px 20px", minHeight: 178, color: INK, WebkitTapHighlightColor: "transparent",
               }}>
-                <h3 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 400, fontSize: 19, letterSpacing: "0.1em", margin: "0 0 8px" }}>{c.name}</h3>
+                <h3 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 400, fontSize: 19, letterSpacing: "0.1em", margin: "0 0 8px", color: INK }}>{c.name}</h3>
                 <p style={{ ...bodyStyle, fontSize: 13, margin: 0 }}>{c.text}</p>
                 <div style={{ flex: 1 }} />
                 <span className="ovr-arrow" style={{ fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 2.5, textTransform: "uppercase", color: O, marginTop: 16 }}>

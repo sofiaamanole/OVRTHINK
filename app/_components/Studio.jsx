@@ -303,23 +303,11 @@ function computeCart(cart, { account, promo, shipCost }) {
   });
   teeUnits.sort((a, b) => a - b);
 
-  // câte tricouri gratuite oferă cea mai bună combinație de bundle-uri aplicabile
-  let freeTees = 0;
-  let t = teeCount, h = hoodieCount;
-  BUNDLES.forEach(b => {
-    while (t >= b.tee && h >= b.hoodie && (b.tee + b.hoodie) > 0) {
-      // verific că ar mai rămâne tricouri de făcut gratuite
-      if (teeUnits.length > freeTees) {
-        freeTees += b.freeTee;
-        t -= b.tee; h -= b.hoodie;
-      } else break;
-    }
-  });
-  freeTees = Math.min(freeTees, teeUnits.length);
-  const bundleDiscount = Math.round(teeUnits.slice(0, freeTees).reduce((a, v) => a + v, 0));
-
-  const afterBundle = subtotal - bundleDiscount;
-  const accountDiscount = account ? Math.round(afterBundle * 0.05) : 0;
+  // oferta „al N-lea tricou gratuit" și reducerea de cont (5%) au fost eliminate
+  const freeTees = 0;
+  const bundleDiscount = 0;
+  const afterBundle = subtotal;
+  const accountDiscount = 0;
 
   let promoDiscount = 0, freeShip = false;
   const p = promo && PROMO_CODES[promo];
@@ -388,7 +376,7 @@ const T = {
     netLabel: "Valoare fără TVA", vatLabel: "TVA (21%)", vatIncluded: "Prețurile includ TVA 21%",
     bundleFree: n => `Ofertă: ${n} ${n === 1 ? "tricou gratuit" : "tricouri gratuite"}`,
     accountDisc: "Reducere cont (−5%)",
-    createAccount: "Creează cont", createAccountNote: "5% reducere la prima comandă, aplicată automat.",
+    createAccount: "Creează cont", createAccountNote: "Cont pentru comenzi mai rapide și istoricul comenzilor.",
     haveAccount: "Am deja cont", guest: "Continui ca invitat",
     email: "Email", password: "Parolă", fullName: "Nume complet", phone: "Telefon",
     custType: "Tip client", person: "Persoană fizică", company: "Persoană juridică",
@@ -455,7 +443,7 @@ const T = {
     netLabel: "Net (excl. VAT)", vatLabel: "VAT (21%)", vatIncluded: "Prices include 21% VAT",
     bundleFree: n => `Offer: ${n} free ${n === 1 ? "t-shirt" : "t-shirts"}`,
     accountDisc: "Account discount (−5%)",
-    createAccount: "Create account", createAccountNote: "5% off your first order, applied automatically.",
+    createAccount: "Create account", createAccountNote: "An account for faster checkout and order history.",
     haveAccount: "I have an account", guest: "Continue as guest",
     email: "Email", password: "Password", fullName: "Full name", phone: "Phone",
     custType: "Customer type", person: "Individual", company: "Business",
@@ -893,6 +881,7 @@ function Ck({ ph, span, num, value, onChange, type }) {
       {...(value !== undefined ? { value, onChange } : {})}
       style={{
       gridColumn: span ? "1 / -1" : "auto",
+      width: "100%", minWidth: 0, boxSizing: "border-box",
       padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14,
       border: "1px solid rgba(0,0,0,0.16)", background: "rgba(0,0,0,0.04)",
       color: "#1a1712", borderRadius: 10,
@@ -1451,15 +1440,8 @@ export default function App() {
                 })}
               </div>
 
-              {/* oferte active */}
-              <CkSection n="01" title={L.offersTitle} />
-              <div style={{ border: "1px solid rgba(0,0,0,0.12)", padding: "14px 16px", fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.9 }}>
-                <div>· {L.offer1}</div><div>· {L.offer2}</div><div>· {L.offer3}</div>
-                <div style={{ fontSize: 11.5, color: "#a8a59c", marginTop: 6 }}>{L.bundleHint}</div>
-              </div>
-
               {/* cont */}
-              <CkSection n="02" title={L.contactInfo} />
+              <CkSection n="01" title={L.contactInfo} />
               <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
                 <Opt active={accMode === "create"} onClick={() => { setAccMode("create"); setAccount(true); }}>{L.createAccount}</Opt>
                 <Opt active={accMode === "login"} onClick={() => { setAccMode("login"); setAccount(true); }}>{L.haveAccount}</Opt>
@@ -1478,7 +1460,7 @@ export default function App() {
               </div>
 
               {/* facturare PF/PJ */}
-              <CkSection n="03" title={L.billAddr} />
+              <CkSection n="02" title={L.billAddr} />
               <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
                 <Opt active={custType === "person"} onClick={() => setCustType("person")}>{L.person}</Opt>
                 <Opt active={custType === "company"} onClick={() => setCustType("company")}>{L.company}</Opt>
@@ -1490,7 +1472,7 @@ export default function App() {
               )}
 
               {/* adresă livrare */}
-              <CkSection n="04" title={L.shipAddr} />
+              <CkSection n="03" title={L.shipAddr} />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 <Ck ph={L.street} span value={form.street} onChange={setField("street")} />
                 <Ck ph={L.city} value={form.city} onChange={setField("city")} />
@@ -1509,7 +1491,7 @@ export default function App() {
               )}
 
               {/* metodă livrare */}
-              <CkSection n="05" title={L.shipMethod} />
+              <CkSection n="04" title={L.shipMethod} />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {[["sameday", L.sameday, L.samedayNote, 19], ["dhl", L.dhl, L.dhlNote, 89]].map(([id, lbl, note, cost]) => (
                   <Opt key={id} active={shipMethod === id} onClick={() => setShipMethod(id)} style={{ textAlign: "left", padding: "12px 14px" }}>
@@ -1520,18 +1502,18 @@ export default function App() {
               </div>
 
               {/* cod reducere */}
-              <CkSection n="06" title={L.promoLabel} />
+              <CkSection n="05" title={L.promoLabel} />
               <div style={{ display: "flex", gap: 8 }}>
                 <input value={promoInput} onChange={e => setPromoInput(e.target.value)}
                   placeholder={L.promoLabel}
-                  style={{ flex: 1, padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14, border: "1px solid rgba(0,0,0,0.16)", background: "transparent", borderRadius: 0 }} />
+                  style={{ flex: 1, minWidth: 0, boxSizing: "border-box", padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14, border: "1px solid rgba(0,0,0,0.16)", background: "transparent", borderRadius: 0 }} />
                 <Opt onClick={applyPromo} style={{ borderColor: ORANGE, color: "#b23410", background: "rgba(255,74,28,0.14)" }}>{L.promoApply}</Opt>
               </div>
               {promo && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#1a7f4e", marginTop: 6 }}>{L.promoOk}: {PROMO_CODES[promo].label}</div>}
               {promoErr && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#c0341d", marginTop: 6 }}>{L.promoBad}</div>}
 
               {/* metodă plată */}
-              <CkSection n="07" title={L.payMethod} />
+              <CkSection n="06" title={L.payMethod} />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {[
                   ["applepay", <span key="a" style={{ fontWeight: 500 }}>&#63743; Pay</span>],
