@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { CATALOG } from "@/lib/catalog";
+import { JUDETE, TARI, LOCALITATI } from "@/lib/geo";
 import { HomePage, CollectionsPage, AboutPage } from "./Pages";
 import { CustomPage } from "./Custom";
 import { LegalRouter, LEGAL_KEYS } from "./Legal";
@@ -643,6 +644,59 @@ function Ck({ ph, span, num, value, onChange, type }) {
   );
 }
 
+/* Câmp cu autocomplete: tastezi (ex. „R") și apar opțiunile care încep cu ce ai scris.
+   Permite și text liber (pentru localități care nu-s în listă). Diacritic-insensibil. */
+function AutoField({ ph, span, value, onChange, options }) {
+  const [open, setOpen] = useState(false);
+  const [hi, setHi] = useState(-1);
+  const norm = (s) => String(s || "").normalize("NFD").replace(new RegExp("[\\u0300-\\u036f]", "g"), "").toLowerCase();
+  const q = norm(value);
+  const exact = options.some(o => norm(o) === q);
+  const list = (q && !exact ? options.filter(o => norm(o).startsWith(q)) : options).slice(0, 8);
+  const pick = (o) => { onChange({ target: { value: o } }); setOpen(false); setHi(-1); };
+  return (
+    <div style={{ position: "relative", gridColumn: span ? "1 / -1" : "auto" }}>
+      <input
+        placeholder={ph}
+        value={value || ""}
+        autoComplete="off"
+        onChange={(e) => { onChange(e); setOpen(true); setHi(-1); }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 130)}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowDown") { e.preventDefault(); setOpen(true); setHi(h => Math.min(h + 1, list.length - 1)); }
+          else if (e.key === "ArrowUp") { e.preventDefault(); setHi(h => Math.max(h - 1, 0)); }
+          else if (e.key === "Enter" && open && hi >= 0 && list[hi]) { e.preventDefault(); pick(list[hi]); }
+          else if (e.key === "Escape") setOpen(false);
+        }}
+        style={{
+          width: "100%", minWidth: 0, boxSizing: "border-box",
+          padding: "12px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14,
+          border: "1px solid rgba(0,0,0,0.16)", background: "rgba(0,0,0,0.04)",
+          color: "#1a1712", borderRadius: 10,
+        }}
+      />
+      {open && list.length > 0 && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 40,
+          background: "#fff", border: "1px solid rgba(0,0,0,0.14)", borderRadius: 10,
+          boxShadow: "0 12px 34px rgba(0,0,0,0.16)", overflow: "hidden", maxHeight: 264, overflowY: "auto",
+        }}>
+          {list.map((o, i) => (
+            <div key={o} onMouseDown={(e) => { e.preventDefault(); pick(o); }} onMouseEnter={() => setHi(i)}
+              style={{
+                padding: "10px 13px", fontFamily: "'Inter', sans-serif", fontSize: 14, cursor: "pointer",
+                color: "#1a1712", background: i === hi ? "rgba(255,74,28,0.1)" : "transparent",
+              }}>
+              {o}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SumRow({ label, value, green }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", color: green ? "#5fd39a" : "#1a1712" }}>
@@ -705,7 +759,7 @@ export default function App() {
   const [payState, setPayState] = useState("idle"); // idle | processing | done
   const [payErr, setPayErr] = useState("");
   const [form, setForm] = useState({
-    email: "", fullName: "", phone: "", street: "", city: "", county: "", zip: "",
+    email: "", fullName: "", phone: "", street: "", city: "", county: "", zip: "", country: "România",
   });
   const setField = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
   const [cur, setCur] = useState("RON");
@@ -895,6 +949,7 @@ export default function App() {
             state: form.county.trim(),
             address: form.street.trim(),
             postalCode: form.zip.trim(),
+            country: form.country.trim(),
           },
           order: orderData,
         }),
@@ -1285,9 +1340,10 @@ export default function App() {
               <CkSection n="03" title={L.shipAddr} />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 <Ck ph={L.street} span value={form.street} onChange={setField("street")} />
-                <Ck ph={L.city} value={form.city} onChange={setField("city")} />
-                <Ck ph={L.county} value={form.county} onChange={setField("county")} />
-                <Ck ph={L.zip} value={form.zip} onChange={setField("zip")} /><Ck ph={L.country} />
+                <AutoField ph={L.city} value={form.city} onChange={setField("city")} options={LOCALITATI} />
+                <AutoField ph={L.county} value={form.county} onChange={setField("county")} options={JUDETE} />
+                <Ck ph={L.zip} value={form.zip} onChange={setField("zip")} />
+                <AutoField ph={L.country} value={form.country} onChange={setField("country")} options={TARI} />
               </div>
               <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, fontFamily: "'Inter', sans-serif", fontSize: 13, cursor: "pointer" }}>
                 <input type="checkbox" checked={billSame} onChange={e => setBillSame(e.target.checked)} />
@@ -1300,15 +1356,15 @@ export default function App() {
                 </div>
               )}
 
-              {/* metodă livrare */}
+              {/* metodă livrare — momentan doar Sameday (gratuit) */}
               <CkSection n="04" title={L.shipMethod} />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                {[["sameday", L.sameday, L.samedayNote, 0], ["dhl", L.dhl, L.dhlNote, 89]].map(([id, lbl, note, cost]) => (
-                  <Opt key={id} active={shipMethod === id} onClick={() => setShipMethod(id)} style={{ textAlign: "left", padding: "12px 14px" }}>
-                    <span style={{ display: "block", fontWeight: 500 }}>{lbl}</span>
-                    <span style={{ display: "block", fontSize: 11.5, color: "#a8a59c", marginTop: 2 }}>{note} · {cost === 0 ? L.freeShipLabel : fmt(cost)}</span>
-                  </Opt>
-                ))}
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 13, border: "1px solid rgba(0,0,0,0.16)", background: "rgba(0,0,0,0.03)", borderRadius: 12, padding: "14px 16px" }}>
+                <span aria-hidden style={{ fontSize: 20, lineHeight: 1 }}>🚚</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 500, color: "#1a1712" }}>{L.sameday}</div>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#a8a59c", marginTop: 2 }}>{L.samedayNote}</div>
+                </div>
+                <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 1, textTransform: "uppercase", color: "#1a7f4e" }}>{L.freeShipLabel}</span>
               </div>
 
               {/* cod reducere */}

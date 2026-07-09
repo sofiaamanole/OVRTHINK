@@ -109,7 +109,7 @@ function Termeni({ onHome }) {
       </Sec>
       <Sec n="5" title="Livrare">
         <P>Livrarea se face prin curier, pe teritoriul României și/sau în alte țări disponibile la checkout.</P>
-        <P>Termen estimativ de procesare: 1-2 zile lucrătoare.<br />Termen estimativ de livrare: 1-3 zile lucrătoare.<br />Curier: Sameday și DHL.</P>
+        <P>Termen estimativ de procesare: 1-2 zile lucrătoare.<br />Termen estimativ de livrare: 1-3 zile lucrătoare.<br />Curier: Sameday.</P>
       </Sec>
       <Sec n="6" title="Dreptul de retragere pentru produse standard">
         <P>Pentru produsele standard, nepurtate, nespălate, nedeteriorate și în aceeași stare în care au fost livrate, clientul are dreptul să se retragă din contract în termen de 14 zile calendaristice de la primirea produsului, fără a invoca un motiv.</P>
@@ -240,12 +240,12 @@ function Livrare({ onHome }) {
     <LegalPage onHome={onHome} title="Livrare și plată" seoTitle="Livrare și plată | OVRthink"
       seoDesc="Informații despre livrare, costuri și metode de plată pentru comenzile OVRthink.">
       <Sec n="1" title="Livrare">
-        <P>Comenzile OVRthink sunt procesate în termen de 1-2 zile lucrătoare și livrate prin Sameday și DHL.</P>
+        <P>Comenzile OVRthink sunt procesate în termen de 1-2 zile lucrătoare și livrate prin Sameday.</P>
         <P>Termen estimativ de livrare: 1-3 zile lucrătoare.</P>
       </Sec>
       <Sec n="2" title="Cost livrare">
         <P>Costul livrării este afișat înainte de finalizarea comenzii.</P>
-        <P>Livrare <b>gratuită prin Sameday</b>. Livrarea prin DHL este contra cost, calculată automat la plasarea comenzii.</P>
+        <P>Livrare <b>gratuită prin Sameday</b>, în 1–2 zile lucrătoare.</P>
       </Sec>
       <Sec n="3" title="Plată">
         <P>Metodă de plată disponibilă: ramburs (plata la livrare), în numerar sau cu cardul la curier. Plata online cu cardul va fi disponibilă în curând.</P>

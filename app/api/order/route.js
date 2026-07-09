@@ -56,7 +56,7 @@ function merchantHtml(orderID, billing, order) {
     <p style="font-size:14px;line-height:1.7;margin:0">
       ${esc([b.firstName, b.lastName].filter(Boolean).join(" "))}<br>
       ${esc(b.email)}${b.phone ? " · " + esc(b.phone) : ""}<br>
-      ${esc(b.address)}${b.city ? ", " + esc(b.city) : ""}${b.state ? ", " + esc(b.state) : ""}${b.postalCode ? " " + esc(b.postalCode) : ""}
+      ${esc(b.address)}${b.city ? ", " + esc(b.city) : ""}${b.state ? ", " + esc(b.state) : ""}${b.postalCode ? " " + esc(b.postalCode) : ""}${b.country ? ", " + esc(b.country) : ""}
     </p>
   </div>`;
 }
