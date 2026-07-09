@@ -83,8 +83,6 @@ export default function Intro({ children }) {
               // pătrat, se vede TOT (fără crop), centrat, mai mic; marginile topite în fundal
               width: "min(94vw, 90vh)", height: "min(94vw, 90vh)",
               objectFit: "cover", display: "block",
-              maskImage: "radial-gradient(closest-side at 50% 50%, #000 46%, transparent 86%)",
-              WebkitMaskImage: "radial-gradient(closest-side at 50% 50%, #000 46%, transparent 86%)",
               transform: phase === "fadeout" ? "scale(1.04)" : "scale(1)",
               transition: "transform 1.2s ease",
             }}
