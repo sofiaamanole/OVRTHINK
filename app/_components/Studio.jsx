@@ -1405,11 +1405,11 @@ export default function App() {
             return (
               <button key={panel.color} onClick={() => openTeeColor(panel.color)} className="ovr-teepanel" style={{
                 position: "relative", overflow: "hidden", border: "none", cursor: "pointer", padding: 0,
-                borderRadius: 18, aspectRatio: "3 / 4", background: "#f1eee9",
+                borderRadius: 18, aspectRatio: "3 / 4", background: "#160c06",
               }}>
-                {/* fundal: animație (tricou) sau imagine (hanorac), autoplay + loop, mut */}
+                {/* fundal: animație (autoplay + loop, mut) — fără poster, ca să nu clipească o imagine statică înainte */}
                 {panel.video ? (
-                  <video src={panel.video} poster={panel.poster} autoPlay muted loop playsInline preload="auto"
+                  <video src={panel.video} autoPlay muted loop playsInline preload="auto"
                     className="ovr-teepanel-img" style={{
                     position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block",
                   }} />
