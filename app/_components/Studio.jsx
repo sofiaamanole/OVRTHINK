@@ -1052,10 +1052,10 @@ export default function App() {
         .ovr-card:hover { transform: translateY(-4px); }
         .ovr-card:hover .ovr-card-img { transform: scale(1.045); }
         @media (max-width: 560px) { .ovr-grid { grid-template-columns: 1fr 1fr !important; gap: 20px 12px !important; } }
-        .ovr-teepanel { transition: transform .3s cubic-bezier(.2,.7,.2,1); }
-        .ovr-teepanel:hover { transform: translateY(-4px); }
+        .ovr-teepanel { transition: transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease; }
+        .ovr-teepanel:hover { transform: scale(1.07); z-index: 2; box-shadow: 0 26px 60px rgba(0,0,0,0.28); }
         .ovr-teepanel-img { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
-        .ovr-teepanel:hover .ovr-teepanel-img { transform: scale(1.06); }
+        .ovr-teepanel:hover .ovr-teepanel-img { transform: scale(1.04); }
         .ovr-teearrow { transition: transform .3s ease; }
         .ovr-teepanel:hover .ovr-teearrow { transform: translateX(6px); }
         @media (max-width: 640px) { .ovr-teehub { grid-template-columns: 1fr !important; } }
@@ -1377,7 +1377,7 @@ export default function App() {
       ) : LEGAL_KEYS.includes(page) ? (
         <LegalRouter page={page} onHome={() => navTo("home")} />
       ) : shopView === "hub" ? (
-      <main className="ovr-rise" style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 5vw 90px" }}>
+      <main className="ovr-rise" style={{ maxWidth: 900, margin: "0 auto", padding: "48px 5vw 96px" }}>
         <div style={{ textAlign: "center", marginBottom: 36 }}>
           <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(26px,3.6vw,34px)", letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>
             {lang === "ro" ? "Alege-ți tricoul" : "Choose your tee"}
