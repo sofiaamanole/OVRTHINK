@@ -1388,8 +1388,8 @@ export default function App() {
         </div>
         <div className="ovr-teehub" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(14px,2vw,26px)" }}>
           {[
-            { color: "white", label: "White Tee", img: "/catalog/tee-blank-white-front.jpg" },
-            { color: "black", label: "Black Tee", img: "/catalog/tee-blank-black-front.jpg" },
+            { color: "white", label: "White Tee", video: "/anim/white-tee.mp4", poster: "/catalog/tee-blank-white-front.jpg" },
+            { color: "black", label: "Black Tee", video: "/anim/black-tee.mp4", poster: "/catalog/tee-blank-black-front.jpg" },
           ].map(panel => {
             const count = CATALOG.filter(p => p.product === "tee" && p.colors.includes(panel.color)).length;
             return (
@@ -1397,8 +1397,9 @@ export default function App() {
                 position: "relative", overflow: "hidden", border: "none", cursor: "pointer", padding: 0,
                 borderRadius: 18, aspectRatio: "3 / 4", background: "#f1eee9",
               }}>
-                {/* fundal: imagine placeholder — de înlocuit cu <video> autoPlay loop când Sofia trimite animația */}
-                <img src={panel.img} alt={panel.label} className="ovr-teepanel-img" style={{
+                {/* fundal: animația tricoului (alb / negru), autoplay + loop, mut */}
+                <video src={panel.video} poster={panel.poster} autoPlay muted loop playsInline preload="auto"
+                  className="ovr-teepanel-img" style={{
                   position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block",
                 }} />
                 <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 42%, rgba(8,4,1,0.62) 100%)" }} />
