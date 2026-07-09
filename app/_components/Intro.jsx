@@ -64,7 +64,9 @@ export default function Intro({ children }) {
       {children}
       {phase !== "done" && (
         <div style={{
-          position: "fixed", inset: 0, zIndex: 1000, background: "#F4F2EE",
+          position: "fixed", inset: 0, zIndex: 1000,
+          // fundal gri care imită backgroundul video-ului -> marginile lui devin invizibile
+          background: "linear-gradient(180deg, #ececf0 0%, #d4d4d9 58%, #c6c6cc 100%)",
           display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden",
           opacity: phase === "fadeout" ? 0 : 1,
           transition: "opacity 1.2s ease",
@@ -83,6 +85,9 @@ export default function Intro({ children }) {
               // pătrat, se vede TOT (fără crop), centrat, mai mic; marginile topite în fundal
               width: "min(94vw, 90vh)", height: "min(94vw, 90vh)",
               objectFit: "cover", display: "block",
+              // fade DOAR pe marginea exterioară (18%) — nu ajunge la inel; topește seam-ul
+              maskImage: "radial-gradient(closest-side at 50% 50%, #000 82%, transparent 100%)",
+              WebkitMaskImage: "radial-gradient(closest-side at 50% 50%, #000 82%, transparent 100%)",
               transform: phase === "fadeout" ? "scale(1.04)" : "scale(1)",
               transition: "transform 1.2s ease",
             }}
