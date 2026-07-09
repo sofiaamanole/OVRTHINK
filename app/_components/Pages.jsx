@@ -207,11 +207,8 @@ export function CollectionsPage({ lang, onShop }) {
   const L = T[lang];
   const ro = lang === "ro";
   const cols = [
-    { id: "ovrcore", name: "OVRCORE", tag: ro ? "Nucleul · esențiale" : "The core · essentials", live: true,
-      subs: [
-        { name: "OVRHEAT", tag: ro ? "Vară · lejer" : "Summer · light" },
-        { name: "OVRLAYER", tag: ro ? "Iarnă · straturi" : "Winter · layers" },
-      ] },
+    { id: "ovrheat", name: "OVRHEAT", tag: ro ? "Toate tricourile" : "All t-shirts", live: true, target: "tee" },
+    { id: "ovrlayer", name: "OVRLAYER", tag: ro ? "Hanorace · straturi" : "Hoodies · layers", live: true, target: "hoodie" },
     { id: "ovrmove", name: "OVRMOVE", tag: ro ? "Sport · mișcare · viteză" : "Sport · motion · speed", live: false },
     { id: "ovrshift", name: "OVRSHIFT", tag: ro ? "Ediție limitată" : "Limited edition", live: false },
   ];
@@ -240,7 +237,7 @@ export function CollectionsPage({ lang, onShop }) {
         {/* dreapta: tab-uri colecții liquid glass, stivuite vertical */}
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {cols.map(c => (
-            <div key={c.id} className="ovr-glass" onClick={c.live ? () => onShop("tee") : undefined}
+            <div key={c.id} className="ovr-glass" onClick={c.live ? () => onShop(c.target) : undefined}
               style={{
                 position: "relative", cursor: c.live ? "pointer" : "default", overflow: "hidden",
                 border: "1px solid rgba(255,74,28,0.32)", borderRadius: 18,
