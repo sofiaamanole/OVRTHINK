@@ -1,9 +1,26 @@
 import "./globals.css";
 
 export const metadata = {
+  metadataBase: new URL("https://www.ovrthink.ro"),
   title: "OVRTHINK",
   description:
     "OVRTHINK — brand de tricouri. Colecție de tricouri și hoodie-uri cu design propriu, print premium. Negru și alb.",
+  openGraph: {
+    title: "OVRTHINK",
+    description: "Streetwear pentru cei care gândesc prea mult.",
+    url: "https://www.ovrthink.ro",
+    siteName: "OVRTHINK",
+    type: "website",
+    images: [
+      { url: "/brand/og-image.png", width: 1200, height: 630, alt: "OVRTHINK" },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OVRTHINK",
+    description: "Streetwear pentru cei care gândesc prea mult.",
+    images: ["/brand/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }) {
