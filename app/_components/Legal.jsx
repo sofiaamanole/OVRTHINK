@@ -104,12 +104,12 @@ function Termeni({ onHome }) {
       </Sec>
       <Sec n="4" title="Prețuri și plată">
         <P>Prețurile afișate pe site sunt exprimate în lei și includ taxele aplicabile, cu excepția cazului în care este menționat altfel.</P>
-        <P>Metode de plată acceptate: <Todo>TODO_PAYMENT_METHODS</Todo>.</P>
+        <P>Metode de plată acceptate: Card, PayPal.</P>
         <P>Costurile de livrare sunt afișate înainte de finalizarea comenzii.</P>
       </Sec>
       <Sec n="5" title="Livrare">
         <P>Livrarea se face prin curier, pe teritoriul României și/sau în alte țări disponibile la checkout.</P>
-        <P>Termen estimativ de procesare: <Todo>TODO_PROCESSING_TIME</Todo>.<br />Termen estimativ de livrare: <Todo>TODO_DELIVERY_TIME</Todo>.<br />Curier: <Todo>TODO_COURIER</Todo>.</P>
+        <P>Termen estimativ de procesare: 1-2 zile lucrătoare.<br />Termen estimativ de livrare: 1-3 zile lucrătoare.<br />Curier: Sameday și DHL.</P>
       </Sec>
       <Sec n="6" title="Dreptul de retragere pentru produse standard">
         <P>Pentru produsele standard, nepurtate, nespălate, nedeteriorate și în aceeași stare în care au fost livrate, clientul are dreptul să se retragă din contract în termen de 14 zile calendaristice de la primirea produsului, fără a invoca un motiv.</P>
@@ -168,18 +168,6 @@ function Retururi({ onHome }) {
       </Sec>
       <Sec n="5" title="Rambursare">
         <P>Rambursarea se face în termenul legal, folosind aceeași metodă de plată, cu excepția cazului în care clientul acceptă o altă metodă.</P>
-      </Sec>
-      <Sec n="6" title="Model formular de retragere">
-        <div style={{ ...body, border: "1px solid rgba(0,0,0,0.14)", borderRadius: 8, padding: "22px 24px", background: "rgba(255,255,255,0.5)", whiteSpace: "pre-line", fontSize: 14 }}>
-{`Către ${FIRMA},
-Vă informez prin prezenta cu privire la retragerea mea din contractul privind comanda nr. ______, primită la data de ______.
-Nume client:
-Email:
-Telefon:
-Produs:
-Data:
-Semnătură (doar dacă formularul este trimis fizic):`}
-        </div>
       </Sec>
     </LegalPage>
   );
@@ -252,15 +240,15 @@ function Livrare({ onHome }) {
     <LegalPage onHome={onHome} title="Livrare și plată" seoTitle="Livrare și plată | OVRthink"
       seoDesc="Informații despre livrare, costuri și metode de plată pentru comenzile OVRthink.">
       <Sec n="1" title="Livrare">
-        <P>Comenzile OVRthink sunt procesate în termen de <Todo>TODO_PROCESSING_TIME</Todo> și livrate prin <Todo>TODO_COURIER</Todo>.</P>
-        <P>Termen estimativ de livrare: <Todo>TODO_DELIVERY_TIME</Todo>.</P>
+        <P>Comenzile OVRthink sunt procesate în termen de 1-2 zile lucrătoare și livrate prin Sameday și DHL.</P>
+        <P>Termen estimativ de livrare: 1-3 zile lucrătoare.</P>
       </Sec>
       <Sec n="2" title="Cost livrare">
         <P>Costul livrării este afișat înainte de finalizarea comenzii.</P>
-        <P>Cost standard livrare: <Todo>TODO_SHIPPING_COST</Todo>.</P>
+        <P>Livrare <b>gratuită prin Sameday</b>. Livrarea prin DHL este contra cost, calculată automat la plasarea comenzii.</P>
       </Sec>
       <Sec n="3" title="Plată">
-        <P>Metode de plată disponibile: <Todo>TODO_PAYMENT_METHODS</Todo>.</P>
+        <P>Metode de plată disponibile: Card, PayPal.</P>
       </Sec>
       <Sec n="4" title="Produse custom">
         <P>Produsele custom pot necesita timp suplimentar de procesare, în funcție de complexitatea fișierului și confirmarea designului.</P>
@@ -313,7 +301,7 @@ function Contact({ onHome }) {
 /* ───────── FAQ ───────── */
 function Faq({ onHome }) {
   const qa = [
-    ["În cât timp primesc comanda?", <>Termenul estimativ este <Todo>TODO_DELIVERY_TIME</Todo> după procesare.</>],
+    ["În cât timp primesc comanda?", <>Termenul estimativ este 1-3 zile lucrătoare după procesare.</>],
     ["Pot returna produsul?", "Produsele standard pot fi returnate în 14 zile dacă sunt nepurtate, nespălate și nedeteriorate. Produsele custom nu pot fi returnate decât dacă au defecte sau neconformități."],
     ["Pot personaliza un tricou sau hoodie?", "Da. Intră în pagina Custom, trimite ideea și fișierul PNG, iar echipa OVRthink revine cu detalii."],
     ["Ce format trebuie să aibă fișierul custom?", "PNG, HD, recomandat 300 DPI, cu fundal transparent."],
@@ -333,24 +321,29 @@ function Faq({ onHome }) {
 }
 
 /* ───────── GHID MĂRIMI ───────── */
-function SizeTable({ title }) {
-  const rows = [["Lungime", "TODO"], ["Lățime piept", "TODO"], ["Lungime mânecă", "TODO"]];
+function SizeTable({ title, rows }) {
   const sizes = ["S", "M", "L", "XL", "XXL"];
+  const inch = (cm) => Math.round((cm / 2.54) * 10) / 10;
+  const th = { padding: "10px 10px", borderBottom: "2px solid #1a1712", fontFamily: "'Jost',sans-serif", fontWeight: 400, color: INK, fontSize: 13 };
   return (
     <div style={{ marginTop: 8, overflowX: "auto" }}>
       <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 14, letterSpacing: 1, marginBottom: 10 }}>{title}</div>
-      <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 480, ...body, fontSize: 13.5 }}>
+      <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 520, ...body, fontSize: 13 }}>
         <thead>
           <tr>
-            <th style={{ textAlign: "left", padding: "10px 12px", borderBottom: "1px solid rgba(0,0,0,0.14)", fontFamily: "'Jost',sans-serif", fontWeight: 400, color: INK }}></th>
-            {sizes.map(s => <th key={s} style={{ padding: "10px 12px", borderBottom: "1px solid rgba(0,0,0,0.14)", fontFamily: "'Jost',sans-serif", fontWeight: 400, color: INK }}>{s}</th>)}
+            <th style={{ ...th, textAlign: "left" }}></th>
+            {sizes.map(s => <th key={s} style={th}>{s}</th>)}
           </tr>
         </thead>
         <tbody>
-          {rows.map(([r]) => (
-            <tr key={r}>
-              <td style={{ padding: "10px 12px", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>{r}</td>
-              {sizes.map(s => <td key={s} style={{ padding: "10px 12px", borderBottom: "1px solid rgba(0,0,0,0.06)", textAlign: "center" }}><Todo>TODO</Todo></td>)}
+          {rows.map(r => (
+            <tr key={r.label}>
+              <td style={{ padding: "10px 10px", borderBottom: "1px solid rgba(0,0,0,0.06)", whiteSpace: "nowrap" }}>{r.label}</td>
+              {r.cm.map((v, i) => (
+                <td key={i} style={{ padding: "10px 10px", borderBottom: "1px solid rgba(0,0,0,0.06)", textAlign: "center", whiteSpace: "nowrap" }}>
+                  {v} <span style={{ color: "#a8a59c" }}>/ {inch(v)}″</span>
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
@@ -359,11 +352,21 @@ function SizeTable({ title }) {
   );
 }
 function Marimi({ onHome }) {
+  const tee = [
+    { label: "Lungime", cm: [70, 72, 74, 76, 78] },
+    { label: "Lățime piept (întins)", cm: [56, 58, 60, 62, 64] },
+    { label: "Lungime mânecă", cm: [21, 21.5, 22, 23, 24] },
+  ];
+  const hoodie = [
+    { label: "Lungime", cm: [68, 70, 72, 74, 76] },
+    { label: "Lățime piept (întins)", cm: [60, 63, 66, 69, 72] },
+    { label: "Lungime mânecă", cm: [60, 61, 62, 63, 64] },
+  ];
   return (
-    <LegalPage onHome={onHome} title="Ghid mărimi" seoTitle="Ghid mărimi | OVRthink" seoDesc="Ghid de mărimi orientativ pentru tricourile și hoodie-urile OVRthink.">
-      <P>Măsurătorile sunt orientative. Pentru fit oversized, alege mărimea obișnuită. Pentru un fit mai relaxat, poți alege o mărime mai mare.</P>
-      <Sec title="Tricou"><SizeTable title="Tricou (cm)" /></Sec>
-      <Sec title="Hoodie"><SizeTable title="Hoodie (cm)" /></Sec>
+    <LegalPage onHome={onHome} title="Ghid mărimi" seoTitle="Ghid mărimi | OVRthink" seoDesc="Ghid de mărimi orientativ pentru tricourile și hoodie-urile oversized OVRthink, în cm și inch.">
+      <P>Măsurătorile sunt orientative, luate pe produsul întins (nu pe corp). Croieli oversized — pentru fit-ul obișnuit alege mărimea ta uzuală; pentru un look și mai lejer, ia o mărime mai mare. Fiecare valoare e afișată în <b>cm / inch</b>.</P>
+      <Sec title="Tricou oversized"><SizeTable title="Tricou — cm / inch" rows={tee} /></Sec>
+      <Sec title="Hoodie oversized"><SizeTable title="Hoodie — cm / inch" rows={hoodie} /></Sec>
     </LegalPage>
   );
 }

@@ -1703,8 +1703,19 @@ export default function App() {
             ))}
           </div>
 
-          <div style={{ marginTop: 26, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f", marginBottom: 10 }}>
-            {lang === "ro" ? "Mărime" : "Size"}
+          <div style={{ marginTop: 26, marginBottom: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+            <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f" }}>
+              {lang === "ro" ? "Mărime" : "Size"}
+            </span>
+            <button onClick={() => navTo("marimi")} className="ovr-flink" aria-label={lang === "ro" ? "Ghid mărimi" : "Size guide"} style={{
+              display: "inline-flex", alignItems: "center", gap: 6, background: "transparent", border: "none", cursor: "pointer", padding: 0,
+              fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 1.5, textTransform: "uppercase", color: "#8a877f",
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="7" width="20" height="10" rx="1.5" /><path d="M6 7v3M10 7v4M14 7v3M18 7v4" />
+              </svg>
+              {lang === "ro" ? "Ghid mărimi" : "Size guide"}
+            </button>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {availSizes.map(s => (
