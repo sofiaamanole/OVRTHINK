@@ -1054,12 +1054,21 @@ export default function App() {
         .ovr-card:hover .ovr-card-img { transform: scale(1.045); }
         @media (max-width: 560px) { .ovr-grid { grid-template-columns: 1fr 1fr !important; gap: 20px 12px !important; } }
         .ovr-teepanel { transition: transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease; }
-        .ovr-teepanel:hover { transform: scale(1.07); z-index: 2; box-shadow: 0 26px 60px rgba(0,0,0,0.28); }
         .ovr-teepanel-img { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
-        .ovr-teepanel:hover .ovr-teepanel-img { transform: scale(1.04); }
         .ovr-teearrow { transition: transform .3s ease; }
-        .ovr-teepanel:hover .ovr-teearrow { transform: translateX(6px); }
-        @media (max-width: 640px) { .ovr-teehub { grid-template-columns: 1fr !important; } }
+        /* efectul de mărire DOAR pe desktop cu mouse — pe touch nu, ca să nu se suprapună */
+        @media (hover: hover) and (pointer: fine) {
+          .ovr-teepanel:hover { transform: scale(1.07); z-index: 2; box-shadow: 0 26px 60px rgba(0,0,0,0.28); }
+          .ovr-teepanel:hover .ovr-teepanel-img { transform: scale(1.04); }
+          .ovr-teepanel:hover .ovr-teearrow { transform: translateX(6px); }
+        }
+        /* pe telefon: 2 casete pe rând, mai mici, fără mărire */
+        @media (max-width: 640px) {
+          .ovr-teehub { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+          .ovr-teepanel-label { font-size: 16px !important; letter-spacing: 0.04em !important; }
+          .ovr-teepanel-pad { padding: 13px 12px !important; }
+          .ovr-teepanel-meta { font-size: 9.5px !important; }
+        }
         @media (max-width: 1040px) { .ovr-collgrid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 820px) { .ovr-cat { grid-template-columns: 1fr !important; } .ovr-glassrow { grid-template-columns: 1fr !important; } .ovr-hero { grid-template-columns: 1fr; } .ovr-trio { grid-template-columns: 1fr; } .ovr-collgrid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 520px) { .ovr-collgrid { grid-template-columns: 1fr; } }
@@ -1416,9 +1425,9 @@ export default function App() {
                   }} />
                 )}
                 <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 42%, rgba(8,4,1,0.62) 100%)" }} />
-                <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "clamp(20px,3vw,32px)", textAlign: "left" }}>
-                  <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(20px,3vw,34px)", letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff" }}>{panel.label}</div>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: 9, marginTop: 10, fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>
+                <div className="ovr-teepanel-pad" style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "clamp(20px,3vw,32px)", textAlign: "left" }}>
+                  <div className="ovr-teepanel-label" style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(20px,3vw,34px)", letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff" }}>{panel.label}</div>
+                  <div className="ovr-teepanel-meta" style={{ display: "inline-flex", alignItems: "center", gap: 9, marginTop: 10, fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>
                     {count} {lang === "ro" ? "modele" : "styles"} <span className="ovr-teearrow" style={{ fontSize: 15, display: "inline-block" }}>→</span>
                   </div>
                 </div>
