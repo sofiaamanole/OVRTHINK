@@ -781,8 +781,13 @@ export default function App() {
 
   const scrollTop = () => { if (typeof window !== "undefined") window.scrollTo({ top: 0 }); };
   const openCat = (c) => {
-    setPage("shop"); setView("studio"); setCat(c); setShopView("grid"); setColFilter("all");
+    setPage("shop"); setView("studio"); setCat(c); setColFilter("all");
+    setShopView(c === "tee" ? "hub" : "grid"); // tricourile intră prin hub-ul White/Black
     scrollTop();
+  };
+  // din hub-ul White/Black → grila filtrată pe culoare
+  const openTeeColor = (color) => {
+    setColFilter(color); setShopView("grid"); scrollTop();
   };
   // deschide pagina unui produs din grilă
   const openProduct = (p) => {
@@ -1047,6 +1052,13 @@ export default function App() {
         .ovr-card:hover { transform: translateY(-4px); }
         .ovr-card:hover .ovr-card-img { transform: scale(1.045); }
         @media (max-width: 560px) { .ovr-grid { grid-template-columns: 1fr 1fr !important; gap: 20px 12px !important; } }
+        .ovr-teepanel { transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+        .ovr-teepanel:hover { transform: translateY(-4px); }
+        .ovr-teepanel-img { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+        .ovr-teepanel:hover .ovr-teepanel-img { transform: scale(1.06); }
+        .ovr-teearrow { transition: transform .3s ease; }
+        .ovr-teepanel:hover .ovr-teearrow { transform: translateX(6px); }
+        @media (max-width: 640px) { .ovr-teehub { grid-template-columns: 1fr !important; } }
         @media (max-width: 1040px) { .ovr-collgrid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 820px) { .ovr-cat { grid-template-columns: 1fr !important; } .ovr-glassrow { grid-template-columns: 1fr !important; } .ovr-hero { grid-template-columns: 1fr; } .ovr-trio { grid-template-columns: 1fr; } .ovr-collgrid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 520px) { .ovr-collgrid { grid-template-columns: 1fr; } }
@@ -1364,8 +1376,55 @@ export default function App() {
         <AboutPage lang={lang} onShop={openCat} />
       ) : LEGAL_KEYS.includes(page) ? (
         <LegalRouter page={page} onHome={() => navTo("home")} />
+      ) : shopView === "hub" ? (
+      <main className="ovr-rise" style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 5vw 90px" }}>
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(26px,3.6vw,34px)", letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>
+            {lang === "ro" ? "Alege-ți tricoul" : "Choose your tee"}
+          </h1>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#a8a59c", marginTop: 7 }}>
+            {lang === "ro" ? "Alb sau negru — intră în colecție" : "White or black — enter the collection"}
+          </div>
+        </div>
+        <div className="ovr-teehub" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(14px,2vw,26px)" }}>
+          {[
+            { color: "white", label: lang === "ro" ? "Tricouri Albe" : "White Tee", img: "/catalog/tee-blank-white-front.jpg" },
+            { color: "black", label: lang === "ro" ? "Tricouri Negre" : "Black Tee", img: "/catalog/tee-blank-black-front.jpg" },
+          ].map(panel => {
+            const count = CATALOG.filter(p => p.product === "tee" && p.colors.includes(panel.color)).length;
+            return (
+              <button key={panel.color} onClick={() => openTeeColor(panel.color)} className="ovr-teepanel" style={{
+                position: "relative", overflow: "hidden", border: "none", cursor: "pointer", padding: 0,
+                borderRadius: 18, aspectRatio: "3 / 4", background: "#f1eee9",
+              }}>
+                {/* fundal: imagine placeholder — de înlocuit cu <video> autoPlay loop când Sofia trimite animația */}
+                <img src={panel.img} alt={panel.label} className="ovr-teepanel-img" style={{
+                  position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block",
+                }} />
+                <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 42%, rgba(8,4,1,0.62) 100%)" }} />
+                <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "clamp(20px,3vw,32px)", textAlign: "left" }}>
+                  <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(20px,3vw,34px)", letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff" }}>{panel.label}</div>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 9, marginTop: 10, fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>
+                    {count} {lang === "ro" ? "modele" : "styles"} <span className="ovr-teearrow" style={{ fontSize: 15, display: "inline-block" }}>→</span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </main>
       ) : shopView === "grid" ? (
-      <main className="ovr-rise" style={{ maxWidth: 1360, margin: "0 auto", padding: "44px 5vw 100px" }}>
+      <main className="ovr-rise" style={{ maxWidth: 1360, margin: "0 auto", padding: "26px 5vw 100px" }}>
+        {cat === "tee" && (
+          <button onClick={() => { setShopView("hub"); scrollTop(); }} className="ovr-flink" style={{
+            display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", border: "none", cursor: "pointer",
+            padding: "4px 0", marginBottom: 16,
+            fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase", color: "#8a877f",
+          }}>
+            <span style={{ fontSize: 15, lineHeight: 1 }}>←</span>
+            {lang === "ro" ? "Alege culoarea" : "Choose color"}
+          </button>
+        )}
         {/* antet + filtru culoare */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 18, marginBottom: 34 }}>
           <div>
