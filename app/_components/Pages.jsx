@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 
 /* Paginile OVRTHINK: Home, Colecții, Despre. Temă albă/portocalie. */
 
@@ -88,13 +87,6 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
     { t: "Minimal identity", d: ro ? "Design alb/negru cu accent portocaliu OVR." : "Black/white design with the OVR orange accent." },
   ];
 
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-  const joinNewsletter = (e) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setSent(true); // TODO: integrare backend newsletter (POST către serviciul de email) — momentan doar UI
-  };
 
   return (
     <main>
@@ -195,32 +187,6 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* 7 — NEWSLETTER */}
-      <section style={{ ...secPad, textAlign: "center" }}>
-        <div style={{ maxWidth: 560, margin: "0 auto" }}>
-          <div style={eyebrow}>JOIN OVR</div>
-          <h2 style={{ ...h2style, fontWeight: 300, fontSize: "clamp(26px, 4vw, 44px)", textTransform: "none", letterSpacing: "0.02em", margin: "12px 0 12px" }}>
-            {ro ? "Intră în OVR" : "Join OVR"}
-          </h2>
-          <p style={{ ...bodyStyle, margin: "0 0 26px" }}>
-            {ro ? "Primești acces la drop-uri, colecții noi și lansări limitate." : "Get access to drops, new collections and limited releases."}
-          </p>
-          {sent ? (
-            <p style={{ fontFamily: "'Jost', sans-serif", fontSize: 14, letterSpacing: 1, color: O }}>
-              {ro ? "Mulțumim — ești pe listă." : "Thanks — you're on the list."}
-            </p>
-          ) : (
-            <form onSubmit={joinNewsletter} style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-              <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
-                placeholder={ro ? "Adresa ta de email" : "Your email address"}
-                style={{ flex: "1 1 260px", maxWidth: 320, fontFamily: "'Inter', sans-serif", fontSize: 14,
-                  padding: "14px 16px", border: "1px solid rgba(0,0,0,0.22)", borderRadius: 0, background: "rgba(255,255,255,0.7)", color: INK }} />
-              <Btn primary>{ro ? "Join" : "Join"}</Btn>
-            </form>
-          )}
         </div>
       </section>
     </main>

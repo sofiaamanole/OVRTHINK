@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendWhatsApp } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,7 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: "FILE_TOO_LARGE" }, { status: 413 });
   }
 
-  const to = process.env.CUSTOM_REQUEST_EMAIL || "contact@ovrthink.ro"; // TODO: setează emailul oficial
+  const to = process.env.ORDERS_EMAIL || process.env.CUSTOM_REQUEST_EMAIL || "orders@ovrthink.ro"; // cererile custom -> orders@
   const from = process.env.CUSTOM_REQUEST_FROM || "OVRTHINK <onboarding@resend.dev>";
   const subject = `Cerere custom OVRthink - ${nume} ${prenume}`;
 
@@ -65,6 +66,9 @@ export async function POST(req) {
           <td style="padding:6px 0"><b>${String(v).replace(/</g, "&lt;")}</b></td></tr>`).join("")}
       </table>
     </div>`;
+
+  // notificare internă WhatsApp pentru fiecare cerere custom
+  await sendWhatsApp(`✏️ Cerere custom OVRthink\n${nume} ${prenume}\n${produs} · ${culoare} · ${marime}\n${email}`);
 
   const key = process.env.RESEND_API_KEY;
 

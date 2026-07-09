@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getOrder, deleteOrder } from "@/lib/orders";
 import { sendResend } from "@/lib/mail";
+import { sendWhatsApp } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -119,6 +120,11 @@ export async function POST(req) {
           html: clientHtml(orderID, saved),
         });
       }
+      // notificare internă WhatsApp
+      const clientName = [saved.billing?.firstName, saved.billing?.lastName].filter(Boolean).join(" ");
+      const total = saved.order ? `${saved.order.total} ${saved.order.symbol}` : "";
+      const nItems = saved.order?.items?.reduce((a, i) => a + (i.qty || 0), 0) || "";
+      await sendWhatsApp(`🛒 Comanda noua OVRthink ${orderID}\nTotal: ${total}\nClient: ${clientName}\nProduse: ${nItems}`);
       // idempotență: ștergem comanda ca IPN-urile duplicate să nu retrimită
       await deleteOrder(orderID);
     } else {
