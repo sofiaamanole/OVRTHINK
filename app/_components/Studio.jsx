@@ -782,17 +782,18 @@ export default function App() {
   const scrollTop = () => { if (typeof window !== "undefined") window.scrollTo({ top: 0 }); };
   const openCat = (c) => {
     setPage("shop"); setView("studio"); setCat(c); setColFilter("all");
-    setShopView(c === "tee" ? "hub" : "grid"); // tricourile intră prin hub-ul White/Black
+    setShopView("hub"); // tricouri și hanorace intră prin hub-ul White/Black
     scrollTop();
   };
   // din hub-ul White/Black → grila filtrată pe culoare
   const openTeeColor = (color) => {
     setColFilter(color); setShopView("grid"); scrollTop();
   };
-  // deschide pagina unui produs din grilă
+  // deschide pagina unui produs din grilă (în culoarea filtrată, dacă există)
   const openProduct = (p) => {
+    const c = (colFilter !== "all" && p.colors.includes(colFilter)) ? colFilter : p.colors[0];
     setSelId(p.id);
-    setColorId(p.colors[0]);
+    setColorId(c);
     setSide(p.hero || "front");
     setShopView("detail");
     scrollTop();
@@ -1380,28 +1381,40 @@ export default function App() {
       <main className="ovr-rise" style={{ maxWidth: 900, margin: "0 auto", padding: "48px 5vw 96px" }}>
         <div style={{ textAlign: "center", marginBottom: 36 }}>
           <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(26px,3.6vw,34px)", letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>
-            {lang === "ro" ? "Alege-ți tricoul" : "Choose your tee"}
+            {cat === "hoodie" ? (lang === "ro" ? "Alege-ți hanoracul" : "Choose your hoodie") : (lang === "ro" ? "Alege-ți tricoul" : "Choose your tee")}
           </h1>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#a8a59c", marginTop: 7 }}>
             {lang === "ro" ? "Alb sau negru — intră în colecție" : "White or black — enter the collection"}
           </div>
         </div>
         <div className="ovr-teehub" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(14px,2vw,26px)" }}>
-          {[
-            { color: "white", label: "White Tee", video: "/anim/white-tee.mp4", poster: "/catalog/tee-blank-white-front.jpg" },
-            { color: "black", label: "Black Tee", video: "/anim/black-tee.mp4", poster: "/catalog/tee-blank-black-front.jpg" },
-          ].map(panel => {
-            const count = CATALOG.filter(p => p.product === "tee" && p.colors.includes(panel.color)).length;
+          {(cat === "hoodie"
+            ? [
+                { color: "white", label: "White Hoodie", img: "/catalog/hoodie-under-ctrl-white.jpg" },
+                { color: "black", label: "Black Hoodie", img: "/catalog/hoodie-hub-black.jpg" },
+              ]
+            : [
+                { color: "white", label: "White Tee", video: "/anim/white-tee.mp4", poster: "/catalog/tee-blank-white-front.jpg" },
+                { color: "black", label: "Black Tee", video: "/anim/black-tee.mp4", poster: "/catalog/tee-blank-black-front.jpg" },
+              ]
+          ).map(panel => {
+            const count = CATALOG.filter(p => p.product === cat && p.colors.includes(panel.color)).length;
             return (
               <button key={panel.color} onClick={() => openTeeColor(panel.color)} className="ovr-teepanel" style={{
                 position: "relative", overflow: "hidden", border: "none", cursor: "pointer", padding: 0,
                 borderRadius: 18, aspectRatio: "3 / 4", background: "#f1eee9",
               }}>
-                {/* fundal: animația tricoului (alb / negru), autoplay + loop, mut */}
-                <video src={panel.video} poster={panel.poster} autoPlay muted loop playsInline preload="auto"
-                  className="ovr-teepanel-img" style={{
-                  position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block",
-                }} />
+                {/* fundal: animație (tricou) sau imagine (hanorac), autoplay + loop, mut */}
+                {panel.video ? (
+                  <video src={panel.video} poster={panel.poster} autoPlay muted loop playsInline preload="auto"
+                    className="ovr-teepanel-img" style={{
+                    position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block",
+                  }} />
+                ) : (
+                  <img src={panel.img} alt={panel.label} className="ovr-teepanel-img" style={{
+                    position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block",
+                  }} />
+                )}
                 <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 42%, rgba(8,4,1,0.62) 100%)" }} />
                 <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "clamp(20px,3vw,32px)", textAlign: "left" }}>
                   <div style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(20px,3vw,34px)", letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff" }}>{panel.label}</div>
@@ -1416,16 +1429,14 @@ export default function App() {
       </main>
       ) : shopView === "grid" ? (
       <main className="ovr-rise" style={{ maxWidth: 1360, margin: "0 auto", padding: "26px 5vw 100px" }}>
-        {cat === "tee" && (
-          <button onClick={() => { setShopView("hub"); scrollTop(); }} className="ovr-flink" style={{
-            display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", border: "none", cursor: "pointer",
-            padding: "4px 0", marginBottom: 16,
-            fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase", color: "#8a877f",
-          }}>
-            <span style={{ fontSize: 15, lineHeight: 1 }}>←</span>
-            {lang === "ro" ? "Alege culoarea" : "Choose color"}
-          </button>
-        )}
+        <button onClick={() => { setShopView("hub"); scrollTop(); }} className="ovr-flink" style={{
+          display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", border: "none", cursor: "pointer",
+          padding: "4px 0", marginBottom: 16,
+          fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase", color: "#8a877f",
+        }}>
+          <span style={{ fontSize: 15, lineHeight: 1 }}>←</span>
+          {lang === "ro" ? "Alege culoarea" : "Choose color"}
+        </button>
         {/* antet + filtru culoare */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 18, marginBottom: 34 }}>
           <div>
@@ -1436,18 +1447,16 @@ export default function App() {
               {gridItems.length} {lang === "ro" ? "modele" : "styles"}
             </div>
           </div>
-          {cat === "tee" && (
-            <div style={{ display: "flex", gap: 2 }}>
-              {[["all", lang === "ro" ? "Toate" : "All"], ["white", lang === "ro" ? "Albe" : "White"], ["black", lang === "ro" ? "Negre" : "Black"]].map(([id, lbl]) => (
-                <button key={id} onClick={() => setColFilter(id)} className="ovr-flink" style={{
-                  background: "transparent", border: "none", cursor: "pointer", padding: "6px 13px",
-                  fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase",
-                  color: colFilter === id ? "#1a1712" : "#a8a59c",
-                  borderBottom: colFilter === id ? `1px solid ${ORANGE}` : "1px solid transparent",
-                }}>{lbl}</button>
-              ))}
-            </div>
-          )}
+          <div style={{ display: "flex", gap: 2 }}>
+            {[["all", lang === "ro" ? "Toate" : "All"], ["white", lang === "ro" ? "Albe" : "White"], ["black", lang === "ro" ? "Negre" : "Black"]].map(([id, lbl]) => (
+              <button key={id} onClick={() => setColFilter(id)} className="ovr-flink" style={{
+                background: "transparent", border: "none", cursor: "pointer", padding: "6px 13px",
+                fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase",
+                color: colFilter === id ? "#1a1712" : "#a8a59c",
+                borderBottom: colFilter === id ? `1px solid ${ORANGE}` : "1px solid transparent",
+              }}>{lbl}</button>
+            ))}
+          </div>
         </div>
         {/* grila de produse */}
         <div className="ovr-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(216px, 1fr))", gap: "34px 26px" }}>
@@ -1528,7 +1537,8 @@ export default function App() {
             )}
           </div>
 
-          {/* toggle față / spate pentru produsul curent */}
+          {/* toggle față / spate — doar dacă produsul are și spate (tricourile; hanoracele nu) */}
+          {item.imgBack && item.imgBack[curColorId] && (
           <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
             {[["front", lang === "ro" ? "Față" : "Front"], ["back", lang === "ro" ? "Spate" : "Back"]].map(([sv, lbl]) => (
               <button key={sv} onClick={() => setSide(sv)} className="ovr-opt" style={{
@@ -1540,6 +1550,7 @@ export default function App() {
               }}>{lbl}</button>
             ))}
           </div>
+          )}
 
         </div>
 
