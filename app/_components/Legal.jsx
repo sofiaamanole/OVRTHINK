@@ -11,17 +11,22 @@ const MUTED = "rgba(26,23,18,0.68)";
 
 const body = { fontFamily: "'Inter', sans-serif", fontSize: 15, color: MUTED, lineHeight: 1.85 };
 
+/* emailuri oficiale OVRTHINK */
+const EMAIL_CONTACT = "contact@ovrthink.ro";
+const EMAIL_SUPPORT = "support@ovrthink.ro";
+const EMAIL_LEGAL = "legal@ovrthink.ro";
+const SITE = "www.ovrthink.ro";
+
 /* date operator — reutilizate în mai multe pagini */
 const FIRMA = "SC AESTHETIC STUDIO CREATOR SRL";
-function CompanyBlock() {
+function CompanyBlock({ email = EMAIL_CONTACT }) {
   return (
     <div style={{ ...body, fontSize: 14.5 }}>
       {FIRMA}<br />
       CUI: 45931173<br />
       Nr. Reg. Com.: J40/6657/2022<br />
       Adresă: BD Decebal nr. 12, Bl S7, Et 5, Ap 15, cod poștal 030967, România<br />
-      Email: <Todo>TODO_CONTACT_EMAIL</Todo><br />
-      Telefon: <Todo>TODO_PHONE</Todo>
+      Email: <Mail>{email}</Mail>
     </div>
   );
 }
@@ -31,6 +36,9 @@ function Todo({ children }) {
 }
 function Ext({ href, children }) {
   return <a href={href} target="_blank" rel="noopener noreferrer" className="ovr-flink" style={{ color: O, textDecoration: "none" }}>{children || href}</a>;
+}
+function Mail({ children }) {
+  return <a href={`mailto:${children}`} className="ovr-flink" style={{ color: O, textDecoration: "none" }}>{children}</a>;
 }
 function P({ children }) { return <p style={{ ...body, margin: "0 0 14px" }}>{children}</p>; }
 function UL({ items }) {
@@ -85,7 +93,7 @@ function Termeni({ onHome }) {
       subtitle="Acești termeni reglementează utilizarea site-ului OVRthink și plasarea comenzilor prin magazinul online.">
       <Sec n="1" title="Informații despre comerciant">
         <P>Site-ul OVRthink este operat de {FIRMA}, persoană juridică română, cu sediul în BD Decebal nr. 12, Bl S7, Et 5, Ap 15, cod poștal 030967, România, înregistrată la Registrul Comerțului sub nr. J40/6657/2022, CUI 45931173.</P>
-        <P>Email contact: <Todo>TODO_CONTACT_EMAIL</Todo><br />Telefon: <Todo>TODO_PHONE</Todo><br />Website: <Todo>TODO_DOMAIN</Todo></P>
+        <P>Email contact: <Mail>{EMAIL_CONTACT}</Mail><br />Website: <Ext href="https://www.ovrthink.ro">{SITE}</Ext></P>
       </Sec>
       <Sec n="2" title="Produse">
         <P>OVRthink comercializează produse de streetwear, inclusiv tricouri, hoodie-uri, produse din colecții sezoniere și produse custom/personalizate.</P>
@@ -105,7 +113,7 @@ function Termeni({ onHome }) {
       </Sec>
       <Sec n="6" title="Dreptul de retragere pentru produse standard">
         <P>Pentru produsele standard, nepurtate, nespălate, nedeteriorate și în aceeași stare în care au fost livrate, clientul are dreptul să se retragă din contract în termen de 14 zile calendaristice de la primirea produsului, fără a invoca un motiv.</P>
-        <P>Pentru exercitarea dreptului de retragere, clientul trebuie să trimită o declarație clară la adresa de email <Todo>TODO_CONTACT_EMAIL</Todo>.</P>
+        <P>Pentru exercitarea dreptului de retragere, clientul trebuie să trimită o declarație clară la adresa de email <Mail>{EMAIL_SUPPORT}</Mail>.</P>
         <P>Costurile directe de returnare sunt suportate de client, cu excepția cazului în care OVRthink decide altfel sau produsul este neconform.</P>
       </Sec>
       <Sec n="7" title="Excepție pentru produse custom/personalizate">
@@ -113,7 +121,7 @@ function Termeni({ onHome }) {
         <P>Prin trimiterea unei cereri custom și confirmarea comenzii, clientul înțelege că produsul este realizat special pentru acesta.</P>
       </Sec>
       <Sec n="8" title="Garanție legală de conformitate">
-        <P>Produsele beneficiază de garanția legală de conformitate conform legislației aplicabile. În cazul în care produsul primit este neconform, deteriorat sau diferit față de comanda confirmată, clientul trebuie să contacteze OVRthink la <Todo>TODO_CONTACT_EMAIL</Todo>, cu fotografii și detalii despre problemă.</P>
+        <P>Produsele beneficiază de garanția legală de conformitate conform legislației aplicabile. În cazul în care produsul primit este neconform, deteriorat sau diferit față de comanda confirmată, clientul trebuie să contacteze OVRthink la <Mail>{EMAIL_SUPPORT}</Mail>, cu fotografii și detalii despre problemă.</P>
       </Sec>
       <Sec n="9" title="Produse custom și fișiere încărcate">
         <P>Pentru comenzile custom, clientul este responsabil pentru calitatea și dreptul de utilizare al fișierelor trimise. Fișierele trebuie să fie PNG, HD, recomandat 300 DPI, cu fundal transparent.</P>
@@ -124,7 +132,7 @@ function Termeni({ onHome }) {
         <P>Logo-ul OVRthink, monograma, designul site-ului, imaginile, textele, grafica și elementele de branding aparțin OVRthink/{FIRMA} sau partenerilor săi și nu pot fi copiate, modificate, distribuite sau utilizate fără acord scris.</P>
       </Sec>
       <Sec n="11" title="Reclamații">
-        <P>Pentru reclamații sau sesizări, clientul ne poate contacta la <Todo>TODO_CONTACT_EMAIL</Todo>.</P>
+        <P>Pentru reclamații sau sesizări, clientul ne poate contacta la <Mail>{EMAIL_CONTACT}</Mail>.</P>
         <P>Consumatorii pot contacta Autoritatea Națională pentru Protecția Consumatorilor: <Ext href="https://anpc.ro/" /></P>
         <P>Pentru soluționarea alternativă a litigiilor, consumatorii pot accesa SAL ANPC: <Ext href="https://reclamatiisal.anpc.ro/" /></P>
       </Sec>
@@ -149,7 +157,7 @@ function Retururi({ onHome }) {
       </Sec>
       <Sec n="3" title="Cum faci retur">
         <UL items={[
-          <>Trimite email la <Todo>TODO_CONTACT_EMAIL</Todo></>,
+          <>Trimite email la <Mail>{EMAIL_SUPPORT}</Mail></>,
           "Include numele, numărul comenzii și motivul returului",
           "Așteaptă confirmarea returului",
           "Trimite produsul prin curier la adresa comunicată de echipă",
@@ -183,7 +191,7 @@ function Confidentialitate({ onHome }) {
     <LegalPage onHome={onHome} title="Politica de confidențialitate" seoTitle="Politica de confidențialitate | OVRthink"
       seoDesc="Cum colectează și prelucrează OVRthink datele personale ale utilizatorilor."
       subtitle={`Această politică explică modul în care ${FIRMA}, operatorul site-ului OVRthink, colectează și prelucrează datele personale ale utilizatorilor.`}>
-      <Sec n="1" title="Operatorul datelor"><CompanyBlock /></Sec>
+      <Sec n="1" title="Operatorul datelor"><CompanyBlock email={EMAIL_LEGAL} /></Sec>
       <Sec n="2" title="Ce date colectăm">
         <UL items={["nume și prenume", "email", "telefon", "adresă de livrare/facturare", "date despre comandă",
           "date de plată procesate prin furnizorul de plată, fără a stoca date complete de card", "fișiere încărcate pentru cereri custom",
