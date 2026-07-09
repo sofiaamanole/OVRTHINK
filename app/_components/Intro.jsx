@@ -16,11 +16,25 @@ export default function Intro({ children }) {
     const v = videoRef.current;
     if (!v) return;
     v.muted = true;
-    const p = v.play();
-    if (p && p.catch) p.catch(() => finish());
-    // siguranță: dacă metadata nu se încarcă, nu bloca site-ul
-    const t = setTimeout(() => { if (v.readyState < 2) finish(); }, 6000);
-    return () => clearTimeout(t);
+    // NU sări peste intro dacă play() e respins pe mobil — doar reîncearcă
+    const tryPlay = () => { const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); };
+    tryPlay();
+    const onReady = () => tryPlay();
+    v.addEventListener("loadeddata", onReady);
+    v.addEventListener("canplay", onReady);
+    // fallback mobil: primul tap pornește video-ul dacă autoplay e blocat
+    const onTap = () => tryPlay();
+    window.addEventListener("touchstart", onTap, { once: true });
+    window.addEventListener("pointerdown", onTap, { once: true });
+    // siguranță: doar dacă video-ul chiar NU pornește deloc, trecem la site
+    const t = setTimeout(() => { if (v.paused && v.currentTime === 0) finish(); }, 10000);
+    return () => {
+      clearTimeout(t);
+      v.removeEventListener("loadeddata", onReady);
+      v.removeEventListener("canplay", onReady);
+      window.removeEventListener("touchstart", onTap);
+      window.removeEventListener("pointerdown", onTap);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
