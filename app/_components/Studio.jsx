@@ -690,6 +690,8 @@ export default function App() {
   const [cat, setCat] = useState("tee"); // categoria din shop: tee | hoodie
   const [page, setPage] = useState("home"); // home | shop | collections | about
   const [side, setSide] = useState("front"); // față | spate (mockup afișat)
+  const [shopView, setShopView] = useState("grid"); // grid (lookbook) | detail (pagina produs)
+  const [colFilter, setColFilter] = useState("all"); // filtru culoare în grilă: all | white | black
   const [col, setCol] = useState(null); // colecția deschisă: null = hub | summer | winter | sport
   const [payMethod, setPayMethod] = useState("card");
   const [payState, setPayState] = useState("idle"); // idle | processing | done
@@ -752,13 +754,14 @@ export default function App() {
   const itemImg = side === "back"
     ? (item.imgBack && item.imgBack[curColorId]) || (item.img && item.img[curColorId])
     : (item.img && item.img[curColorId]);
-  // galeria de jos: un thumb per produs, arătând latura cu print (hero)
-  const allThumbs = catItems.map(p => {
-    const c = p.colors[0];
+  // grila (lookbook): produsele categoriei, filtrate după culoare
+  const gridItems = catItems.filter(p => colFilter === "all" || p.colors.includes(colFilter));
+  // imaginea reprezentativă a unui produs în grilă (latura cu print, culoarea potrivită)
+  const cardImage = (p) => {
+    const c = (colFilter !== "all" && p.colors.includes(colFilter)) ? colFilter : p.colors[0];
     const s = p.hero || "front";
-    const img = s === "back" ? (p.imgBack && p.imgBack[c]) : (p.img && p.img[c]);
-    return { pid: p.id, color: c, side: s, img };
-  }).filter(t => t.img);
+    return s === "back" ? (p.imgBack && p.imgBack[c]) : (p.img && p.img[c]);
+  };
 
   const addCatalog = () => {
     setCart(c => [...c, {
@@ -778,10 +781,15 @@ export default function App() {
 
   const scrollTop = () => { if (typeof window !== "undefined") window.scrollTo({ top: 0 }); };
   const openCat = (c) => {
-    setPage("shop"); setView("studio"); setCat(c);
-    const first = CATALOG.find(p => p.product === c);
-    if (first) { setSelId(first.id); setSide(first.hero || "front"); }
-    else setSide("front");
+    setPage("shop"); setView("studio"); setCat(c); setShopView("grid"); setColFilter("all");
+    scrollTop();
+  };
+  // deschide pagina unui produs din grilă
+  const openProduct = (p) => {
+    setSelId(p.id);
+    setColorId(p.colors[0]);
+    setSide(p.hero || "front");
+    setShopView("detail");
     scrollTop();
   };
   const navTo = (p) => { setPage(p); setView("studio"); scrollTop(); };
@@ -1035,6 +1043,10 @@ export default function App() {
         .ovr-lookcard { overflow: hidden; }
         .ovr-lookcard img { transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .5s ease; }
         .ovr-lookcard:hover img { transform: scale(1.05); opacity: .92; }
+        .ovr-card { transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+        .ovr-card:hover { transform: translateY(-4px); }
+        .ovr-card:hover .ovr-card-img { transform: scale(1.045); }
+        @media (max-width: 560px) { .ovr-grid { grid-template-columns: 1fr 1fr !important; gap: 20px 12px !important; } }
         @media (max-width: 1040px) { .ovr-collgrid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 820px) { .ovr-cat { grid-template-columns: 1fr !important; } .ovr-glassrow { grid-template-columns: 1fr !important; } .ovr-hero { grid-template-columns: 1fr; } .ovr-trio { grid-template-columns: 1fr; } .ovr-collgrid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 520px) { .ovr-collgrid { grid-template-columns: 1fr; } }
@@ -1352,11 +1364,64 @@ export default function App() {
         <AboutPage lang={lang} onShop={openCat} />
       ) : LEGAL_KEYS.includes(page) ? (
         <LegalRouter page={page} onHome={() => navTo("home")} />
+      ) : shopView === "grid" ? (
+      <main className="ovr-rise" style={{ maxWidth: 1360, margin: "0 auto", padding: "44px 5vw 100px" }}>
+        {/* antet + filtru culoare */}
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 18, marginBottom: 34 }}>
+          <div>
+            <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: 32, letterSpacing: "0.07em", textTransform: "uppercase", margin: 0 }}>
+              {cat === "tee" ? (lang === "ro" ? "Tricouri" : "T-shirts") : (lang === "ro" ? "Hoodie" : "Hoodies")}
+            </h1>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#a8a59c", marginTop: 5 }}>
+              {gridItems.length} {lang === "ro" ? "modele" : "styles"}
+            </div>
+          </div>
+          {cat === "tee" && (
+            <div style={{ display: "flex", gap: 2 }}>
+              {[["all", lang === "ro" ? "Toate" : "All"], ["white", lang === "ro" ? "Albe" : "White"], ["black", lang === "ro" ? "Negre" : "Black"]].map(([id, lbl]) => (
+                <button key={id} onClick={() => setColFilter(id)} className="ovr-flink" style={{
+                  background: "transparent", border: "none", cursor: "pointer", padding: "6px 13px",
+                  fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase",
+                  color: colFilter === id ? "#1a1712" : "#a8a59c",
+                  borderBottom: colFilter === id ? `1px solid ${ORANGE}` : "1px solid transparent",
+                }}>{lbl}</button>
+              ))}
+            </div>
+          )}
+        </div>
+        {/* grila de produse */}
+        <div className="ovr-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(216px, 1fr))", gap: "34px 26px" }}>
+          {gridItems.map(p => {
+            const img = cardImage(p);
+            return (
+              <button key={p.id} onClick={() => openProduct(p)} className="ovr-card" style={{
+                display: "block", textAlign: "left", background: "transparent", border: "none", padding: 0, cursor: "pointer",
+              }}>
+                <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 5", overflow: "hidden", borderRadius: 12, background: "#f1eee9" }}>
+                  {img && <img src={img} alt={p.name[lang]} className="ovr-card-img" loading="lazy"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform .55s cubic-bezier(.2,.7,.2,1)" }} />}
+                </div>
+                <div style={{ marginTop: 13, fontFamily: "'Jost', sans-serif", fontSize: 13, fontWeight: 400, letterSpacing: 1.5, textTransform: "uppercase", color: "#1a1712" }}>{p.name[lang]}</div>
+                <div style={{ marginTop: 3, fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#8a877f" }}>{fmt(p.price)}</div>
+              </button>
+            );
+          })}
+        </div>
+      </main>
       ) : (
       <main className="cfg" style={{
         display: "grid", gridTemplateColumns: cat === "tee" ? "0.92fr 0.72fr 1.12fr" : "1fr 0.82fr 0.95fr", gap: "2.4vw",
-        padding: "34px 5vw 90px", maxWidth: 1480, margin: "0 auto", alignItems: "start",
+        padding: "20px 5vw 90px", maxWidth: 1480, margin: "0 auto", alignItems: "start",
       }}>
+        {/* înapoi la grilă */}
+        <button onClick={() => { setShopView("grid"); scrollTop(); }} className="ovr-flink" style={{
+          gridColumn: "1 / -1", justifySelf: "start", display: "inline-flex", alignItems: "center", gap: 8,
+          background: "transparent", border: "none", cursor: "pointer", padding: "4px 0", marginBottom: 6,
+          fontFamily: "'Jost', sans-serif", fontSize: 11.5, letterSpacing: 2.5, textTransform: "uppercase", color: "#8a877f",
+        }}>
+          <span style={{ fontSize: 15, lineHeight: 1 }}>←</span>
+          {lang === "ro" ? "Toate modelele" : "All styles"}
+        </button>
         {/* stânga: mockup mare + selectorul colecției */}
         <div className="stick ovr-rise" style={{ position: "sticky", top: 20 }}>
           <div ref={zoomRef} key={item.id + curColorId + side} className="ovr-fade"
@@ -1416,24 +1481,6 @@ export default function App() {
             ))}
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(58px, 1fr))", gap: 8, marginTop: 12 }}>
-            {allThumbs.map(t => {
-              const active = t.pid === item.id;
-              return (
-                <button key={t.pid + t.color + t.side}
-                  onClick={() => { setSelId(t.pid); setColorId(t.color); setSide(t.side); }}
-                  aria-label={`${t.pid} ${t.color} ${t.side}`} className="ovr-thumb" style={{
-                    position: "relative", aspectRatio: "1 / 1", background: "#f1eee9", cursor: "pointer", padding: 0, overflow: "hidden",
-                    border: active ? `2px solid ${ORANGE}` : "1px solid rgba(0,0,0,0.16)", borderRadius: 6,
-                  }}>
-                  <img src={t.img} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
-                  <span style={{ position: "absolute", bottom: 2, right: 3, fontFamily: "ui-monospace, monospace", fontSize: 7.5, letterSpacing: 1, color: "#fff", opacity: 0.75, textShadow: "0 1px 2px rgba(0,0,0,0.85)" }}>
-                    {t.side === "back" ? (lang === "ro" ? "SP" : "BK") : (lang === "ro" ? "FA" : "FR")}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* dreapta: detalii produs + opțiuni */}
