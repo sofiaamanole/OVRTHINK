@@ -362,6 +362,10 @@ const T = {
     backStudio: "← Continuă cumpărăturile", newOrder: "Comandă nouă",
     payMethod: "Metodă de plată", cardLabel: "Card de debit / credit",
     cardNo: "Număr card", cardExp: "LL/AA", cardCvc: "CVC", cardName: "Numele de pe card",
+    codLabel: "Ramburs — plata la livrare",
+    codDesc: "Plătești cash sau card curierului, la primirea coletului.",
+    placeOrder: "Plasează comanda",
+    rambursNote: "Momentan acceptăm doar plata ramburs (la livrare). Plata online cu cardul revine în curând.",
     payNow: t => `Plătește ${t} lei`, processing: "Se procesează…",
     orderOk: "Comanda a fost plasată", orderOkSub: "Mulțumim! Vei primi confirmarea pe email.",
     demoNote: "Demo de checkout — în varianta live, plățile vor fi procesate securizat prin platforma de plăți.",
@@ -429,6 +433,10 @@ const T = {
     backStudio: "← Keep shopping", newOrder: "New order",
     payMethod: "Payment method", cardLabel: "Debit / credit card",
     cardNo: "Card number", cardExp: "MM/YY", cardCvc: "CVC", cardName: "Name on card",
+    codLabel: "Cash on delivery",
+    codDesc: "Pay cash or card to the courier when you receive the parcel.",
+    placeOrder: "Place order",
+    rambursNote: "For now we only accept cash on delivery. Online card payment is coming soon.",
     payNow: t => `Pay ${t} lei`, processing: "Processing…",
     orderOk: "Order placed", orderOkSub: "Thank you! You'll receive a confirmation by email.",
     demoNote: "Checkout demo — in the live version, payments are processed securely through the payment platform.",
@@ -825,9 +833,9 @@ export default function App() {
     setShowAddedModal(true);
   };
 
+  // Plasare comandă RAMBURS (plata la livrare) — fără card/Netopia
   const startPay = async () => {
     setPayErr("");
-    // validare minimă pentru plata reală
     const email = form.email.trim();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
       setPayErr(lang === "ro" ? "Introdu un email valid." : "Enter a valid email.");
@@ -837,6 +845,14 @@ export default function App() {
       setPayErr(lang === "ro" ? "Completează numele complet." : "Enter your full name.");
       return;
     }
+    if (!form.phone.trim()) {
+      setPayErr(lang === "ro" ? "Adaugă un număr de telefon (pentru livrare)." : "Add a phone number (for delivery).");
+      return;
+    }
+    if (!form.street.trim() || !form.city.trim()) {
+      setPayErr(lang === "ro" ? "Completează adresa de livrare." : "Complete the shipping address.");
+      return;
+    }
 
     setPayState("processing");
     const [firstName, ...rest] = form.fullName.trim().split(/\s+/);
@@ -844,9 +860,7 @@ export default function App() {
     // sumă în valuta afișată (aceeași conversie ca UI-ul)
     const rate = CURRENCIES[cur].rate;
     const sym = CURRENCIES[cur].symbol;
-    const amount = Math.round(calc.grand * rate);
 
-    // detaliile comenzii pentru emailurile din IPN (produse, mărimi, culori, prețuri)
     const orderData = {
       items: cart.map(it => {
         const ci = CATALOG.find(x => x.id === it.catId);
@@ -865,16 +879,14 @@ export default function App() {
       subtotal: Math.round(calc.subtotal * rate),
       shipping: Math.round(calc.ship * rate),
       shippingMethod: shipMethod === "sameday" ? L.sameday : L.dhl,
-      total: amount,
+      total: Math.round(calc.grand * rate),
     };
 
     try {
-      const res = await fetch("/api/netopia/start", {
+      const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount,
-          currency: cur,
           language: lang,
           billing: {
             email, firstName, lastName,
@@ -888,20 +900,13 @@ export default function App() {
         }),
       });
       const data = await res.json();
-
       if (!data.ok) {
         setPayState("idle");
         setPayErr(lang === "ro"
-          ? "Plata nu a putut fi inițiată. Încearcă din nou."
-          : "Payment could not be started. Please try again.");
+          ? "Comanda nu a putut fi plasată. Încearcă din nou."
+          : "Order could not be placed. Please try again.");
         return;
       }
-      if (data.paymentURL) {
-        // redirect către pagina securizată Netopia
-        window.location.href = data.paymentURL;
-        return;
-      }
-      // mod demo (Netopia neconfigurat) → confirmare locală
       setPayState("done");
     } catch {
       setPayState("idle");
@@ -1317,26 +1322,15 @@ export default function App() {
               {promo && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#1a7f4e", marginTop: 6 }}>{L.promoOk}: {PROMO_CODES[promo].label}</div>}
               {promoErr && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#c0341d", marginTop: 6 }}>{L.promoBad}</div>}
 
-              {/* metodă plată */}
+              {/* metodă plată — momentan doar RAMBURS */}
               <CkSection n="06" title={L.payMethod} />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                {[
-                  ["applepay", <span key="a" style={{ fontWeight: 500 }}>&#63743; Pay</span>],
-                  ["googlepay", <span key="g"><span style={{ fontWeight: 500 }}>G</span> Pay</span>],
-                  ["card", L.cardLabel],
-                  ["paypal", <span key="p" style={{ fontStyle: "italic", fontWeight: 500 }}>Pay<span style={{ color: ORANGE }}>Pal</span></span>],
-                ].map(([id, label]) => (
-                  <Opt key={id} active={payMethod === id} onClick={() => setPayMethod(id)}
-                    style={{ padding: "14px 16px", textAlign: "center", fontSize: 14 }}>
-                    {label}
-                  </Opt>
-                ))}
-              </div>
-              {payMethod === "card" && (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
-                  <Ck ph={L.cardNo} span num /><Ck ph={L.cardExp} num /><Ck ph={L.cardCvc} num /><Ck ph={L.cardName} span />
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 13, border: `1px solid ${ORANGE}`, background: "rgba(255,74,28,0.08)", borderRadius: 12, padding: "16px 16px" }}>
+                <span aria-hidden style={{ fontSize: 22, lineHeight: 1 }}>💵</span>
+                <div>
+                  <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 14, letterSpacing: 1, textTransform: "uppercase", color: "#1a1712" }}>{L.codLabel}</div>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#8a877f", marginTop: 4 }}>{L.codDesc}</div>
                 </div>
-              )}
+              </div>
 
               {/* sumar */}
               <div style={{ borderTop: "1px solid rgba(0,0,0,0.12)", marginTop: 28, paddingTop: 18, fontFamily: "'Inter', sans-serif", fontSize: 13.5 }}>
@@ -1359,7 +1353,7 @@ export default function App() {
                 border: "none", borderRadius: 0, background: ORANGE, color: "#fff",
                 opacity: payState === "processing" ? 0.7 : 1,
               }}>
-                {payState === "processing" ? L.processing : `${lang === "ro" ? "Plătește" : "Pay"} ${fmt(calc.grand)}`}
+                {payState === "processing" ? L.processing : `${L.placeOrder} · ${fmt(calc.grand)}`}
               </button>
               {payErr && (
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: "#c0392b", marginTop: 10, textAlign: "center" }}>
@@ -1367,7 +1361,7 @@ export default function App() {
                 </p>
               )}
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 11.5, color: "#a8a59c", marginTop: 12, textAlign: "center" }}>
-                {L.demoNote}
+                {L.rambursNote}
               </p>
               <button onClick={() => setView("studio")} style={{
                 marginTop: 8, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase",

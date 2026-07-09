@@ -104,7 +104,7 @@ function Termeni({ onHome }) {
       </Sec>
       <Sec n="4" title="Prețuri și plată">
         <P>Prețurile afișate pe site sunt exprimate în lei și sunt prețuri finale. SC Aesthetic Studio Creator SRL este neplătitoare de TVA (regim special de scutire conform art. 310 din Codul fiscal), astfel încât prețurile nu includ și nu se adaugă TVA.</P>
-        <P>Metode de plată acceptate: Card, PayPal.</P>
+        <P>Metodă de plată acceptată: ramburs (plata la livrare), în numerar sau cu cardul la curier. Plata online cu cardul va fi disponibilă în curând.</P>
         <P>Costurile de livrare sunt afișate înainte de finalizarea comenzii.</P>
       </Sec>
       <Sec n="5" title="Livrare">
@@ -248,7 +248,7 @@ function Livrare({ onHome }) {
         <P>Livrare <b>gratuită prin Sameday</b>. Livrarea prin DHL este contra cost, calculată automat la plasarea comenzii.</P>
       </Sec>
       <Sec n="3" title="Plată">
-        <P>Metode de plată disponibile: Card, PayPal.</P>
+        <P>Metodă de plată disponibilă: ramburs (plata la livrare), în numerar sau cu cardul la curier. Plata online cu cardul va fi disponibilă în curând.</P>
       </Sec>
       <Sec n="4" title="Produse custom">
         <P>Produsele custom pot necesita timp suplimentar de procesare, în funcție de complexitatea fișierului și confirmarea designului.</P>
