@@ -1039,7 +1039,7 @@ export default function App() {
         .ovr-subpill:hover { background: rgba(255,74,28,0.16) !important; border-color: rgba(255,74,28,0.55) !important; color: #b23410 !important; transform: translateY(-2px); }
         @keyframes ovrGlassPulse { 0%,100%{ box-shadow: 0 10px 34px rgba(255,74,28,0.16), inset 0 1px 0 rgba(255,255,255,0.6);} 50%{ box-shadow: 0 14px 44px rgba(255,74,28,0.26), inset 0 1px 0 rgba(255,255,255,0.66);} }
         .ovr-hero { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: clamp(24px, 3.4vw, 56px); align-items: center; }
-        .ovr-collgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+        .ovr-collgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
         .ovr-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .ovr-flink { transition: color .2s ease; }
         .ovr-flink:hover { color: ${ORANGE} !important; }
@@ -1388,8 +1388,8 @@ export default function App() {
         </div>
         <div className="ovr-teehub" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(14px,2vw,26px)" }}>
           {[
-            { color: "white", label: lang === "ro" ? "Tricouri Albe" : "White Tee", img: "/catalog/tee-blank-white-front.jpg" },
-            { color: "black", label: lang === "ro" ? "Tricouri Negre" : "Black Tee", img: "/catalog/tee-blank-black-front.jpg" },
+            { color: "white", label: "White Tee", img: "/catalog/tee-blank-white-front.jpg" },
+            { color: "black", label: "Black Tee", img: "/catalog/tee-blank-black-front.jpg" },
           ].map(panel => {
             const count = CATALOG.filter(p => p.product === "tee" && p.colors.includes(panel.color)).length;
             return (

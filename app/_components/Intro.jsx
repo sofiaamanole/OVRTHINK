@@ -5,35 +5,52 @@ import { useState, useRef, useEffect } from "react";
 const O = "#FF4A1C";
 
 /* Intro video. Pornește DIRECT la intrarea pe site (fără poartă „INTRĂ").
-   Autoplay mut (politica browserelor), cu buton de sunet.
+   Sunet PORNIT automat (fără buton). Dacă browserul blochează autoplay-ul cu
+   sunet, video-ul pornește mut și se dezmutează la PRIMA interacțiune (atingere/
+   click/scroll/tastă) — fără niciun buton de sunet.
    La final: tranziție lină (fade) între video și website. */
 export default function Intro({ children }) {
   const [phase, setPhase] = useState("playing"); // playing | fadeout | done
-  const [muted, setMuted] = useState(true);
   const videoRef = useRef(null);
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    v.muted = true;
-    // NU sări peste intro dacă play() e respins pe mobil — doar reîncearcă
-    const tryPlay = () => { const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); };
+    const gestures = ["pointerdown", "touchstart", "keydown", "click", "wheel", "scroll"];
+
+    // dezmutează la prima interacțiune (dacă autoplay-ul cu sunet a fost blocat)
+    const unmute = () => {
+      if (!videoRef.current) return;
+      videoRef.current.muted = false;
+      videoRef.current.volume = 1;
+      videoRef.current.play().catch(() => {});
+      gestures.forEach(g => window.removeEventListener(g, unmute));
+    };
+
+    const tryPlay = () => {
+      // încearcă întâi CU sunet
+      v.muted = false;
+      v.volume = 1;
+      const pr = v.play();
+      if (pr && pr.catch) pr.catch(() => {
+        // blocat cu sunet -> pornește mut, dar dezmutează la prima interacțiune
+        v.muted = true;
+        v.play().catch(() => {});
+        gestures.forEach(g => window.addEventListener(g, unmute, { once: true, passive: true }));
+      });
+    };
+
     tryPlay();
     const onReady = () => tryPlay();
     v.addEventListener("loadeddata", onReady);
     v.addEventListener("canplay", onReady);
-    // fallback mobil: primul tap pornește video-ul dacă autoplay e blocat
-    const onTap = () => tryPlay();
-    window.addEventListener("touchstart", onTap, { once: true });
-    window.addEventListener("pointerdown", onTap, { once: true });
     // siguranță: doar dacă video-ul chiar NU pornește deloc, trecem la site
     const t = setTimeout(() => { if (v.paused && v.currentTime === 0) finish(); }, 10000);
     return () => {
       clearTimeout(t);
       v.removeEventListener("loadeddata", onReady);
       v.removeEventListener("canplay", onReady);
-      window.removeEventListener("touchstart", onTap);
-      window.removeEventListener("pointerdown", onTap);
+      gestures.forEach(g => window.removeEventListener(g, unmute));
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -48,15 +65,6 @@ export default function Intro({ children }) {
     const v = videoRef.current;
     if (!v || !v.duration || isNaN(v.duration)) return;
     if (v.duration - v.currentTime <= 1.8) finish();
-  };
-
-  const toggleSound = (e) => {
-    e.stopPropagation();
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = !v.muted;
-    if (!v.muted && v.paused) v.play().catch(() => {});
-    setMuted(v.muted);
   };
 
   return (
@@ -76,7 +84,6 @@ export default function Intro({ children }) {
             ref={videoRef}
             src="/intro.mp4"
             autoPlay
-            muted
             playsInline
             preload="auto"
             onTimeUpdate={onTime}
@@ -95,20 +102,6 @@ export default function Intro({ children }) {
 
           {phase === "playing" && (
             <>
-              {/* sunet on/off */}
-              <button onClick={toggleSound} aria-label="Sunet" style={{
-                position: "absolute", bottom: 26, left: 26, zIndex: 3,
-                fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 2.5,
-                textTransform: "uppercase", color: "#fff", cursor: "pointer",
-                display: "flex", alignItems: "center", gap: 8,
-                padding: "9px 16px", borderRadius: 30,
-                background: "rgba(0,0,0,0.32)", border: "1px solid rgba(255,255,255,0.35)",
-                backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)",
-              }}>
-                <span style={{ fontSize: 14 }}>{muted ? "🔇" : "🔊"}</span>
-                {muted ? "Sunet" : "Sunet on"}
-              </button>
-
               {/* skip */}
               <button onClick={finish} style={{
                 position: "absolute", bottom: 26, right: 26, zIndex: 3,

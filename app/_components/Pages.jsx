@@ -72,11 +72,10 @@ const secPad = { padding: "clamp(56px, 8vw, 108px) 6vw" };
 export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
   const ro = lang === "ro";
   const collections = [
-    { name: "OVRCORE", text: ro ? "Esențiale streetwear de zi cu zi." : "Everyday streetwear essentials." },
-    { name: "OVRHEAT", text: ro ? "Piese primăvară/vară, senzație lejeră." : "Spring/Summer pieces with a lighter feel." },
-    { name: "OVRLAYER", text: ro ? "Straturi toamnă/iarnă, hanorace, croieli groase." : "Autumn/Winter layers, hoodies and heavier cuts." },
-    { name: "OVRMOVE", text: ro ? "Piese de gym și sport, făcute pentru mișcare." : "Gym and sport pieces made for movement." },
-    { name: "OVRSHIFT", text: ro ? "Streetwear inspirat din racing și riding." : "Rider and racing inspired streetwear." },
+    { name: "OVRHEAT", text: ro ? "Toate tricourile OVRTHINK." : "All OVRTHINK t-shirts.", onClick: () => onShop("tee") },
+    { name: "OVRLAYER", text: ro ? "Hanorace și croieli groase." : "Hoodies and heavier cuts.", onClick: () => onShop("hoodie") },
+    { name: "OVRMOVE", text: ro ? "Piese de gym și sport, făcute pentru mișcare." : "Gym and sport pieces made for movement.", soon: true },
+    { name: "OVRSHIFT", text: ro ? "Streetwear inspirat din racing și riding." : "Rider and racing inspired streetwear.", soon: true },
   ];
   const looks = [
     { src: "/home/hero-male.jpg", alt: ro ? "Tricou · model" : "Tee · model" },        /* imagine tricou/model */
@@ -132,17 +131,25 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
           <div style={{ ...eyebrow, marginBottom: 26 }}>SHOP BY COLLECTION</div>
           <div className="ovr-collgrid">
             {collections.map(c => (
-              <button key={c.name} onClick={onCollections} className="ovr-glass" style={{
-                textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column",
+              <button key={c.name} onClick={c.soon ? undefined : c.onClick} disabled={c.soon}
+                className={c.soon ? "" : "ovr-glass"} style={{
+                textAlign: "left", cursor: c.soon ? "default" : "pointer", display: "flex", flexDirection: "column",
                 border: "1px solid rgba(0,0,0,0.12)", borderRadius: 12, background: "rgba(255,255,255,0.5)",
                 padding: "22px 20px", minHeight: 178, color: INK, WebkitTapHighlightColor: "transparent",
+                opacity: c.soon ? 0.62 : 1,
               }}>
                 <h3 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 400, fontSize: 19, letterSpacing: "0.1em", margin: "0 0 8px", color: INK }}>{c.name}</h3>
                 <p style={{ ...bodyStyle, fontSize: 13, margin: 0 }}>{c.text}</p>
                 <div style={{ flex: 1 }} />
-                <span className="ovr-arrow" style={{ fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 2.5, textTransform: "uppercase", color: O, marginTop: 16 }}>
-                  {ro ? "Explorează" : "Explore"} →
-                </span>
+                {c.soon ? (
+                  <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "#9a968e", marginTop: 16, border: "1px solid rgba(0,0,0,0.18)", borderRadius: 20, padding: "4px 11px", alignSelf: "flex-start" }}>
+                    {ro ? "În curând" : "Coming soon"}
+                  </span>
+                ) : (
+                  <span className="ovr-arrow" style={{ fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 2.5, textTransform: "uppercase", color: O, marginTop: 16 }}>
+                    {ro ? "Explorează" : "Explore"} →
+                  </span>
+                )}
               </button>
             ))}
           </div>
