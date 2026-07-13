@@ -861,7 +861,6 @@ export default function App() {
     scrollTop();
   };
   const navTo = (p) => { setPage(p); setView("studio"); scrollTop(); };
-  const ANIM_SRC = { tee: "/anim/tricou-2.mp4", hoodie: "/anim/hoodie-2.mp4" };
 
   /* ── temă UI adaptivă peste fundalul colecției ── */
   // temă globală: dark liquid-glass futurist
@@ -1538,8 +1537,8 @@ export default function App() {
       </main>
       ) : (
       <main className="cfg" style={{
-        display: "grid", gridTemplateColumns: cat === "tee" ? "0.92fr 0.72fr 1.12fr" : "1fr 0.82fr 0.95fr", gap: "2.4vw",
-        padding: "20px 5vw 90px", maxWidth: 1480, margin: "0 auto", alignItems: "start",
+        display: "grid", gridTemplateColumns: "1fr 0.92fr", gap: "clamp(28px, 4vw, 64px)",
+        padding: "20px 5vw 90px", maxWidth: 1080, margin: "0 auto", alignItems: "start",
       }}>
         {/* înapoi la grilă */}
         <button onClick={() => { setShopView("grid"); scrollTop(); }} className="ovr-flink" style={{
@@ -1683,19 +1682,6 @@ export default function App() {
           </p>
         </div>
 
-        {/* coloana din dreapta: actorul din animația categoriei, îmbinat lin cu pagina */}
-        <div className="stick anim-side" style={{ position: "sticky", top: 20 }}>
-          <div style={{ position: "relative", width: "100%", height: "min(82vh, 740px)", overflow: "hidden" }}>
-            <video key={cat} src={ANIM_SRC[cat]} autoPlay muted loop playsInline className="ovr-fade"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 38%", display: "block" }} />
-            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(90deg, #F4F2EE 0%, rgba(244,242,238,0.5) 13%, transparent 36%)" }} />
-            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(270deg, #F4F2EE 0%, rgba(244,242,238,0.5) 11%, transparent 30%)" }} />
-            <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(180deg, #F4F2EE 0%, rgba(244,242,238,0.5) 6%, transparent 18%, transparent 82%, rgba(244,242,238,0.5) 94%, #F4F2EE 100%)" }} />
-          </div>
-        </div>
       </main>
       )}
 

@@ -77,11 +77,6 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
     { name: "OVRMOVE", text: ro ? "Piese de gym și sport, făcute pentru mișcare." : "Gym and sport pieces made for movement.", soon: true },
     { name: "OVRSHIFT", text: ro ? "Streetwear inspirat din racing și riding." : "Rider and racing inspired streetwear.", soon: true },
   ];
-  const looks = [
-    { src: "/home/hero-male.jpg", alt: ro ? "Tricou · model" : "Tee · model" },        /* imagine tricou/model */
-    { src: "/home/campaign.jpg", alt: ro ? "Hanorac · model" : "Hoodie · model" },      /* imagine hoodie/model */
-    { src: "/home/extra.jpg", alt: ro ? "Detaliu material" : "Material close-up" },      /* close-up material/logo */
-  ];
   const why = [
     { t: "Heavyweight cotton", d: ro ? "Material premium, dens, cu structură." : "Premium, dense fabric with structure." },
     { t: "Oversized fit", d: ro ? "Croială relaxată, construită pentru prezență." : "Relaxed cut, built for presence." },
@@ -91,36 +86,24 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
 
   return (
     <main>
-      {/* 1 — HERO */}
-      <section style={{ position: "relative", ...secPad, paddingTop: "clamp(40px, 5vw, 72px)", paddingBottom: "clamp(12px, 1.6vw, 26px)" }}>
-        <div className="ovr-hero ovr-rise" style={{ position: "relative", maxWidth: 1200, margin: "0 auto" }}>
-          <div>
-            <div style={eyebrow}>OVRTHINK / 01</div>
-            <h1 style={{ ...h2style, fontWeight: 200, fontSize: "clamp(38px, 6.4vw, 82px)", lineHeight: 1.0, margin: "18px 0 0" }}>
-              OVRTHINK<br />THE ORDINARY
-            </h1>
-            <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(16px, 2vw, 22px)", letterSpacing: 1, color: INK, margin: "22px 0 14px" }}>
-              {ro ? "Streetwear pentru cei care gândesc prea mult." : "Streetwear for those who think too much."}
-            </p>
-            <p style={{ ...bodyStyle, maxWidth: 440, margin: "0 0 30px" }}>
-              {ro
-                ? "Piese clean, oversized, în alb, negru și portocaliu. Create pentru cei care transformă supra-gândirea într-o estetică."
-                : "Clean, oversized pieces in white, black and orange. Made for those who turn overthinking into an aesthetic."}
-            </p>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <Btn primary onClick={() => onShop("tee")}>{ro ? "Cumpără acum" : "Shop now"}</Btn>
-              <Btn onClick={onCollections}>{ro ? "Vezi colecțiile" : "View collections"}</Btn>
-            </div>
-          </div>
-          {/* Animația de home — marginile topite în fundal pe toate laturile. Sursă: /home/acasa-animatie.mp4 */}
-          <div>
-            <video src="/home/acasa-animatie.mp4" autoPlay muted loop playsInline preload="auto"
-              style={{
-                width: "100%", display: "block", objectFit: "cover", aspectRatio: "4 / 5",
-                maskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%)",
-                maskComposite: "intersect", WebkitMaskComposite: "source-in",
-              }} />
+      {/* 1 — HERO (tipografic, minimalist) */}
+      <section style={{ ...secPad, paddingTop: "clamp(60px, 9vw, 130px)", paddingBottom: "clamp(30px, 4vw, 60px)", textAlign: "center" }}>
+        <div className="ovr-rise" style={{ maxWidth: 840, margin: "0 auto" }}>
+          <div style={eyebrow}>OVRTHINK / 01</div>
+          <h1 style={{ ...h2style, fontWeight: 200, fontSize: "clamp(44px, 8.2vw, 100px)", lineHeight: 1.0, margin: "20px 0 0" }}>
+            OVRTHINK<br />THE ORDINARY
+          </h1>
+          <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "clamp(16px, 2.1vw, 23px)", letterSpacing: 1, color: INK, margin: "26px auto 14px" }}>
+            {ro ? "Streetwear pentru cei care gândesc prea mult." : "Streetwear for those who think too much."}
+          </p>
+          <p style={{ ...bodyStyle, maxWidth: 460, margin: "0 auto 34px" }}>
+            {ro
+              ? "Piese clean, oversized, în alb, negru și portocaliu. Create pentru cei care transformă supra-gândirea într-o estetică."
+              : "Clean, oversized pieces in white, black and orange. Made for those who turn overthinking into an aesthetic."}
+          </p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+            <Btn primary onClick={() => onShop("tee")}>{ro ? "Cumpără acum" : "Shop now"}</Btn>
+            <Btn onClick={onCollections}>{ro ? "Vezi colecțiile" : "View collections"}</Btn>
           </div>
         </div>
       </section>
@@ -170,20 +153,6 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
         </div>
       </section>
 
-      {/* 5 — LOOKBOOK STRIP */}
-      <section style={{ ...secPad, paddingTop: 0 }}>
-        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-          <div style={{ ...eyebrow, marginBottom: 24 }}>OVRTHINK IN MOTION</div>
-          <div className="ovr-trio">
-            {looks.map(l => (
-              <div key={l.src} className="ovr-lookcard" style={{ background: "#f1eee9" }}>
-                <img src={l.src} alt={l.alt} style={{ width: "100%", height: "100%", objectFit: "cover", aspectRatio: "3 / 4", display: "block" }} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* 6 — WHY OVRTHINK */}
       <section style={{ ...secPad }}>
         <div style={{ maxWidth: 1120, margin: "0 auto" }}>
@@ -222,20 +191,8 @@ export function CollectionsPage({ lang, onShop }) {
       </div>
       <div style={{ textAlign: "center", fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 5, textTransform: "uppercase", color: O, marginTop: 12 }}>{L.colSub}</div>
 
-      {/* Stânga: imaginea (fum + modele, fără logo) · Dreapta: tab-urile colecțiilor */}
-      <div className="ovr-cat" style={{ display: "grid", gridTemplateColumns: "1.62fr 0.74fr", gap: "clamp(12px, 2vw, 32px)", alignItems: "start", marginTop: 12 }}>
-        {/* stânga: imagine cu marginile topite (capul NU se atinge de fade — are padding transparent deasupra) */}
-        <div>
-          <img src="/home/collectii-hero.png" alt="OVRTHINK" style={{
-            width: "100%", display: "block", marginTop: "-2%",
-            maskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 70%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 9%, #000 66%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 70%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 9%, #000 66%, transparent 100%)",
-            maskComposite: "intersect", WebkitMaskComposite: "source-in",
-          }} />
-        </div>
-
-        {/* dreapta: tab-uri colecții liquid glass, stivuite vertical */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Colecțiile — carduri centrate (fără imaginea AI) */}
+      <div style={{ maxWidth: 640, margin: "30px auto 0", display: "flex", flexDirection: "column", gap: 14 }}>
           {cols.map(c => (
             <div key={c.id} className="ovr-glass" onClick={c.live ? () => onShop(c.target) : undefined}
               style={{
@@ -276,7 +233,6 @@ export function CollectionsPage({ lang, onShop }) {
               )}
             </div>
           ))}
-        </div>
       </div>
     </main>
   );
@@ -289,16 +245,6 @@ export function AboutPage({ lang, onShop }) {
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: "50px 5vw 90px" }}>
       <div style={{ textAlign: "center", marginBottom: 40 }}>
         <h1 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "clamp(30px, 5vw, 56px)", letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>{L.aboutTitle}</h1>
-      </div>
-
-      <div style={{ marginBottom: 40 }}>
-        {/* margini topite în fundal pe toate laturile — trecere insesizabilă */}
-        <img src="/home/hero-male.jpg" alt="" style={{
-          width: "100%", display: "block", objectFit: "cover", maxHeight: 460, objectPosition: "center 30%",
-          maskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%)",
-          maskComposite: "intersect", WebkitMaskComposite: "source-in",
-        }} />
       </div>
 
       <div style={{ maxWidth: 680, margin: "0 auto", fontFamily: "'Inter', sans-serif", fontSize: 15.5, color: MUTED, lineHeight: 1.9 }}>
