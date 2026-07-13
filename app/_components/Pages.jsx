@@ -175,9 +175,8 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
 export function CollectionsPage({ lang, onShop }) {
   const L = T[lang];
   const ro = lang === "ro";
+  // Doar colecțiile care urmează (OVRHEAT/OVRLAYER sunt deja în tab-urile Tricouri/Hoodie)
   const cols = [
-    { id: "ovrheat", name: "OVRHEAT", tag: ro ? "Toate tricourile" : "All t-shirts", live: true, target: "tee" },
-    { id: "ovrlayer", name: "OVRLAYER", tag: ro ? "Hanorace · straturi" : "Hoodies · layers", live: true, target: "hoodie" },
     { id: "ovrmove", name: "OVRMOVE", tag: ro ? "Sport · mișcare · viteză" : "Sport · motion · speed", live: false },
     { id: "ovrshift", name: "OVRSHIFT", tag: ro ? "Ediție limitată" : "Limited edition", live: false },
   ];
