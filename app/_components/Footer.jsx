@@ -42,6 +42,7 @@ export default function Footer({ lang, nav, onShop }) {
           <FLink onClick={() => onShop("hoodie")}>Hoodie</FLink>
           <FLink onClick={() => nav("collections")}>{ro ? "Colecții" : "Collections"}</FLink>
           <FLink onClick={() => nav("custom")}>Custom</FLink>
+          <FLink onClick={() => nav("about")}>{ro ? "Despre" : "About"}</FLink>
         </Col>
 
         <Col title="Support">

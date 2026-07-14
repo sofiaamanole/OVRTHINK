@@ -71,12 +71,6 @@ const secPad = { padding: "clamp(56px, 8vw, 108px) 6vw" };
 /* ── HOME — premium / editorial ── */
 export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
   const ro = lang === "ro";
-  const collections = [
-    { name: "OVRHEAT", text: ro ? "Toate tricourile OVRTHINK." : "All OVRTHINK t-shirts.", onClick: () => onShop("tee") },
-    { name: "OVRLAYER", text: ro ? "Hanorace și croieli groase." : "Hoodies and heavier cuts.", onClick: () => onShop("hoodie") },
-    { name: "OVRMOVE", text: ro ? "Piese de gym și sport, făcute pentru mișcare." : "Gym and sport pieces made for movement.", soon: true },
-    { name: "OVRSHIFT", text: ro ? "Streetwear inspirat din racing și riding." : "Rider and racing inspired streetwear.", soon: true },
-  ];
   const why = [
     { t: "Heavyweight cotton", d: ro ? "Material premium, dens, cu structură." : "Premium, dense fabric with structure." },
     { t: "Oversized fit", d: ro ? "Croială relaxată, construită pentru prezență." : "Relaxed cut, built for presence." },
@@ -108,36 +102,6 @@ export function HomePage({ lang, onShop, onCollections, onAbout, fmt }) {
         </div>
       </section>
 
-      {/* 2 — SHOP BY COLLECTION */}
-      <section style={{ ...secPad, paddingTop: "clamp(14px, 1.8vw, 30px)" }}>
-        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-          <div style={{ ...eyebrow, marginBottom: 26 }}>SHOP BY COLLECTION</div>
-          <div className="ovr-collgrid">
-            {collections.map(c => (
-              <button key={c.name} onClick={c.soon ? undefined : c.onClick} disabled={c.soon}
-                className={c.soon ? "" : "ovr-glass"} style={{
-                textAlign: "left", cursor: c.soon ? "default" : "pointer", display: "flex", flexDirection: "column",
-                border: "1px solid rgba(0,0,0,0.12)", borderRadius: 12, background: "rgba(255,255,255,0.5)",
-                padding: "22px 20px", minHeight: 178, color: INK, WebkitTapHighlightColor: "transparent",
-                opacity: c.soon ? 0.62 : 1,
-              }}>
-                <h3 style={{ fontFamily: "'Jost', sans-serif", fontWeight: 400, fontSize: 19, letterSpacing: "0.1em", margin: "0 0 8px", color: INK }}>{c.name}</h3>
-                <p style={{ ...bodyStyle, fontSize: 13, margin: 0 }}>{c.text}</p>
-                <div style={{ flex: 1 }} />
-                {c.soon ? (
-                  <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "#9a968e", marginTop: 16, border: "1px solid rgba(0,0,0,0.18)", borderRadius: 20, padding: "4px 11px", alignSelf: "flex-start" }}>
-                    {ro ? "În curând" : "Coming soon"}
-                  </span>
-                ) : (
-                  <span className="ovr-arrow" style={{ fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 2.5, textTransform: "uppercase", color: O, marginTop: 16 }}>
-                    {ro ? "Explorează" : "Explore"} →
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* 4 — BRAND STATEMENT */}
       <section style={{ ...secPad, textAlign: "center" }}>

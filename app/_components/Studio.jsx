@@ -1174,15 +1174,13 @@ export default function App() {
             ["tee", lang === "ro" ? "Tricouri" : "T-shirts", () => openCat("tee"), page === "shop" && cat === "tee" && view !== "checkout"],
             ["hoodie", lang === "ro" ? "Hoodie" : "Hoodies", () => openCat("hoodie"), page === "shop" && cat === "hoodie" && view !== "checkout"],
             ["collections", lang === "ro" ? "Colecții" : "Collections", () => navTo("collections"), page === "collections" && view !== "checkout"],
-            ["custom", "Custom", () => navTo("custom"), page === "custom" && view !== "checkout"],
-            ["about", lang === "ro" ? "Despre" : "About", () => navTo("about"), page === "about" && view !== "checkout"],
           ].map(([id, label, fn, active]) => (
             <button key={id} onClick={fn} className="ovr-navlink" style={{
               fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 2.5, textTransform: "uppercase",
               padding: "8px 14px", cursor: "pointer", borderRadius: 8,
               background: active ? "rgba(255,74,28,0.14)" : "transparent",
               border: active ? `1px solid ${ORANGE}` : "1px solid transparent",
-              color: id === "custom" ? ORANGE : (active ? "#b23410" : uiMuted),
+              color: active ? "#b23410" : uiMuted,
             }}>{label}</button>
           ))}
         </nav>
@@ -1195,16 +1193,6 @@ export default function App() {
                 background: lang === lg ? "rgba(255,74,28,0.9)" : "transparent",
                 color: lang === lg ? "#fff" : uiMuted,
               }}>{lg}</button>
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: 0, border: `1px solid ${uiBorder}` }}>
-            {["RON", "EUR", "USD"].map(cc => (
-              <button key={cc} onClick={() => setCur(cc)} style={{
-                fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 1, textTransform: "uppercase",
-                padding: "7px 9px", cursor: "pointer", border: "none", borderRadius: 0,
-                background: cur === cc ? "rgba(255,74,28,0.9)" : "transparent",
-                color: cur === cc ? "#fff" : uiMuted,
-              }}>{cc}</button>
             ))}
           </div>
           <button onClick={() => { setView(view === "checkout" ? "studio" : "checkout"); setPayState("idle"); }} style={{
@@ -1224,28 +1212,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* bară de status HUD */}
-      <div style={{
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        padding: "7px 5vw", borderBottom: `1px solid ${GLINE}`,
-        fontFamily: "ui-monospace, monospace", fontSize: 9.5, letterSpacing: 2, color: MUTED, textTransform: "uppercase",
-      }}>
-        <span>OVRTHINK//OS · v1.0</span>
-        <span style={{ opacity: 0.5 }}>{(() => {
-          const pl = view === "checkout" ? { ro: "checkout", en: "checkout" }
-            : page === "home" ? { ro: "acasă", en: "home" }
-            : page === "collections" ? { ro: "colecții", en: "collections" }
-            : page === "custom" ? { ro: "custom", en: "custom" }
-            : LEGAL_KEYS.includes(page) ? { ro: page, en: page }
-            : page === "about" ? { ro: "despre", en: "about" }
-            : { ro: cat === "tee" ? "tricouri" : "hoodie", en: cat === "tee" ? "t-shirts" : "hoodies" };
-          return `${lang === "ro" ? "pagina" : "page"}: ${pl[lang]}`;
-        })()}</span>
-        <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: ORANGE, animation: "ovrBlink 1.6s ease-in-out infinite" }} />
-          {lang === "ro" ? "sistem online" : "system online"}
-        </span>
-      </div>
 
       {view === "checkout" ? (
         <main style={{ maxWidth: 680, margin: "0 auto", padding: "44px 5vw 90px" }}>
