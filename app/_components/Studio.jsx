@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { CATALOG } from "@/lib/catalog";
 import { JUDETE, TARI, LOCALITATI } from "@/lib/geo";
+import { stateToPath, pathToState } from "@/lib/routes";
 import { HomePage, CollectionsPage, AboutPage } from "./Pages";
 import { CustomPage } from "./Custom";
 import { LegalRouter, LEGAL_KEYS } from "./Legal";
@@ -727,10 +728,11 @@ function qualityInfo(w, h, L) {
 /* ── aplicația ──────────────────────────────── */
 let UID = 1;
 
-export default function App() {
+export default function App({ initialPath = "/" }) {
+  const initRoute = pathToState(initialPath); // stare inițială din URL (deep-link)
   const [lang, setLang]       = useState("ro");
   const [product, setProduct] = useState("tee");
-  const [colorId, setColorId] = useState("black");
+  const [colorId, setColorId] = useState(initRoute.colorId ?? "black");
   const [fit, setFit]         = useState("oversized");
   const [tab, setTab]         = useState("back"); // front | back | 3d
   const [elements, setElements] = useState([
@@ -746,13 +748,13 @@ export default function App() {
   const [added, setAdded] = useState(false);
   const [showAddedModal, setShowAddedModal] = useState(false);
   const [prodLine, setProdLine] = useState("unisex");
-  const [view, setView] = useState("studio"); // studio (catalog) | checkout
+  const [view, setView] = useState(initRoute.view ?? "studio"); // studio (catalog) | checkout
   const [cart, setCart] = useState([]);
-  const [selId, setSelId] = useState(CATALOG[0].id); // produsul din catalog vizionat
-  const [cat, setCat] = useState("tee"); // categoria din shop: tee | hoodie
-  const [page, setPage] = useState("home"); // home | shop | collections | about
-  const [side, setSide] = useState("front"); // față | spate (mockup afișat)
-  const [shopView, setShopView] = useState("grid"); // grid (lookbook) | detail (pagina produs)
+  const [selId, setSelId] = useState(initRoute.selId ?? CATALOG[0].id); // produsul din catalog vizionat
+  const [cat, setCat] = useState(initRoute.cat ?? "tee"); // categoria din shop: tee | hoodie
+  const [page, setPage] = useState(initRoute.page ?? "home"); // home | shop | collections | about
+  const [side, setSide] = useState(initRoute.side ?? "front"); // față | spate (mockup afișat)
+  const [shopView, setShopView] = useState(initRoute.shopView ?? "grid"); // hub | grid | detail
   const [colFilter, setColFilter] = useState("all"); // filtru culoare în grilă: all | white | black
   const [col, setCol] = useState(null); // colecția deschisă: null = hub | summer | winter | sport
   const [payMethod, setPayMethod] = useState("card");
@@ -762,6 +764,35 @@ export default function App() {
     email: "", fullName: "", phone: "", street: "", city: "", county: "", zip: "", country: "România",
   });
   const setField = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  // ── URL partajabil: sincronizează pathname cu starea (deep-link + back/forward) ──
+  const firstSync = useRef(true);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const path = stateToPath({ view, page, cat, shopView, selId });
+    if (path === window.location.pathname) { firstSync.current = false; return; }
+    if (firstSync.current) { window.history.replaceState({}, "", path); firstSync.current = false; }
+    else window.history.pushState({}, "", path);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, page, cat, shopView, selId]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onPop = () => {
+      const s = pathToState(window.location.pathname);
+      setView(s.view ?? "studio");
+      setPage(s.page ?? "home");
+      if (s.cat) setCat(s.cat);
+      setShopView(s.shopView ?? "grid");
+      if (s.selId) setSelId(s.selId);
+      if (s.side) setSide(s.side);
+      if (s.colorId) setColorId(s.colorId);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [cur, setCur] = useState("RON");
   const [account, setAccount] = useState(false);
   const [accMode, setAccMode] = useState("create"); // create | login | guest
