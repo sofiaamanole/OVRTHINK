@@ -14,10 +14,16 @@ export async function generateMetadata({ params }) {
   if (p) {
     const kind = p.product === "tee" ? "Tricou" : "Hanorac";
     const title = `${p.name.ro} — ${kind} OVRTHINK`;
+    // imaginea produsului (latura cu designul) pentru preview-ul de link
+    const color = p.colors[0];
+    const heroImg = p.hero === "back"
+      ? (p.imgBack && p.imgBack[color])
+      : (p.img && p.img[color]);
+    const images = heroImg ? [{ url: heroImg, width: 1500, height: 1875, alt: p.name.ro }] : undefined;
     return {
       title,
-      openGraph: { title, url: `https://www.ovrthink.ro/${seg}` },
-      twitter: { title },
+      openGraph: { title, description: `${p.name.ro} · ${p.price} lei · OVRTHINK`, url: `https://www.ovrthink.ro/${seg}`, images },
+      twitter: { card: "summary_large_image", title, images: images ? [heroImg] : undefined },
     };
   }
   return {};
