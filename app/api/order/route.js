@@ -123,11 +123,25 @@ export async function POST(req) {
     html: clientHtml(orderID, language, order),
   });
 
-  // 3) notificare internă WhatsApp
-  const clientName = [billing.firstName, billing.lastName].filter(Boolean).join(" ");
-  const total = `${order.total} ${order.symbol || "lei"}`;
-  const nItems = order.items.reduce((a, i) => a + (i.qty || 0), 0);
-  await sendWhatsApp(`🛒 Comanda noua OVRthink (RAMBURS) ${orderID}\nTotal: ${total}\nClient: ${clientName}\nProduse: ${nItems}`);
+  // 3) notificare internă WhatsApp — toate datele comenzii
+  const b = billing;
+  const sym = order.symbol || "lei";
+  const name = [b.firstName, b.lastName].filter(Boolean).join(" ");
+  const addr = [b.address, b.city, b.state, b.postalCode, b.country].filter(Boolean).join(", ");
+  const prods = order.items.map(it => `• ${it.name} · ${it.color}/${it.size} ×${it.qty} — ${it.total} ${sym}`).join("\n");
+  const wa =
+`🛒 COMANDĂ NOUĂ (RAMBURS) — ${orderID}
+
+👤 ${name || "-"}
+📞 ${b.phone || "-"}
+✉️ ${b.email || "-"}
+📍 ${addr || "-"}
+
+🧾 Produse:
+${prods}
+
+💰 Total: ${order.total} ${sym} (plata la livrare)`;
+  await sendWhatsApp(wa);
 
   return NextResponse.json({ ok: true, orderID });
 }

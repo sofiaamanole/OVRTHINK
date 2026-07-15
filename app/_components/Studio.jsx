@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { CATALOG } from "@/lib/catalog";
 import { JUDETE, TARI, LOCALITATI } from "@/lib/geo";
 import { stateToPath, pathToState } from "@/lib/routes";
+import { trackPageView, trackEvent } from "./Pixel";
 import { HomePage, CollectionsPage, AboutPage } from "./Pages";
 import { CustomPage } from "./Custom";
 import { LegalRouter, LEGAL_KEYS } from "./Legal";
@@ -772,7 +773,7 @@ export default function App({ initialPath = "/" }) {
     const path = stateToPath({ view, page, cat, shopView, selId });
     if (path === window.location.pathname) { firstSync.current = false; return; }
     if (firstSync.current) { window.history.replaceState({}, "", path); firstSync.current = false; }
-    else window.history.pushState({}, "", path);
+    else { window.history.pushState({}, "", path); trackPageView(path); } // pixel: page view la navigare
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view, page, cat, shopView, selId]);
 
@@ -865,6 +866,7 @@ export default function App({ initialPath = "/" }) {
       colorId: curColorId, size: curSize, qty,
       unitPrice: item.price, customCost: 0, total: item.price * qty,
     }]);
+    trackEvent("AddToCart", { content_name: item.name.ro, value: item.price * qty, currency: "RON" });
     setShowAddedModal(true);
   };
 
@@ -995,6 +997,7 @@ export default function App({ initialPath = "/" }) {
           : "Order could not be placed. Please try again.");
         return;
       }
+      trackEvent("Purchase", { value: calc.grand, currency: "RON", num_items: cart.reduce((a, it) => a + it.qty, 0) });
       setPayState("done");
     } catch {
       setPayState("idle");

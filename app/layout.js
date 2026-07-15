@@ -1,4 +1,6 @@
 import "./globals.css";
+import Pixel from "./_components/Pixel";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
   metadataBase: new URL("https://www.ovrthink.ro"),
@@ -35,6 +37,8 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>{children}</body>
+      <Pixel />
+      <Analytics />
     </html>
   );
 }
