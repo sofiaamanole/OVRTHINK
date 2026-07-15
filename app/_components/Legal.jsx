@@ -245,7 +245,7 @@ function Livrare({ onHome }) {
       </Sec>
       <Sec n="2" title="Cost livrare">
         <P>Costul livrării este afișat înainte de finalizarea comenzii.</P>
-        <P>Livrare <b>gratuită prin Sameday</b>, în 1–2 zile lucrătoare.</P>
+        <P>Livrare prin Sameday: <b>19 lei</b>, în 1–2 zile lucrătoare. <b>Gratuită</b> pentru comenzile de peste <b>500 lei</b>.</P>
       </Sec>
       <Sec n="3" title="Plată">
         <P>Metodă de plată disponibilă: ramburs (plata la livrare), în numerar sau cu cardul la curier. Plata online cu cardul va fi disponibilă în curând.</P>

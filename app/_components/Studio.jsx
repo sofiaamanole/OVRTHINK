@@ -386,7 +386,7 @@ const T = {
     sameAsShip: "Aceeași ca livrarea", street: "Stradă și număr", city: "Oraș",
     county: "Județ / Regiune", zip: "Cod poștal", country: "Țară",
     shipMethod: "Metodă de livrare",
-    sameday: "Sameday (România)", samedayNote: "1–2 zile lucrătoare",
+    sameday: "Sameday (România)", samedayNote: "1–2 zile lucrătoare", freeOver: "gratuit peste 500 lei",
     dhl: "DHL Express (internațional)", dhlNote: "3–6 zile lucrătoare",
     promoLabel: "Cod de reducere", promoApply: "Aplică", promoOk: "Cod aplicat", promoBad: "Cod invalid",
     contactInfo: "Date de contact", offersTitle: "Oferte active",
@@ -457,7 +457,7 @@ const T = {
     sameAsShip: "Same as shipping", street: "Street and number", city: "City",
     county: "County / Region", zip: "ZIP code", country: "Country",
     shipMethod: "Shipping method",
-    sameday: "Sameday (Romania)", samedayNote: "1–2 business days",
+    sameday: "Sameday (Romania)", samedayNote: "1–2 business days", freeOver: "free over 500 lei",
     dhl: "DHL Express (international)", dhlNote: "3–6 business days",
     promoLabel: "Discount code", promoApply: "Apply", promoOk: "Code applied", promoBad: "Invalid code",
     contactInfo: "Contact details", offersTitle: "Active offers",
@@ -833,7 +833,10 @@ export default function App({ initialPath = "/" }) {
   const customCost = customizationCost(elements, isSlim, slimMode);
   const total = (unitPrice + customCost) * qty;
   const cartCount = cart.reduce((a, it) => a + it.qty, 0);
-  const shipCost = shipMethod === "dhl" ? 89 : 0; // Sameday gratuit
+  // Livrare Sameday 19 lei, gratuit peste 500 lei (pe subtotalul coșului)
+  const FREE_SHIP_OVER = 500;
+  const shipSubtotal = cart.reduce((a, it) => a + it.total, 0);
+  const shipCost = shipSubtotal >= FREE_SHIP_OVER ? 0 : 19;
   const calc = computeCart(cart, { account: account && accMode === "create", promo, shipCost });
 
   /* ── catalog: produsul selectat (din colecția activă) + opțiuni valide ── */
@@ -1358,9 +1361,9 @@ export default function App({ initialPath = "/" }) {
                 <span aria-hidden style={{ fontSize: 20, lineHeight: 1 }}>🚚</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 500, color: "#1a1712" }}>{L.sameday}</div>
-                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#a8a59c", marginTop: 2 }}>{L.samedayNote}</div>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#a8a59c", marginTop: 2 }}>{L.samedayNote} · {L.freeOver}</div>
                 </div>
-                <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 1, textTransform: "uppercase", color: "#1a7f4e" }}>{L.freeShipLabel}</span>
+                <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: 1, textTransform: "uppercase", color: shipCost === 0 ? "#1a7f4e" : "#1a1712" }}>{shipCost === 0 ? L.freeShipLabel : fmt(shipCost)}</span>
               </div>
 
               {/* cod reducere */}
