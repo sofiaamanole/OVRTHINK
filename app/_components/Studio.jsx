@@ -745,6 +745,7 @@ export default function App({ initialPath = "/" }) {
   const [slimMode, setSlimMode] = useState("preset");
   const [slimCustom, setSlimCustom] = useState("");
   const [size, setSize] = useState("M");
+  const [size2, setSize2] = useState("M"); // a doua mărime, pt seturile de cuplu
   const [qty, setQty]   = useState(1);
   const [added, setAdded] = useState(false);
   const [showAddedModal, setShowAddedModal] = useState(false);
@@ -848,6 +849,7 @@ export default function App({ initialPath = "/" }) {
   const curColor = GARMENT_COLORS.find(c => c.id === curColorId) || GARMENT_COLORS[0];
   const availSizes = SIZES_BY_PRODUCT[item.product];
   const curSize = availSizes.includes(size) ? size : availSizes[0];
+  const curSize2 = availSizes.includes(size2) ? size2 : availSizes[0];
   const itemImg = side === "back"
     ? (item.imgBack && item.imgBack[curColorId]) || (item.img && item.img[curColorId])
     : (item.img && item.img[curColorId]);
@@ -863,7 +865,7 @@ export default function App({ initialPath = "/" }) {
   const addCatalog = () => {
     setCart(c => [...c, {
       id: UID++, product: item.product, catId: item.id,
-      colorId: curColorId, size: curSize, qty,
+      colorId: curColorId, size: item.pair ? `${curSize} / ${curSize2}` : curSize, qty,
       unitPrice: item.price, customCost: 0, total: item.price * qty,
     }]);
     trackEvent("AddToCart", { content_name: item.name.ro, value: item.price * qty, currency: "RON" });
@@ -1639,7 +1641,7 @@ export default function App({ initialPath = "/" }) {
 
           <div style={{ marginTop: 26, marginBottom: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
             <span style={{ fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f" }}>
-              {lang === "ro" ? "Mărime" : "Size"}
+              {item.pair ? (lang === "ro" ? "Mărimi" : "Sizes") : (lang === "ro" ? "Mărime" : "Size")}
             </span>
             <button onClick={() => navTo("marimi")} className="ovr-flink" aria-label={lang === "ro" ? "Ghid mărimi" : "Size guide"} style={{
               display: "inline-flex", alignItems: "center", gap: 6, background: "transparent", border: "none", cursor: "pointer", padding: 0,
@@ -1651,17 +1653,41 @@ export default function App({ initialPath = "/" }) {
               {lang === "ro" ? "Ghid mărimi" : "Size guide"}
             </button>
           </div>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {availSizes.map(s => (
-              <button key={s} onClick={() => setSize(s)} className="ovr-opt" style={{
-                minWidth: 46, padding: "11px 0", cursor: "pointer", borderRadius: 8,
-                fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 1,
-                border: s === curSize ? `1px solid ${ORANGE}` : "1px solid rgba(0,0,0,0.22)",
-                background: s === curSize ? "rgba(255,74,28,0.14)" : "transparent",
-                color: s === curSize ? "#b23410" : "rgba(26,23,18,0.7)",
-              }}>{s}</button>
-            ))}
-          </div>
+          {item.pair ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {[
+                [lang === "ro" ? "Tricou 1 · Beauty" : "Tee 1 · Beauty", curSize, setSize],
+                [lang === "ro" ? "Tricou 2 · Monster" : "Tee 2 · Monster", curSize2, setSize2],
+              ].map(([lbl, cur, set]) => (
+                <div key={lbl}>
+                  <div style={{ fontFamily: "'Jost', sans-serif", fontSize: 10.5, letterSpacing: 2, textTransform: "uppercase", color: "#a8a59c", marginBottom: 8 }}>{lbl}</div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    {availSizes.map(s => (
+                      <button key={s} onClick={() => set(s)} className="ovr-opt" style={{
+                        minWidth: 46, padding: "11px 0", cursor: "pointer", borderRadius: 8,
+                        fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 1,
+                        border: s === cur ? `1px solid ${ORANGE}` : "1px solid rgba(0,0,0,0.22)",
+                        background: s === cur ? "rgba(255,74,28,0.14)" : "transparent",
+                        color: s === cur ? "#b23410" : "rgba(26,23,18,0.7)",
+                      }}>{s}</button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {availSizes.map(s => (
+                <button key={s} onClick={() => setSize(s)} className="ovr-opt" style={{
+                  minWidth: 46, padding: "11px 0", cursor: "pointer", borderRadius: 8,
+                  fontFamily: "'Jost', sans-serif", fontSize: 13, letterSpacing: 1,
+                  border: s === curSize ? `1px solid ${ORANGE}` : "1px solid rgba(0,0,0,0.22)",
+                  background: s === curSize ? "rgba(255,74,28,0.14)" : "transparent",
+                  color: s === curSize ? "#b23410" : "rgba(26,23,18,0.7)",
+                }}>{s}</button>
+              ))}
+            </div>
+          )}
 
           <div style={{ marginTop: 26, fontFamily: "'Jost', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#8a877f", marginBottom: 10 }}>
             {lang === "ro" ? "Cantitate" : "Quantity"}
