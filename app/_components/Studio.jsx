@@ -1212,6 +1212,7 @@ export default function App({ initialPath = "/" }) {
             ["home", lang === "ro" ? "Acasă" : "Home", () => navTo("home"), page === "home" && view !== "checkout"],
             ["tee", lang === "ro" ? "Tricouri" : "T-shirts", () => openCat("tee"), page === "shop" && cat === "tee" && view !== "checkout"],
             ["hoodie", lang === "ro" ? "Hoodie" : "Hoodies", () => openCat("hoodie"), page === "shop" && cat === "hoodie" && view !== "checkout"],
+            ["custom", "Custom", () => navTo("custom"), page === "custom" && view !== "checkout"],
             ["collections", lang === "ro" ? "Colecții" : "Collections", () => navTo("collections"), page === "collections" && view !== "checkout"],
           ].map(([id, label, fn, active]) => (
             <button key={id} onClick={fn} className="ovr-navlink" style={{
@@ -1219,7 +1220,7 @@ export default function App({ initialPath = "/" }) {
               padding: "8px 14px", cursor: "pointer", borderRadius: 8,
               background: active ? "rgba(255,74,28,0.14)" : "transparent",
               border: active ? `1px solid ${ORANGE}` : "1px solid transparent",
-              color: active ? "#b23410" : uiMuted,
+              color: id === "custom" ? ORANGE : (active ? "#b23410" : uiMuted),
             }}>{label}</button>
           ))}
         </nav>
