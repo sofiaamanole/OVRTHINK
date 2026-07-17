@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Asset-uri sursă locale (NU în repo)
+OVRTHINK-SITE/
+_incoming/
